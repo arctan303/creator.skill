@@ -1,0 +1,4 @@
+interface:
+  display_name: "创造"
+  short_description: "通过讨论调查和持续文档维护形成可实施可验收的软件设计"
+  default_prompt: "使用 $creator 与我讨论并调查这个软件创意，在我明确要求后再建立和维护设计文档。"
