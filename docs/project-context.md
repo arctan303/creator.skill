@@ -28,6 +28,8 @@ Current source material:
   - `C:\git\creator.skill\research\video-reference\images`
 - Existing baseline skill:
   - `C:\git\creator.skill\skills\creator`
+- Repo-local skill system:
+  - `C:\git\creator.skill\.agents\skills`
 - Operating guide:
   - `C:\git\creator.skill\docs\system-operation.md`
 
