@@ -135,18 +135,20 @@ creator.skill/
 ├── .codex/
 │   └── evolution/
 │       └── signals.md
+├── .agents/
+│   └── skills/
+│       ├── product-spec-builder/
+│       ├── design-brief-builder/
+│       ├── design-maker/
+│       ├── dev-planner/
+│       ├── dev-builder/
+│       ├── release-builder/
+│       ├── bug-fixer/
+│       ├── reviewer/
+│       ├── goal-writer/
+│       ├── self-evolver/
+│       └── skill-builder/
 └── skills/
-    ├── product-spec-builder/
-    ├── design-brief-builder/
-    ├── design-maker/
-    ├── dev-planner/
-    ├── dev-builder/
-    ├── release-builder/
-    ├── bug-fixer/
-    ├── reviewer/
-    ├── goal-writer/
-    ├── self-evolver/
-    ├── skill-builder/
     └── creator/
         ├── SKILL.md
         ├── agents/
@@ -194,4 +196,4 @@ creator.skill/
 - `self-evolver`：把真实使用信号转成 Skill 补丁建议
 - `skill-builder`：创建或改进这套系统中的 Skill
 
-现有 `creator` skill 是旧版单 Skill 流程，暂时保留作为历史参考；新系统不围绕它继续扩展。
+现有 `creator` skill 是旧版单 Skill 流程，暂时保留作为历史参考；新系统不围绕它继续扩展。新系统 Skill 放在 `.agents/skills/`，属于当前仓库的项目级 Skill，不需要全局安装。
