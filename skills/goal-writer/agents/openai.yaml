@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goal Writer"
+  short_description: "生成可交给 Agent 执行的 Goal"
+  default_prompt: "使用 $goal-writer 把下一步整理成可执行 Goal。"

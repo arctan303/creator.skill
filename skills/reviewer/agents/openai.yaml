@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reviewer"
+  short_description: "用干净脑子审查交付是否达标"
+  default_prompt: "使用 $reviewer 作为干净子代理审查这次交付。"

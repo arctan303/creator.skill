@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Brief Builder"
+  short_description: "Convert taste into concrete design brief"
+  default_prompt: "使用 $design-brief-builder 把我的设计方向整理成具体的 Design-Brief.md。"

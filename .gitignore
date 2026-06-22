@@ -1,0 +1,4 @@
+# Generated media and local transcription models
+research/video-reference/*.wav
+research/video-reference/*.bin
+

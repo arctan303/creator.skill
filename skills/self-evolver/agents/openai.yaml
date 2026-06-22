@@ -1,0 +1,4 @@
+interface:
+  display_name: "Self Evolver"
+  short_description: "把真实使用信号转成 Skill 补丁"
+  default_prompt: "使用 $self-evolver 消化自进化信号并生成补丁建议。"

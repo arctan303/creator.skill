@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Spec Builder"
+  short_description: "Turn vague ideas into buildable specs"
+  default_prompt: "使用 $product-spec-builder 把我的产品想法整理成可开发的 Product-Spec.md。"

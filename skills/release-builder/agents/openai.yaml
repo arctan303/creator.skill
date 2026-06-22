@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release Builder"
+  short_description: "Audit privacy and prepare release evidence"
+  default_prompt: "使用 $release-builder 做隐私审计、打包发布准备和发布证据整理。"
