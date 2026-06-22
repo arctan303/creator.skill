@@ -325,7 +325,7 @@ project/
         └── skill-builder/
 ```
 
-当前仓库已有旧版 `skills/creator/`，先保留，不作为新系统主线。新系统的项目级 Skill 放在 `.agents/skills/`，只对当前项目空间生效。
+当前仓库的新系统项目级 Skill 放在 `.agents/skills/`，只对当前项目空间生效。旧版 `creator` 和视频参考资料已移入 `archive/`，不作为当前系统主线。
 
 ## 当前执行策略
 
