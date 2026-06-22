@@ -20,14 +20,14 @@ Implementation details should be left to the model where possible, because the s
 Current source material:
 
 - Video excerpt audio, first 6m41s:
-  - `C:\git\creator.skill\research\video-reference\video_codex_top_0_2_first_6m41s.wav`
+  - `C:\git\creator.skill\archive\video-reference\video_codex_top_0_2_first_6m41s.wav`
 - Transcript files with recognition errors:
-  - `C:\git\creator.skill\research\video-reference\video codex top 0 2 first 6m41s.txt`
-  - `C:\git\creator.skill\research\video-reference\video_codex_top_0_2_first_6m41s.wav.txt`
+  - `C:\git\creator.skill\archive\video-reference\video codex top 0 2 first 6m41s.txt`
+  - `C:\git\creator.skill\archive\video-reference\video_codex_top_0_2_first_6m41s.wav.txt`
 - Key screenshots:
-  - `C:\git\creator.skill\research\video-reference\images`
+  - `C:\git\creator.skill\archive\video-reference\images`
 - Existing baseline skill:
-  - `C:\git\creator.skill\skills\creator`
+  - `C:\git\creator.skill\archive\legacy-skills\creator`
 - Repo-local skill system:
   - `C:\git\creator.skill\.agents\skills`
 - Operating guide:
@@ -272,14 +272,14 @@ Goal:
 Current repository:
 
 - `README.md` describes a `creator` skill for software-project planning.
-- `skills/creator/SKILL.md` implements a single skill that helps discuss, investigate, design, document, and accept software projects.
-- `skills/creator/references/` contains supporting guidance:
+- `archive/legacy-skills/creator/SKILL.md` implements the old single-skill flow that helps discuss, investigate, design, document, and accept software projects.
+- `archive/legacy-skills/creator/references/` contains supporting guidance:
   - `project-discovery.md`
   - `project-documents.md`
   - `design-document.md`
   - `engineering-integrity.md`
   - `acceptance.md`
-- `skills/creator/agents/openai.yaml` provides UI metadata.
+- `archive/legacy-skills/creator/agents/openai.yaml` provides UI metadata.
 
 The current `creator` skill is a legacy foundation. Keep it for reference, but do not use it as the new system entrance or expand the new system around it.
 
