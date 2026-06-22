@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dev Planner"
+  short_description: "Plan runnable, verifiable dev phases"
+  default_prompt: "使用 $dev-planner 把需求拆成可运行、可验收的 DEV-PLAN.md。"

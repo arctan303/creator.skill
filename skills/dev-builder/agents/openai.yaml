@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dev Builder"
+  short_description: "Build planned work with review loop"
+  default_prompt: "使用 $dev-builder 按 DEV-PLAN.md 开发下一个 Phase，并通过干净子代理审查。"

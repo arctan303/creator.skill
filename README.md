@@ -126,8 +126,27 @@ git clone https://github.com/arctan303/creator.skill.git
 
 ```text
 creator.skill/
+├── AGENTS.md
+├── EVOLUTION.md
 ├── README.md
+├── docs/
+│   ├── project-context.md
+│   └── system-operation.md
+├── .codex/
+│   └── evolution/
+│       └── signals.md
 └── skills/
+    ├── product-spec-builder/
+    ├── design-brief-builder/
+    ├── design-maker/
+    ├── dev-planner/
+    ├── dev-builder/
+    ├── release-builder/
+    ├── bug-fixer/
+    ├── reviewer/
+    ├── goal-writer/
+    ├── self-evolver/
+    ├── skill-builder/
     └── creator/
         ├── SKILL.md
         ├── agents/
@@ -153,3 +172,26 @@ creator.skill/
 ## 状态
 
 当前为首个公开版本。工作流和文档结构会根据真实项目使用情况继续调整。
+
+## 5.0 多 Skill 架构草案
+
+本仓库正在从单一 `creator` skill 演进为文档驱动的多 Skill 系统。项目背景和设计依据记录在 [`docs/project-context.md`](docs/project-context.md)，系统运行协议记录在 [`docs/system-operation.md`](docs/system-operation.md)。
+
+第一层已搭建 6 个主线 Skill 骨架：
+
+- `product-spec-builder`：把模糊想法整理为可开发的 `Product-Spec.md`
+- `design-brief-builder`：把主观设计感觉转成具体 `Design-Brief.md`
+- `design-maker`：可选地生成设计方案和原型图
+- `dev-planner`：把需求拆成可运行、可验收的 `DEV-PLAN.md`
+- `dev-builder`：按计划开发，并通过独立审查闭环
+- `release-builder`：执行隐私审计和打包发布准备
+
+同时已搭建 5 个 Plus Skill 骨架：
+
+- `bug-fixer`：按证据定位并修复缺陷
+- `reviewer`：作为干净子代理审查交付结果
+- `goal-writer`：生成可交给 Agent 自主执行的 Goal
+- `self-evolver`：把真实使用信号转成 Skill 补丁建议
+- `skill-builder`：创建或改进这套系统中的 Skill
+
+现有 `creator` skill 是旧版单 Skill 流程，暂时保留作为历史参考；新系统不围绕它继续扩展。

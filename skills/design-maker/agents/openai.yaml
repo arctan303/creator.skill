@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Maker"
+  short_description: "Create inspectable UI design artifacts"
+  default_prompt: "使用 $design-maker 根据 Product-Spec.md 和 Design-Brief.md 生成可检查的设计产物。"
