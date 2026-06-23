@@ -1,207 +1,104 @@
 # creator.skill
 
-一套可移植的 AI Agent 产品交付工作流。
+一套极度硬核、可移植的 AI Agent 产品交付工作流。
 
-从模糊想法到可发布产品，用 11 个协作 Skill 驱动完整的需求澄清、设计决策、开发计划、项目实现和发布审计链路。
+如果你受够了 AI Agent “上来就盲写代码”、“自嗨式开发”、“自己测自己”、“到处留 TODO 占位符”，那么本系统正是为你准备的。
 
-支持 **OpenAI Codex CLI** 和 **Claude Code**，一键初始化到任意工作空间。
+`creator.skill` 不是为了让 Agent 变得更会写代码，而是通过 **11 个极其严酷的协作技能（Skill）和子代理机制**，强迫 Agent 像一支顶级、冷血且极其遵守纪律的产品研发团队一样工作。
 
-## 它解决什么问题
+它支持 **OpenAI Codex CLI** 和 **Claude Code**，一键初始化到任意工作空间。
 
-大多数 AI Agent 的工作方式是：用户说一句话，Agent 立刻开始写代码。
+---
 
-这会导致：
+## 🔥 系统核心理念 (The Hardcore Philosophy)
 
-- 需求没想清楚就动手，返工成本高
-- 没有设计方向，写出来的东西风格不统一
-- 没有开发计划，一口气写完但验收不了
-- 没有独立审查，实现者自己说"完成了"就算完成
-- 没有发布审计，敏感信息直接暴露
+本系统由 `AGENTS.md` 协议驱动，所有的 Skill 都内置了不可妥协的底线：
 
-**creator.skill 解决的是流程问题**——不是让 Agent 更会写代码，而是让 Agent 像一个有纪律的产品团队一样工作：先问清楚，再设计，再计划，再开发，再审查，再发布。
+1. **二选一引导，终结废话**：严禁问用户“你要什么风格”这种废话，强制提供具体选项（This-or-That）。
+2. **拒绝占位符**：所有的开发计划必须精确到具体文件路径，严禁出现 `TBD` 或 `稍后补充`。
+3. **验证即证据 (Verification is Evidence)**：代码写完必须当场运行终端命令（编译/跑通测试），没看到终端 `0 错误` 输出前，绝不允许宣称完成。
+4. **绝对隔离的交叉审查**：开发者（`dev-builder`）完成开发后，**必须强制召唤独立的子代理（`reviewer`）** 进行干净视角的代码审查。自己测自己的代码等于没测。
+5. **隐私防漏底线**：发布前强制执行命令行扫描。若发现本地文件路径、本地 DB 文件或硬编码 API Key 被打包，发布动作将被立即强行中止！
 
-## 工作流
+---
 
-```text
-Product-Spec.md → Design-Brief.md → DEV-PLAN.md → 代码实现 → 审查闭环 → 发布证据
-```
+## ⚙️ 核心架构与技能一览
 
-每个阶段都有明确的输入、产出和验收标准。后续阶段不能跳过前置阶段，也不能静默修改已确认的产出。
+系统的核心工作流为：**需求 → 设计 → 计划 → 开发 → 审查 → 发布**。任何后续阶段不可跳过前置阶段的严格检验。
 
-## 技能一览
+### 📌 四大核心主线 (Core Pipeline)
 
-### 主线技能（按顺序执行）
+| 技能名称 | 角色定位 | 核心能力与门禁 | 产出物 |
+|---------|----------|--------------|--------|
+| `product-spec-builder` | 铁面产品经理 | 双模启动（0-1或迭代），不集齐 6 大核心维度（定位、流程、AI 赋能等）绝不输出文档。 | `Product-Spec.md` |
+| `design-brief-builder` | 高级 UI 规范师 | 废除主观问卷，实行“真实产品锚定”和“感受翻译”，将玄学词汇翻译成具体的视觉参数。 | `Design-Brief.md` |
+| `dev-planner` | 冷酷架构师 | 实行洋葱剥皮法拆解任务。无占位符原则，计划必须精确到文件级。技术栈必须经过联网验证兼容性。 | `DEV-PLAN.md` |
+| `dev-builder` | 资深全栈开发 | **验证即证据**：强制要求代码本地编译成功；<br>**强制闭环**：代码写完强制派发独立的子代理审查。 | 代码、验证证据 |
 
-| 序号 | 技能 | 职责 | 产出 |
-|------|------|------|------|
-| 01 | `product-spec-builder` | 需求收集 | `Product-Spec.md` |
-| 02 | `design-brief-builder` | 设计规范 | `Design-Brief.md` |
-| 03 | `dev-planner` | 开发计划 | `DEV-PLAN.md` |
-| 04 | `dev-builder` | 项目开发 | 代码 + 验证证据 + 审查闭环 |
+### 🛠️ 四大硬核支撑技能 (Peripheral Support)
 
-### 可选技能（按需调用）
+| 技能名称 | 触发场景 | 核心防御机制 |
+|---------|----------|-------------|
+| `bug-fixer` | 报错排查、修 Bug | 实行**“四阶段调试法”**（找证据 -> 分析 -> 假设 -> 修复）。内置防死循环机制：同一问题修 3 次失败，强行停机反思。 |
+| `release-builder` | 打包、部署、上线 | 内置严苛的**终端隐私扫描流水线**。发布前强制执行真实平台的安装与在线冒烟测试。 |
+| `design-maker` | 产出设计稿/线框图 | 强制要求先提取**“全局变量”**和**“可复用组件”**，内置状态完备校验（空状态/加载态必须有）。 |
+| `skill-builder` | 扩展系统自身技能 | 强制三层模块化法则，自建技能必须带有强阻断防呆设计。 |
 
-| 技能 | 职责 |
-|------|------|
-| `design-maker` | 需要可视化原型或外部设计工具时，生成可检查的设计产物 |
-| `release-builder` | 隐私审计、打包发布准备和交付证据整理 |
-| `bug-fixer` | 按证据定位并修复缺陷，完成回归验证 |
-| `reviewer` | 作为 fresh mind 独立审查交付结果 |
-| `goal-writer` | 生成可交给 Agent 自主执行的 Goal |
-| `self-evolver` | 将真实使用信号转成 Skill 补丁，让系统越用越准 |
-| `skill-builder` | 创建或改进这套系统中的 Skill |
+### 🧩 系统引擎与调度
 
-## 快速开始
+- `gateway`：负责全套 Skill 的下发、安装与跨工作空间初始化。
+- `reviewer`：干净视角的**独立审查子代理**，是把控代码质量的最后一道闸门。
+- `self-evolver`：从真实的 `feedback` 中提取经验，自动修改技能或沉淀补丁，使系统越用越强。
+- `goal-writer`：负责将长线任务翻译为极其明确且带检验指标的执行指令。
 
-### 1. 安装网关 Skill
+---
 
-网关 Skill 是唯一需要安装的东西。安装后，你可以在任意工作空间一键初始化全套工作流。
+## 🚀 快速开始
 
-**让 Agent 帮你安装**（推荐）：
+### 1. 全局安装网关 Skill
 
-> 帮我从 https://github.com/arctan303/creator.skill 安装 creator skill
+网关 Skill 是你唯一需要手动获取的东西。安装后，你可以在任何工作空间一键初始化流水线。
 
-Agent 会自动读取本仓库 README，下载 `creator-gateway.zip` 并安装到对应的全局 Skill 目录。
+**让 Agent 自动安装**（强烈推荐，直接对你的 CLI 说）：
+> “帮我从 https://github.com/arctan303/creator.skill 安装 creator skill”
 
-**手动安装**：
+**手动解压安装**：
+去 [Releases](https://github.com/arctan303/creator.skill/releases/latest) 下载 `creator-gateway.zip`，然后解压：
+- **Codex**: 解压到 `~/.codex/skills/creator/`
+- **Claude Code**: 解压到 `~/.claude/skills/creator/` 并删除里面的 `agents/` 文件夹。
 
-```bash
-# 从 Release 下载 creator-gateway.zip
-# https://github.com/arctan303/creator.skill/releases/latest
+安装后请重启你的 CLI 会话。
 
-# Codex
-unzip creator-gateway.zip -d ~/.codex/skills/creator/
+### 2. 初始化你的项目空间
 
-# Claude Code
-unzip creator-gateway.zip -d ~/.claude/skills/creator/
-rm -rf ~/.claude/skills/creator/agents/
-```
+在任意空项目或已有项目的目录下，对 Agent 说：
+> “初始化 creator 工作流”
 
-安装后重启 CLI 会话。
+系统会自动从云端拉取最新的 `creator.claude.zip` 或 `creator.codex.zip`，并在当前目录释放 11 个原子技能和核心协议（`AGENTS.md`）。
 
-### 2. 初始化工作空间
+### 3. 开始干活
 
-在任意项目目录中对 Agent 说：
+初始化完成后，直接甩出你的需求：
+> “我想做一个带 AI 翻译的浏览器插件”
 
-> 初始化 creator 工作流
+`product-spec-builder` 会立刻接管对话，按极其严格的门禁对你进行灵魂拷问，随后整个研发流水线便会严丝合缝地运转起来。
 
-Agent 会自动：
+---
 
-1. 检测当前 CLI 类型（Codex / Claude Code）
-2. 从 GitHub Release 下载对应的初始化包
-3. 检查冲突文件（有冲突会询问你）
-4. 释放全套 Skill 到当前工作空间
-5. 验证文件完整性
+## 📦 多平台适配与发布机制
 
-也支持从本地压缩包初始化：
+仓库维护一套源文件，每次推送会自动触发 GitHub Actions 构建，生成两套适配包：
 
-> 用本地文件 D:\downloads\creator.codex.zip 初始化工作流
-
-### 3. 开始使用
-
-初始化完成后，直接对 Agent 说你想做什么：
-
-> 我想做一个 XX 产品
-
-Agent 会自动进入需求收集阶段，按工作流推进。
-
-## Agent 自助安装指引
-
-如果你是一个 AI Agent（Codex 或 Claude Code），按以下步骤为用户安装网关 Skill：
-
-1. 从最新 Release 下载 `creator-gateway.zip`：
-   https://github.com/arctan303/creator.skill/releases/latest
-2. 检测当前 CLI 环境：
-   - **Codex** → 解压到 `~/.codex/skills/creator/`
-   - **Claude Code** → 解压到 `~/.claude/skills/creator/`，然后删除 `agents/` 目录
-3. 验证 `SKILL.md` 已就位
-4. 提示用户重启 CLI 会话以加载新 Skill
-
-## 多 CLI 支持
-
-仓库维护一套源文件，构建时自动生成两套适配包：
-
-| | Codex | Claude Code |
+| 特性 | OpenAI Codex | Claude Code |
 |------|-------|-------------|
 | 系统指令 | `AGENTS.md` | `CLAUDE.md` |
-| Skill 目录 | `.agents/skills/` | `.claude/skills/` |
-| 界面入口 | `agents/openai.yaml` | `.claude/commands/*.md` |
-| 全局安装 | `~/.codex/skills/` | `~/.claude/skills/` |
+| 技能目录 | `.agents/skills/` | `.claude/skills/` |
+| 界面入口 | `agents/openai.yaml` 菜单配置 | `.claude/commands/*.md` 快捷指令 |
 
-Claude Code 版额外生成 11 个中文 slash commands（`/需求`、`/设计规范`、`/项目开发` 等）作为快捷入口。
+- 自动化部署：修改 `VERSION` 文件推送到 `main` 分支，CI 自动输出三大 Release 压缩包。
+- 手动本地打包：运行 `python scripts/build_release.py`。
 
-## 仓库结构
+---
 
-```text
-creator.skill/
-├── AGENTS.md                      # 系统总协议
-├── EVOLUTION.md                   # 自进化协议
-├── VERSION                        # 版本号（变更后自动触发发布）
-├── CHANGELOG.md                   # 发布日志
-│
-├── gateway/                       # 网关 Skill（全局安装用）
-│   ├── SKILL.md                   #   技能定义
-│   ├── agents/openai.yaml         #   Codex 界面配置
-│   └── references/cli-adapters.md #   CLI 适配差异文档
-│
-├── scripts/
-│   ├── build_release.py           # 发布构建脚本
-│   └── verify_build.py            # 构建验证脚本
-│
-├── .agents/skills/                # 11 个项目级 Skill
-│   ├── product-spec-builder/      #   01 需求收集
-│   ├── design-brief-builder/      #   02 设计规范
-│   ├── design-maker/              #   可选 设计制图
-│   ├── dev-planner/               #   03 开发计划
-│   ├── dev-builder/               #   04 项目开发
-│   ├── release-builder/           #   可选 发布准备
-│   ├── bug-fixer/                 #   按需 缺陷修复
-│   ├── reviewer/                  #   按需 代码审查
-│   ├── goal-writer/               #   按需 Goal 生成
-│   ├── self-evolver/              #   按需 自进化
-│   └── skill-builder/             #   按需 技能构建
-│
-└── .github/workflows/
-    └── release.yml                # 自动发布 workflow
-```
-
-每个 Skill 内部结构一致：
-
-```text
-<skill-name>/
-├── SKILL.md                 # 技能定义（YAML frontmatter + Markdown）
-├── agents/openai.yaml       # Codex 界面配置
-└── references/
-    └── stage-contract.md    # 阶段合同（验收标准）
-```
-
-## 发布机制
-
-**自动发布**：修改 `VERSION` 文件并推送到 `main` 分支，GitHub Actions 自动构建并创建 Release。
-
-**手动构建**：
-
-```bash
-python scripts/build_release.py
-# 产物输出到 dist/
-```
-
-每个 Release 包含三个文件：
-
-| 文件 | 用途 |
-|------|------|
-| `creator-gateway.zip` | 网关 Skill 安装包 |
-| `creator.codex.zip` | Codex 工作空间初始化包 |
-| `creator.claude.zip` | Claude Code 工作空间初始化包 |
-
-## 核心设计原则
-
-- **先问清楚再动手**：需求没确认不允许进设计，设计没确认不允许进开发
-- **每一步都有验收标准**：不接受"写完了"作为完成的证据
-- **审查必须独立**：实现者不能自审，必须派 fresh mind 子代理
-- **自进化不是堆规则**：真实使用信号驱动补丁，优先编辑已有规则而非新增
-- **初始化是释放不是创造**：所有 Skill 内容来自预构建的释放包，不在初始化时生成
-
-## License
-
-MIT
+## 📄 License
+MIT License

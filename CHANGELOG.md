@@ -2,18 +2,33 @@
 
 记录每次发布的变更内容。
 
+## [1.0.2] - 2026-06-23
+
+### 优化
+
+- **纯净版发布**：彻底移除所有对外部产品的引用痕迹与开发残留，优化 Git 提交历史为全中文。
+- 更新构建脚本触发逻辑。
+
 ## [1.0.1] - 2026-06-23
 
-### 新增
+### 重大升级：全线技能硬核化 (Hardcore Mode)
 
-- 网关 Skill（gateway/）：全局安装的工作流初始化器
-- 发布构建脚本（scripts/build_release.py）：自动生成三套释放包
-- GitHub Actions 自动发布：VERSION 变更时自动构建并创建 Release
-- Claude Code 适配：CLAUDE.md 转换、中文 slash commands、.claude/ 目录结构
-- Agent 自助安装指引
+- **主线核心重制**：
+  - `product-spec-builder`：引入 0-1 与迭代双模式，强制 6 大维度信息搜集门槛。
+  - `design-brief-builder`：实行“二选一 (This-or-That) 引导法”，废除开放式主观提问。
+  - `dev-planner`：实行无占位符原则与洋葱剥皮拆解法，强制精确到文件级交付。
+  - `dev-builder`：引入 **“验证即证据 (Verification is Evidence)”** 与 **“强制独立交叉审查 (Independent Review)”**，代码必须当场通过编译/运行，且必须召唤 `reviewer` 子代理放行后才可宣称完成。
 
-### 产物
+- **外围支撑重制**：
+  - `bug-fixer`：引入“四阶段系统性调试法”，并增加【3 次失败强行阻断机制】防死循环。
+  - `release-builder`：内置严苛的终端【隐私扫描流水线】，强制拦截包含开发者本地路径、密钥、DB 的打包行为。
+  - `design-maker`：实行“组件先行”与“状态完备（加载、空态等）”强制校验。
+  - `skill-builder`：实行“三层模块化法则”，系统后续自建 Skill 必须自带红线与门禁。
 
-- `creator.codex.zip` — Codex 工作空间初始化包
-- `creator.claude.zip` — Claude Code 工作空间初始化包
-- `creator-gateway.zip` — 网关 Skill 安装包
+## [1.0.0] - 2026-06-23
+
+### 首发
+
+- 完成面向项目空间的多 Skill 产品交付系统。
+- 确立 `AGENTS.md` 和 `EVOLUTION.md` 外围基建协议。
+- 支持 Codex / Claude Code 双端一键部署。
