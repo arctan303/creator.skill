@@ -21,7 +21,7 @@ Product-Spec.md
 
 - `product-spec-builder`：需求技能，产出 `Product-Spec.md`
 - `design-brief-builder`：设计规范技能，产出 `Design-Brief.md`
-- `design-maker`：设计图技能，可选
+- `design-maker`：可选设计制图阶段，需要外部设计工具或可视化产物时才启用
 - `dev-planner`：计划技能，产出 `DEV-PLAN.md`
 - `dev-builder`：开发技能，按计划开发并通过干净子代理审查
 - `release-builder`：发布技能，做隐私审计、打包发布准备和证据整理
@@ -85,4 +85,3 @@ Codex 应读取：
 - `archive/video-reference/`：视频截图、转写、音频和本地转写模型
 
 其中 `.wav` 和 `.bin` 文件为本地生成或下载的大文件，已通过 `.gitignore` 排除。
-

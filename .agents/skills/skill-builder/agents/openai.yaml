@@ -1,4 +1,4 @@
 interface:
-  display_name: "Skill Builder"
+  display_name: "可选｜技能构建"
   short_description: "创建或改进这套系统中的 Skill"
   default_prompt: "使用 $skill-builder 为这套系统创建或改进一个 Skill。"

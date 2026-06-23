@@ -20,6 +20,8 @@ Skill 应该短、准、可触发。不要写成百科或操作手册。
 5. 同步 `agents/openai.yaml`。
 6. 检查命名、frontmatter 和占位文本残留。
 
+修改 Skill 时必须优先保持短、准、可触发；验收合同可以放进 `references/`。
+
 ## 红线
 
 - 不扩展旧版 `creator` 作为新系统主线。

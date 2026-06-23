@@ -1,4 +1,4 @@
 interface:
-  display_name: "Design Brief Builder"
-  short_description: "Convert taste into concrete design brief"
+  display_name: "02 设计规范"
+  short_description: "把主观设计意图翻译成具体设计决策"
   default_prompt: "使用 $design-brief-builder 把我的设计方向整理成具体的 Design-Brief.md。"

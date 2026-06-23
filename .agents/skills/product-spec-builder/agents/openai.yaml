@@ -1,4 +1,4 @@
 interface:
-  display_name: "Product Spec Builder"
-  short_description: "Turn vague ideas into buildable specs"
+  display_name: "01 需求收集"
+  short_description: "把模糊产品想法整理成可开发需求文档"
   default_prompt: "使用 $product-spec-builder 把我的产品想法整理成可开发的 Product-Spec.md。"
