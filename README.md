@@ -41,12 +41,6 @@ creator.skill/
 ├── AGENTS.md
 ├── EVOLUTION.md
 ├── README.md
-├── docs/
-│   ├── project-context.md
-│   └── system-operation.md
-├── .codex/
-│   └── evolution/
-│       └── signals.md
 ├── .agents/
 │   └── skills/
 │       ├── product-spec-builder/
@@ -60,10 +54,6 @@ creator.skill/
 │       ├── goal-writer/
 │       ├── self-evolver/
 │       └── skill-builder/
-└── archive/
-    ├── legacy-skills/
-    │   └── creator/
-    └── video-reference/
 ```
 
 ## 使用方式
@@ -77,11 +67,4 @@ Codex 应读取：
 
 这些 Skill 不需要复制到 `~/.codex/skills`。
 
-## 归档内容
 
-`archive/` 存放不属于当前主线的材料：
-
-- `archive/legacy-skills/creator/`：旧版单 Skill 流程，仅作历史参考
-- `archive/video-reference/`：视频截图、转写、音频和本地转写模型
-
-其中 `.wav` 和 `.bin` 文件为本地生成或下载的大文件，已通过 `.gitignore` 排除。

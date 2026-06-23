@@ -1,7 +1,3 @@
-# Generated media and local transcription models
-archive/video-reference/*.wav
-archive/video-reference/*.bin
-
 # Generated agent artifacts
 docs/DEV-PLAN.md
 docs/Design-Brief.md
