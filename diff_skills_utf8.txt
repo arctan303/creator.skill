@@ -1,0 +1,735 @@
+﻿diff --git a/.agents/skills/bug-fixer/SKILL.md b/.agents/skills/bug-fixer/SKILL.md
+index 82b3b59..1ca6969 100644
+--- a/.agents/skills/bug-fixer/SKILL.md
++++ b/.agents/skills/bug-fixer/SKILL.md
+@@ -20,10 +20,11 @@ description: 鎸夎瘉鎹畾浣嶅苟淇杞欢缂洪櫡銆傞€傜敤浜庣敤鎴锋姤鍛?bug銆? 5. 杩愯鑳借瘉鏄庨棶棰樺凡淇鐨勯獙璇併€? 6. 杈撳嚭鏍瑰洜銆佷慨鏀广€侀獙璇佺粨鏋滃拰娈嬩綑椋庨櫓銆? 
++涓嶈兘澶嶇幇鏃讹紝涔熷繀椤昏鏄庡凡灏濊瘯鐨勫鐜版柟寮忋€佸綋鍓嶈瘉鎹拰涓嬩竴姝ラ渶瑕佺殑淇℃伅銆?+
+ ## 绾㈢嚎
+ 
+ - 涓嶇敤澶ц寖鍥撮噸鏋勬帺鐩栧皬 bug銆? - 涓嶅湪娌℃湁璇佹嵁鏃跺０绉板凡淇銆? - 涓嶅悶閿欒鏉ョ淮鎸佽〃闈㈣繍琛屻€? - 涓嶉潤榛樻敼鍙樺凡纭闇€姹傘€?-
+diff --git a/.agents/skills/bug-fixer/agents/openai.yaml b/.agents/skills/bug-fixer/agents/openai.yaml
+index b7bc3cf..a89255f 100644
+--- a/.agents/skills/bug-fixer/agents/openai.yaml
++++ b/.agents/skills/bug-fixer/agents/openai.yaml
+@@ -1,4 +1,4 @@
+ interface:
+-  display_name: "Bug Fixer"
++  display_name: "鍙€夛綔Bug 淇"
+   short_description: "鎸夎瘉鎹畾浣嶇己闄峰苟瀹屾垚鍥炲綊楠岃瘉"
+   default_prompt: "浣跨敤 $bug-fixer 鎸夎瘉鎹畾浣嶅苟淇杩欎釜缂洪櫡銆?
+diff --git a/.agents/skills/bug-fixer/references/stage-contract.md b/.agents/skills/bug-fixer/references/stage-contract.md
+index a9cf228..faba340 100644
+--- a/.agents/skills/bug-fixer/references/stage-contract.md
++++ b/.agents/skills/bug-fixer/references/stage-contract.md
+@@ -14,3 +14,53 @@
+ - 鍥炲綊楠岃瘉璇佹嵁
+ - 鏈В鍐抽闄? 
++## 澶嶇幇瑕佹眰
++
++淇鍓嶅簲灏介噺澶嶇幇闂銆傚鐜拌瘉鎹彲浠ユ槸锛?+
++- 澶辫触娴嬭瘯
++- 閿欒鏃ュ織
++- 鍛戒护杈撳嚭
++- 鎿嶄綔姝ラ
++- 瀹℃煡鎰忚涓殑鍏蜂綋鏂囦欢鍜岃鍙?+
++涓嶈兘澶嶇幇鏃讹紝蹇呴』璁板綍锛?+
++- 灏濊瘯杩囩殑澶嶇幇姝ラ
++- 宸茶瀵熷埌鐨勮瘉鎹?+- 涓轰粈涔堜粛鑳藉垽鏂慨澶嶆柟鍚戯紝鎴栦负浠€涔堝繀椤婚樆濉?+
++## 鏍瑰洜瑕佹眰
++
++鏍瑰洜璇存槑蹇呴』鍖哄垎锛?+
++- 宸茶瘉瀹炴牴鍥?+- 鍚堢悊鎺ㄦ柇
++- 浠嶆湭纭鐨勯闄?+
++涓嶅緱鎶婄寽娴嬪啓鎴愪簨瀹炪€?+
++## 淇瑕佹眰
++
++- 浼樺厛鏈€灏忎慨鏀广€?+- 涓嶇敤澶ч噸鏋勬帺鐩栧皬闂銆?+- 涓嶉潤榛樻敼鍙樺凡纭闇€姹傛垨鍏紑琛屼负銆?+- 娑夊強鑼冨洿鎵╁ぇ鏃讹紝蹇呴』鍥炲埌璁″垝鎴栫敤鎴风‘璁ゃ€?+
++## 鍥炲綊楠岃瘉
++
++蹇呴』杩愯鑳借瘉鏄庨棶棰樺凡淇鐨勬鏌ワ紝渚嬪锛?+
++- 鍘熷け璐ユ祴璇?+- 鏂板鍥炲綊娴嬭瘯
++- 鏋勫缓鎴栫被鍨嬫鏌?+- 鎵嬪姩澶嶇幇姝ラ
++
++濡傛灉鏃犳硶杩愯楠岃瘉锛屽繀椤昏褰曢樆濉炲師鍥犲拰娈嬩綑椋庨櫓銆?+
++## 蹇呴』鎵撳洖鐨勬儏鍐?+
++- 娌℃湁 bug 鐜拌薄銆佹棩蹇椼€佹祴璇曞け璐ユ垨鍙搷浣滃鐜颁俊鎭€?+- 淇浼氭敼鍙樺凡纭闇€姹傘€?+- 鍙兘闈犲悶閿欒闅愯棌闂銆?+- 娌℃湁浠讳綍鍥炲綊楠岃瘉璇佹嵁鍗磋姹傚０鏄庡凡淇銆?diff --git a/.agents/skills/design-brief-builder/SKILL.md b/.agents/skills/design-brief-builder/SKILL.md
+index 979b421..015a3e5 100644
+--- a/.agents/skills/design-brief-builder/SKILL.md
++++ b/.agents/skills/design-brief-builder/SKILL.md
+@@ -29,6 +29,8 @@ description: 灏嗕富瑙傝璁℃剰鍥捐浆鎴愬叿浣撱€佸彲浜ゆ帴鐨勮璁¤鑼冦€傞€? - 鐢ㄦ埛鎻愪緵鐨勫弬鑰冩垨鍙嶄緥
+ - 鍚庣画璁捐鍜屽墠绔疄鐜扮殑楠屾敹妫€鏌ョ偣
+ 
++璁捐瑙勮寖蹇呴』璇存槑姣忎釜鍏抽敭璁捐閫夋嫨涓轰粈涔堥€傚悎浜у搧鐩爣锛涗笉鑳藉彧鍒楀缇庡亸濂姐€?+
+ ## 鍚堟牸鏍囧噯
+ 
+ 璁捐瑙勮寖鍚堟牸鐨勬爣鍑嗘槸锛氳璁″浘鎶€鑳芥垨鍓嶇寮€鍙戝彲浠ユ嵁姝ゅ仛瑙嗚鍐崇瓥锛岃€屼笉鐢ㄥ弽澶嶉棶鈥滆繖涓鏍煎埌搴曟槸浠€涔堟剰鎬濃€濄€?diff --git a/.agents/skills/design-brief-builder/agents/openai.yaml b/.agents/skills/design-brief-builder/agents/openai.yaml
+index 21b36a2..b5e5ff3 100644
+--- a/.agents/skills/design-brief-builder/agents/openai.yaml
++++ b/.agents/skills/design-brief-builder/agents/openai.yaml
+@@ -1,4 +1,4 @@
+ interface:
+-  display_name: "Design Brief Builder"
+-  short_description: "Convert taste into concrete design brief"
++  display_name: "02 璁捐瑙勮寖"
++  short_description: "鎶婁富瑙傝璁℃剰鍥剧炕璇戞垚鍏蜂綋璁捐鍐崇瓥"
+   default_prompt: "浣跨敤 $design-brief-builder 鎶婃垜鐨勮璁℃柟鍚戞暣鐞嗘垚鍏蜂綋鐨?Design-Brief.md銆?
+diff --git a/.agents/skills/design-brief-builder/references/stage-contract.md b/.agents/skills/design-brief-builder/references/stage-contract.md
+index 9672226..058f7f1 100644
+--- a/.agents/skills/design-brief-builder/references/stage-contract.md
++++ b/.agents/skills/design-brief-builder/references/stage-contract.md
+@@ -12,6 +12,20 @@
+ 
+ 鐩爣椤圭洰宸叉湁鏂囨。绾﹀畾鏃堕伒寰」鐩害瀹氾紱娌℃湁绾﹀畾鏃舵斁鍦?`docs/Design-Brief.md`銆? 
++## 鏈€灏忕粨鏋?+
++`Design-Brief.md` 鑷冲皯鍖呭惈锛?+
++- 璁捐鐩爣鍜岀洰鏍囩敤鎴?+- 浣跨敤鐜鍜屽叧閿害鏉?+- 宸查€夎瑙夋柟鍚?+- 琚斁寮冪殑鏂瑰悜鍜屽師鍥?+- 璋冩€у叧閿瘝鍙婂叾鍏蜂綋瑙ｉ噴
++- 鑹插僵銆佸瓧浣撱€侀棿璺濄€佸瘑搴︺€佸竷灞€鍜岀粍浠惰鍒?+- 鍏抽敭鐘舵€佸拰鍝嶅簲寮忕害鏉?+- 鐢ㄦ埛鎻愪緵鐨勫弬鑰冩垨鍙嶄緥
++- 鍙瀵熺殑璁捐楠屾敹妫€鏌ョ偣
++
+ ## 鍚堟牸鏍囧噯
+ 
+ `Design-Brief.md` 蹇呴』锛?@@ -22,9 +36,41 @@
+ - 瓒充互鎸囧璁捐鍥炬垨鍓嶇瀹炵幇
+ - 鍖呭惈鍙瀵熺殑璁捐楠屾敹妫€鏌ョ偣
+ 
++## 涓昏璇嶈浆鎹㈣姹?+
++閬囧埌绌烘硾瀹＄編璇嶆椂锛屽繀椤绘妸瀹冭浆鎴愬彲鎵ц鍙橀噺銆?+
++绀轰緥锛?+
++- 鈥滈珮绾ф劅鈥濆繀椤昏惤鍒版槑鏆椼€佺暀鐧姐€佹潗璐ㄣ€佸瓧浣撱€佸姣斿害銆佸姩鏁堝厠鍒跺害绛夐€夋嫨銆?+- 鈥滅畝娲佲€濆繀椤昏惤鍒颁俊鎭瘑搴︺€佸眰绾ф暟閲忋€佺粍浠舵暟閲忋€侀粯璁ょ姸鎬佸拰闅愯棌绛栫暐銆?+- 鈥滅幇浠ｂ€濆繀椤昏惤鍒板竷灞€鑺傚銆佸瓧浣撴皵璐ㄣ€佺粍浠跺舰鎬併€佸姩鏁堝拰鑹插僵绛栫暐銆?+
++濡傛灉瀛樺湪澶氫釜鍚堢悊鏂瑰悜锛屽厛缁欑敤鎴峰皯閲忔湁宸紓鐨勬柟鍚戦€夋嫨锛屽啀鍐欏叆鏈€缁堣鑼冦€?+
++## 閫€鍑烘潯浠?+
++婊¤冻浠ヤ笅鏉′欢鏃讹紝鎵嶅彲浠ヨ繘鍏ヨ璁″浘鎴栧紑鍙戣鍒掞細
++
++- 瑙嗚鏂瑰悜宸茶閫夋嫨鎴栨湁鏄庣‘涓存椂鍋囪銆?+- 鍏抽敭瀹＄編璇嶅凡杞垚鍏蜂綋璁捐鍙橀噺銆?+- 璁捐瑙勫垯涓嶆墿澶?`Product-Spec.md` 鐨勯鐗堣寖鍥淬€?+- 鍚庣画璁捐鎴栧墠绔疄鐜版湁鍙瀵熸鏌ョ偣銆?+
+ ## 蹇呴』缁х画閲囪鐨勬儏鍐? 
+ - 鐢ㄦ埛鍙粰鍑虹┖娉涘缇庤瘝
+ - 鍚屾椂瑕佹眰澶氫釜浜掔浉鍐茬獊鐨勯鏍? - 鐩爣鐢ㄦ埛鎴栦娇鐢ㄧ幆澧冪己澶? - 璁捐鍐崇瓥浼氬奖鍝嶄骇鍝佽寖鍥?+- 鐢ㄦ埛缁欏嚭鍙傝€冨浘浣嗘病鏈夎鏄庡枩娆㈡垨鎺掓枼鐨勫叿浣撶偣
++- 鎵€閫夎瑙夋柟鍚戞棤娉曟敮鎾戜骇鍝佺洰鏍囨垨浣跨敤鍦烘櫙
++
++## 鎵撳洖杈撳嚭
++
++缁х画閲囪鏃朵笉瑕佹姏闀块棶鍗枫€傝緭鍑哄繀椤诲寘鍚細
++
++- 宸茬煡浜у搧鍜岃璁′簨瀹?+- 褰撳墠鏃犳硶钀藉湴鐨勫缇庤瘝鎴栧啿绐?+- 2 鍒?3 涓彲閫夋嫨鏂瑰悜
++- 褰撳墠鏈€闇€瑕佺敤鎴风‘璁ょ殑闂
+diff --git a/.agents/skills/design-maker/SKILL.md b/.agents/skills/design-maker/SKILL.md
+index 53a8a3f..91d56ec 100644
+--- a/.agents/skills/design-maker/SKILL.md
++++ b/.agents/skills/design-maker/SKILL.md
+@@ -19,6 +19,8 @@ description: 鏍规嵁 Product-Spec.md 鍜?Design-Brief.md 浜у嚭璁捐鏂规銆侀〉
+ 4. 浜у嚭璁捐鏂规锛屽苟鏍囨槑瀹冨浣曞搴旈渶姹傚拰璁捐瑙勮寖銆? 5. 璁板綍浠嶇暀缁欏紑鍙戦樁娈靛鐞嗙殑缁嗚妭銆? 
++濡傛灉璁捐浜х墿涓嶈兘闄嶄綆寮€鍙戜笉纭畾鎬э紝搴旇烦杩囨湰闃舵骞惰鏄庡師鍥犮€?+
+ ## 璁捐浜х墿蹇呴』鍖呭惈
+ 
+ - 椤甸潰鎴栨祦绋嬫竻鍗?@@ -38,6 +40,7 @@ description: 鏍规嵁 Product-Spec.md 鍜?Design-Brief.md 浜у嚭璁捐鏂规銆侀〉
+ - 涓嶅拷鐣ュ凡纭闇€姹傚拰璁捐瑙勮寖銆? - 涓嶆墿澶ч鐗堜骇鍝佽寖鍥淬€? - 涓嶆妸浠嶆湭纭鐨勪骇鍝佸喅绛栧寘瑁呮垚鏈€缁堝師鍨嬨€?+- 涓嶆妸鍙€夎璁″埗鍥惧綋鎴愪富绾垮繀缁忛樁娈点€? 
+ ## 鍙傝€? 
+diff --git a/.agents/skills/design-maker/agents/openai.yaml b/.agents/skills/design-maker/agents/openai.yaml
+index f8e3f22..52a0280 100644
+--- a/.agents/skills/design-maker/agents/openai.yaml
++++ b/.agents/skills/design-maker/agents/openai.yaml
+@@ -1,4 +1,4 @@
+ interface:
+-  display_name: "Design Maker"
+-  short_description: "Create inspectable UI design artifacts"
+-  default_prompt: "浣跨敤 $design-maker 鏍规嵁 Product-Spec.md 鍜?Design-Brief.md 鐢熸垚鍙鏌ョ殑璁捐浜х墿銆?
++  display_name: "鍙€夛綔璁捐鍒跺浘"
++  short_description: "鍙€夐樁娈碉紱闇€瑕佸閮ㄨ璁″伐鍏锋椂鎵嶇敓鎴愯璁′骇鐗?
++  default_prompt: "鎸夐渶浣跨敤 $design-maker 鏍规嵁 Product-Spec.md 鍜?Design-Brief.md 鐢熸垚鍙鏌ョ殑璁捐浜х墿銆?
+diff --git a/.agents/skills/design-maker/references/stage-contract.md b/.agents/skills/design-maker/references/stage-contract.md
+index c4d89e1..4a764fe 100644
+--- a/.agents/skills/design-maker/references/stage-contract.md
++++ b/.agents/skills/design-maker/references/stage-contract.md
+@@ -17,6 +17,34 @@
+ 
+ 浣跨敤鑳介檷浣庡紑鍙戜笉纭畾鎬х殑鏈€灏忚璁′骇鐗╅泦鍚堛€? 
++## 瑙﹀彂鏉′欢
++
++鍙湁婊¤冻鑷冲皯涓€涓潯浠舵椂鎵嶅惎鐢細
++
++- UI銆佸竷灞€銆佷氦浜掓垨鍝佺墝琛ㄨ揪浼氭樉钁楀奖鍝嶅紑鍙戣鍒掋€?+- 鐢ㄦ埛闇€瑕佸湪寮€鍙戝墠妫€鏌ュ叧閿〉闈㈡垨鐘舵€併€?+- `Design-Brief.md` 浠嶄笉瓒充互璁╁紑鍙戣€呭垽鏂晫闈㈢粨鏋勩€?+- 鐩爣椤圭洰闇€瑕佸澶栭儴璁捐宸ュ叿鎴栬瑙変骇鐗╄繘琛屼氦鎺ャ€?+
++鍙互璺宠繃鐨勬儏鍐碉細
++
++- 浜у搧娌℃湁鏄庢樉鐣岄潰銆?+- UI 瓒冲甯歌锛屽紑鍙戣鍒掑彲浠ョ洿鎺ユ媶鍒嗐€?+- 璁捐浜х墿鍙細澧炲姞瑁呴グ锛屼笉鍑忓皯椋庨櫓銆?+- 浜у搧娴佺▼鎴栬璁¤鑼冭繕涓嶇ǔ瀹氾紝搴斿洖鍒板墠搴忛樁娈点€?+
++## 鏈€灏忚璁′骇鐗?+
++璁捐浜х墿鑷冲皯璇存槑锛?+
++- 椤甸潰鎴栨祦绋嬫竻鍗?+- 鍏抽敭甯冨眬
++- 绌虹姸鎬併€佸姞杞界姸鎬併€侀敊璇姸鎬併€佹垚鍔熺姸鎬?+- 鍏抽敭浜や簰
++- 鍝嶅簲寮忚鍒?+- 涓?`Product-Spec.md` 鍜?`Design-Brief.md` 鐨勬槧灏勫叧绯?+- 鐣欑粰寮€鍙戦樁娈靛鐞嗙殑缁嗚妭
++
+ ## 鍚堟牸鏍囧噯
+ 
+ 璁捐浜х墿蹇呴』锛?@@ -33,3 +61,10 @@
+ - 椋庢牸鏂瑰悜浠嶄笉鍏蜂綋
+ - 浜у搧娴佺▼涓嶇ǔ瀹? - 褰撳墠璁捐浜х墿鍙槸瑙嗚瑁呴グ锛屼笉鑳藉噺灏戝喅绛栭闄?+
++## 蹇呴』鎵撳洖鐨勬儏鍐?+
++- 璁捐闇€瑕佹柊澧炰骇鍝佽寖鍥淬€?+- 鍏抽敭娴佺▼娌℃湁鍦?`Product-Spec.md` 涓‘璁ゃ€?+- 椋庢牸鏂瑰悜娌℃湁鍦?`Design-Brief.md` 涓叿浣撳寲銆?+- 鐢ㄦ埛瑕佹眰楂樹繚鐪熶骇鐗╋紝浣嗘病鏈夎冻澶熷搧鐗屻€佸唴瀹规垨甯冨眬渚濇嵁銆?diff --git a/.agents/skills/dev-builder/SKILL.md b/.agents/skills/dev-builder/SKILL.md
+index b160c80..4af9228 100644
+--- a/.agents/skills/dev-builder/SKILL.md
++++ b/.agents/skills/dev-builder/SKILL.md
+@@ -1,25 +1,28 @@
+ ---
+ name: dev-builder
+-description: 鏍规嵁 DEV-PLAN.md 鎵ц寮€鍙戜换鍔★紝骞堕€氳繃楠岃瘉鍜屽共鍑€瀛愪唬鐞嗗鏌ュ舰鎴愰棴鐜€傞€傜敤浜?Codex 闇€瑕佹寜璁″垝淇敼浠ｇ爜銆佽繍琛屾鏌ャ€佷慨澶嶅け璐ャ€佽皟鐢?fresh 瀛愪唬鐞嗗鏍革紝骞舵寔缁凯浠ｇ洿鍒板綋鍓?Phase 婊¤冻浜や粯瑕佹眰鐨勫満鏅€?+description: 鏍规嵁 DEV-PLAN.md 杩炵画鎵ц椤圭洰寮€鍙戣寖鍥达紝骞堕€氳繃楠岃瘉鍜屽共鍑€瀛愪唬鐞嗗鏌ュ舰鎴愰棴鐜€傞€傜敤浜?Codex 闇€瑕佹寜璁″垝瀹屾垚鎵€鏈夋湭瀹屾垚寮€鍙?Phase 鎴栦换鍔°€佽繍琛屾鏌ャ€佷慨澶嶅け璐ャ€佽皟鐢?fresh 瀛愪唬鐞嗗鏍革紝骞舵寔缁凯浠ｇ洿鍒拌鍒掑唴寮€鍙戣寖鍥存弧瓒充氦浠樿姹傜殑鍦烘櫙銆? ---
+ 
+ # 寮€鍙戞妧鑳? 
+-鏍规嵁寮€鍙戞楠ゆ枃妗ｅ畬鎴愪竴涓?Phase锛屽苟璇佹槑瀹冪湡鐨勫畬鎴愩€?+鏍规嵁寮€鍙戞楠ゆ枃妗ｅ畬鎴愯鍒掑唴寮€鍙戣寖鍥达紝骞惰瘉鏄庡畠鐪熺殑瀹屾垚銆? 
+ ## 鏍稿績鍘熷垯
+ 
+-浠诲姟涓嶆槸鍥犱负鍐欎簡浠ｇ爜灏卞畬鎴愩€傚彧鏈夐獙璇佽瘉鎹拰骞插噣瀛愪唬鐞嗗鏌ラ兘鏀寔楠屾敹鏍囧噯鏃讹紝鎵嶇畻瀹屾垚銆?+浠诲姟涓嶆槸鍥犱负鍐欎簡浠ｇ爜灏卞畬鎴愩€傚紑鍙?Agent 蹇呴』鎸?`DEV-PLAN.md` 杩炵画鎺ㄨ繘鎵€鏈夋湭瀹屾垚鐨勮鍒掑唴寮€鍙?Phase 鎴栦换鍔★紝骞惰嚜琛屽惎鍔?fresh 瀛愪唬鐞嗗鏌ワ紱鍙湁鍏ㄩ儴璁″垝鍐呭紑鍙戣寖鍥撮兘鏈夐獙璇佽瘉鎹€佸鏌ョ粨璁哄拰浜や粯璁板綍鏃讹紝鎵嶅厑璁歌〃鏄庨」鐩紑鍙戝畬鎴愩€? 
+ ## 宸ヤ綔鏂瑰紡
+ 
+ 1. 璇诲彇 `DEV-PLAN.md`銆佺浉鍏抽渶姹傚拰璁捐鏂囨。銆?-2. 纭褰撳墠鐩爣 Phase 鍜岄獙鏀舵爣鍑嗐€?-3. 鍙疄鐜板綋鍓嶈寖鍥村唴鐨勫唴瀹广€?-4. 杩愯蹇呰楠岃瘉銆?-5. 璋冪敤 fresh 瀛愪唬鐞嗗鏌ャ€傝繖涓瓙浠ｇ悊涓嶈兘鏄啓浠ｇ爜鐨勫悓涓€涓剳瀛愩€?-6. 瀹℃煡涓嶉€氳繃灏变慨锛岀洿鍒伴€氳繃鎴栬褰曟槑纭樆濉炪€?-7. 杈撳嚭鍙樻洿鎽樿銆侀獙璇佽瘉鎹€佸鏌ョ粨鏋滃拰娈嬩綑椋庨櫓銆?+2. 璇嗗埆鎵€鏈夋湭瀹屾垚涓斿睘浜庡綋鍓嶅紑鍙戠洰鏍囩殑 Phase 鎴栦换鍔°€?+3. 鎸夎鍒掗『搴忔帹杩涳紝闄ら潪 `DEV-PLAN.md` 鏄庣‘鍏佽骞惰銆?+4. 鍙疄鐜板綋鍓?Phase 鎴栦换鍔¤寖鍥村唴鐨勫唴瀹广€?+5. 杩愯蹇呰楠岃瘉銆?+6. 鑷璋冪敤 fresh 瀛愪唬鐞嗗鏌ャ€傝繖涓瓙浠ｇ悊涓嶈兘鏄啓浠ｇ爜鐨勫悓涓€涓剳瀛愶紝涔熶笉鑳界敱鐢ㄦ埛鎵嬪姩琛ュ惎鍔ㄣ€?+7. 瀹℃煡涓嶉€氳繃灏辩户缁慨澶嶃€侀獙璇併€佸瀹★紝鐩村埌閫氳繃鎴栬褰曟槑纭樆濉炪€?+8. 褰撳墠 Phase 鎴栦换鍔″鏌ラ€氳繃涓斾氦浠樿瘉鎹畬鏁村悗锛岃褰曞畬鎴愮姸鎬侊紝鍐嶇户缁笅涓€涓鍒掗」銆?+9. 鎵€鏈夎鍒掑唴寮€鍙?Phase 鎴栦换鍔″畬鎴愬悗锛屾墠杈撳嚭椤圭洰寮€鍙戝畬鎴愮粨璁恒€?+10. 杈撳嚭鍙樻洿鎽樿銆侀獙璇佽瘉鎹€佸鏌ョ粨鏋滃拰娈嬩綑椋庨櫓銆? 
+ ## 浜や粯璇佹嵁蹇呴』鍖呭惈
+ 
+@@ -28,14 +31,17 @@ description: 鏍规嵁 DEV-PLAN.md 鎵ц寮€鍙戜换鍔★紝骞堕€氳繃楠岃瘉鍜屽共鍑€瀛? - 瑕嗙洊浜嗗摢浜涢獙鏀舵爣鍑? - 瀛愪唬鐞嗗鏌ョ粨鏋? - 鐩稿璁″垝鐨勫亸绂诲拰鍘熷洜
++- 姣忎釜 Phase 鎴栦换鍔＄殑瀹屾垚鐘舵€併€侀樆濉為」鍜屾畫浣欓闄? 
+ ## 鍚堟牸鏍囧噯
+ 
+-褰撳墠 Phase 鍚堟牸鐨勬爣鍑嗘槸锛?+椤圭洰寮€鍙戝悎鏍肩殑鏍囧噯鏄細
+ 
+-- 瀹炵幇绗﹀悎璁″垝鑼冨洿
+-- 蹇呰妫€鏌ラ€氳繃锛屾垨闃诲琚槑纭褰?-- fresh 瀛愪唬鐞嗗鏌ラ€氳繃
++- 鎵€鏈夎鍒掑唴寮€鍙?Phase 鎴栦换鍔￠兘宸插畬鎴愶紝鎴栭樆濉炶鏄庣‘璁板綍
++- 姣忎釜瀹屾垚鐨?Phase 鎴栦换鍔￠兘绗﹀悎璁″垝鑼冨洿
++- 蹇呰妫€鏌ラ€氳繃
++- 姣忎釜瀹屾垚鐨?Phase 鎴栦换鍔￠兘閫氳繃 fresh 瀛愪唬鐞嗗鏌?+- 鎵€鏈変氦浠樿瘉鎹畬鏁达紝涓斿紑鍙?Agent 宸叉槑纭鏄庨」鐩紑鍙戞槸鍚﹀彲浠ョ粨鏉? - 鐢ㄦ埛鍙互鏍规嵁璇佹嵁鍒ゆ柇瀹屾垚鎯呭喌
+ 
+ ## 绾㈢嚎
+@@ -43,6 +49,9 @@ description: 鏍规嵁 DEV-PLAN.md 鎵ц寮€鍙戜换鍔★紝骞堕€氳繃楠岃瘉鍜屽共鍑€瀛? - 涓嶉潤榛樹慨鏀瑰凡纭闇€姹傘€佽璁℃垨璁″垝銆? - 涓嶈烦杩囬獙璇併€? - 涓嶈嚜瀹″啋鍏呯嫭绔嬪鏌ャ€?+- 涓嶆妸浠ｇ爜鍐欏畬鎴栨湰鍦版鏌ラ€氳繃褰撴垚鏈€缁堝畬鎴愩€?+- 涓嶆妸鍗曚釜 Phase 瀹屾垚褰撴垚鏁翠釜椤圭洰寮€鍙戝畬鎴愩€?+- 涓嶆妸鍚姩瀹℃煡鐨勮矗浠讳氦缁欑敤鎴枫€? - 涓嶆墿澶ц寖鍥存潵浼瀹屾垚搴︺€? - 涓嶉殣钘忓け璐ユ鏌ユ垨璺宠繃鐨勬祴璇曘€? 
+diff --git a/.agents/skills/dev-builder/agents/openai.yaml b/.agents/skills/dev-builder/agents/openai.yaml
+index d0fba3a..91876ae 100644
+--- a/.agents/skills/dev-builder/agents/openai.yaml
++++ b/.agents/skills/dev-builder/agents/openai.yaml
+@@ -1,4 +1,4 @@
+ interface:
+-  display_name: "Dev Builder"
+-  short_description: "Build planned work with review loop"
+-  default_prompt: "浣跨敤 $dev-builder 鎸?DEV-PLAN.md 寮€鍙戜笅涓€涓?Phase锛屽苟閫氳繃骞插噣瀛愪唬鐞嗗鏌ャ€?
++  display_name: "04 椤圭洰寮€鍙?
++  short_description: "鎸夊紑鍙戣鍒掕繛缁疄鐜帮紝骞堕€氳繃楠岃瘉鍜屽鏌ラ棴鐜?
++  default_prompt: "浣跨敤 $dev-builder 鎸?DEV-PLAN.md 瀹屾垚璁″垝鍐呭紑鍙戣寖鍥达紝骞堕€氳繃骞插噣瀛愪唬鐞嗗鏌ャ€?
+diff --git a/.agents/skills/dev-builder/references/stage-contract.md b/.agents/skills/dev-builder/references/stage-contract.md
+index 81c6af9..272d70f 100644
+--- a/.agents/skills/dev-builder/references/stage-contract.md
++++ b/.agents/skills/dev-builder/references/stage-contract.md
+@@ -2,7 +2,7 @@
+ 
+ ## 杈撳叆
+ 
+-- `DEV-PLAN.md` 涓殑褰撳墠 Phase
++- `DEV-PLAN.md` 涓墍鏈夋湭瀹屾垚涓斿睘浜庡綋鍓嶅紑鍙戠洰鏍囩殑 Phase 鎴栦换鍔? - `Product-Spec.md`
+ - `Design-Brief.md` 鎴栬璁′骇鐗╋紝濡傛灉鐩稿叧
+ - 浠撳簱浠ｇ爜鍜岀幇鏈夋祴璇?@@ -11,23 +11,59 @@
+ 
+ - 瀹炵幇鍙樻洿
+ - 楠岃瘉璇佹嵁
+-- fresh 瀛愪唬鐞嗗鏌ョ粨鏋?-- 杩涘害璁板綍鎴栦氦鎺ユ憳瑕?+- 鐢卞紑鍙?Agent 鑷鍚姩鐨?fresh 瀛愪唬鐞嗗鏌ョ粨鏋?+- 姣忎釜 Phase 鎴栦换鍔＄殑杩涘害璁板綍
++- 椤圭洰寮€鍙戝畬鎴愮粨璁猴紝鎴栨槑纭樆濉?+
++## 瀹℃煡涓婁笅鏂囧寘
++
++寮€鍙?Agent 鍚姩 reviewer 鍓嶏紝蹇呴』鎻愪緵锛?+
++- 褰撳墠 Phase 鎴栦换鍔＄洰鏍?+- 瀵瑰簲闇€姹傜紪鍙峰拰楠屾敹鏍囧噯
++- 璁″垝鑼冨洿鍜屾槑纭笉鍖呭惈鐨勮寖鍥?+- 鍙樻洿鏂囦欢鎴栦骇鐗╂竻鍗?+- 楠岃瘉鍛戒护鍜岀粨鏋?+- 宸茬煡鍋忕銆佸け璐ユ鏌ャ€佽烦杩囬獙璇佸拰娈嬩綑椋庨櫓
++- 甯屾湜 reviewer 鍒ゆ柇鐨勫叿浣撻棶棰? 
+ ## 鍚堟牸鏍囧噯
+ 
+ 寮€鍙戠粨鏋滃繀椤伙細
+ 
+-- 婊¤冻鏄犲皠鍒板綋鍓?Phase 鐨勯渶姹傚拰楠屾敹鏍囧噯
+-- 鑳介€氳繃璇存槑鐨勫懡浠ゆ瀯寤恒€佹祴璇曘€佽繍琛屾垨妫€鏌?-- 閫氳繃 fresh 瀛愪唬鐞嗗鏌?+- 瑕嗙洊 `DEV-PLAN.md` 涓墍鏈夎鍒掑唴寮€鍙?Phase 鎴栦换鍔★紝闄ら潪闃诲琚槑纭褰?+- 姣忎釜瀹屾垚鐨?Phase 鎴栦换鍔℃弧瓒虫槧灏勯渶姹傚拰楠屾敹鏍囧噯
++- 姣忎釜瀹屾垚鐨?Phase 鎴栦换鍔¤兘閫氳繃璇存槑鐨勫懡浠ゆ瀯寤恒€佹祴璇曘€佽繍琛屾垨妫€鏌?+- 姣忎釜瀹屾垚鐨?Phase 鎴栦换鍔￠€氳繃 fresh 瀛愪唬鐞嗗鏌?+- 鍏ㄩ儴璁″垝鍐呭紑鍙戣寖鍥存弧瓒充氦浠樿姹傚悗锛屽紑鍙?Agent 鎵嶈兘琛ㄦ槑椤圭洰寮€鍙戠粨鏉? - 鏄庣‘璁板綍浠讳綍璁捐鍋忕
+ 
++## 楠岃瘉澶辫触澶勭悊
++
++- 妫€鏌ュけ璐ユ椂锛屼笉寰楃户缁姹?reviewer 閫氳繃銆?+- 鑳戒慨澶嶇殑澶辫触蹇呴』鍏堜慨澶嶅苟閲嶈窇楠岃瘉銆?+- 鏆傛椂鏃犳硶淇鏃讹紝蹇呴』璁板綍闃诲鍘熷洜銆佸凡灏濊瘯鍔ㄤ綔鍜屼笅涓€姝ラ渶瑕佺殑杈撳叆銆?+- 璺宠繃娴嬭瘯鎴栭獙璇佸繀椤昏鏄庡師鍥犲拰椋庨櫓銆?+
++## 瀹℃煡澶辫触澶勭悊
++
++- reviewer 鍙戠幇闃诲闂鏃讹紝蹇呴』鎸夐棶棰樹慨澶嶃€侀噸璺戦獙璇佸苟澶嶅銆?+- reviewer 鏈夋潯浠堕€氳繃鏃讹紝蹇呴』琛ラ綈鏉′欢鍚庡啀璁板綍瀹屾垚銆?+- reviewer 鏃犳硶瀹℃煡鏃讹紝蹇呴』琛ラ綈涓婁笅鏂囨垨璇佹嵁鍚庨噸鏂板鏌ャ€?+- 涓嶅緱鎶?review 寤鸿闈欓粯蹇界暐锛涢潪閲囩撼椤瑰繀椤昏鏄庡師鍥犮€?+
++## 鑼冨洿鍋忕澶勭悊
++
++- 灏忕殑瀹炵幇缁嗚妭鍋忕鍙互璁板綍鍦ㄤ氦浠樿瘉鎹腑銆?+- 褰卞搷闇€姹傘€佽璁°€佸叕寮€琛屼负銆佷緷璧栨垨鍙戝竷杈圭晫鐨勫亸绂伙紝蹇呴』鍥炲埌鐢ㄦ埛鎴栧墠搴忔枃妗ｇ‘璁ゃ€?+- 涓嶅緱鐢ㄦ墿澶ц寖鍥存帺鐩栬鍒掑唴浠诲姟鏈畬鎴愩€?+
+ ## 瀛愪唬鐞嗗鏌ヨ姹? 
+ 瀛愪唬鐞嗗繀椤伙細
+ 
+ - 娌℃湁鍙備笌褰撳墠瀹炵幇
++- 鐢卞紑鍙?Agent 鍦ㄥ畬鎴愬疄鐜板拰楠岃瘉鍚庝富鍔ㄥ惎鍔? - 鑾峰緱瓒冲涓婁笅鏂囧垽鏂綋鍓?Phase
+ - 浼樺厛妫€鏌?bug銆佹紡闇€姹傘€佸洖褰掑拰缂哄け楠岃瘉
+ - 杈撳嚭鏄庣‘閫氳繃鎴栧彲鎵ц鐨勯棶棰樻竻鍗?@@ -37,5 +73,7 @@
+ - 妫€鏌ュけ璐? - 楠屾敹鏍囧噯鏈璇佹槑
+ - 瀹℃煡鍙戠幇闃诲闂
++- 瀹℃煡灏氭湭鍚姩鎴栦笉鏄?fresh 瀛愪唬鐞嗗畬鎴?+- 浠嶆湁璁″垝鍐呭紑鍙?Phase 鎴栦换鍔℃湭瀹屾垚
+ - 鍙樻洿瓒呭嚭璁″垝鑼冨洿
+ - 璇佹嵁涓嶅彲澶嶇幇
+diff --git a/.agents/skills/dev-planner/SKILL.md b/.agents/skills/dev-planner/SKILL.md
+index 489a9d0..67f469f 100644
+--- a/.agents/skills/dev-planner/SKILL.md
++++ b/.agents/skills/dev-planner/SKILL.md
+@@ -29,6 +29,8 @@ description: 灏嗛渶姹傛枃妗ｃ€佽璁¤鑼冨拰鍙€夎璁′骇鐗╂媶鎴愬彲杩愯
+ - 姣忎釜 Phase 鐨勯鏈熶骇鐗╁拰璇佹嵁瑕佹眰
+ - 椋庨櫓銆侀樆濉炲拰寰呯‘璁ら棶棰? 
++姣忎釜 Phase 閮藉繀椤昏兘琚彟涓€涓?Agent 鎺ユ墜鎵ц锛屽苟鑳借 reviewer 鐙珛瀹℃煡銆?+
+ ## 鍚堟牸鏍囧噯
+ 
+ 寮€鍙戞楠ゆ枃妗ｅ悎鏍肩殑鏍囧噯鏄細寮€鍙戞妧鑳藉彲浠ユ嬁涓嬩竴涓?Phase 鐩存帴寮€宸ワ紝骞剁煡閬撹鍋氫粈涔堛€佹€庝箞楠岃瘉銆佷氦浠樹粈涔堣瘉鎹€?diff --git a/.agents/skills/dev-planner/agents/openai.yaml b/.agents/skills/dev-planner/agents/openai.yaml
+index 8050cd0..c507dba 100644
+--- a/.agents/skills/dev-planner/agents/openai.yaml
++++ b/.agents/skills/dev-planner/agents/openai.yaml
+@@ -1,4 +1,4 @@
+ interface:
+-  display_name: "Dev Planner"
+-  short_description: "Plan runnable, verifiable dev phases"
++  display_name: "03 寮€鍙戣鍒?
++  short_description: "鎶婇渶姹傛媶鎴愬彲杩愯銆佸彲楠屾敹鐨勫紑鍙戦樁娈?
+   default_prompt: "浣跨敤 $dev-planner 鎶婇渶姹傛媶鎴愬彲杩愯銆佸彲楠屾敹鐨?DEV-PLAN.md銆?
+diff --git a/.agents/skills/dev-planner/references/stage-contract.md b/.agents/skills/dev-planner/references/stage-contract.md
+index 7ed28d7..4790777 100644
+--- a/.agents/skills/dev-planner/references/stage-contract.md
++++ b/.agents/skills/dev-planner/references/stage-contract.md
+@@ -13,6 +13,21 @@
+ 
+ 鐩爣椤圭洰宸叉湁鏂囨。绾﹀畾鏃堕伒寰」鐩害瀹氾紱娌℃湁绾﹀畾鏃舵斁鍦?`docs/DEV-PLAN.md`銆? 
++## 鏈€灏忕粨鏋?+
++`DEV-PLAN.md` 鑷冲皯鍖呭惈锛?+
++- 璁″垝鐩爣
++- Phase 鍒楄〃銆佺洰鏍囧拰渚濊禆
++- 姣忎釜 Phase 鐨勮寖鍥村拰闈炶寖鍥?+- 浠诲姟缂栧彿锛屼緥濡?`TASK-01`
++- 鏄犲皠闇€姹傜紪鍙凤紝渚嬪 `REQ-01`
++- 鏄犲皠楠屾敹鏍囧噯锛屼緥濡?`AC-01`
++- 杩愯銆佹祴璇曘€佹鏌ユ垨瀹℃煡鏂瑰紡
++- 棰勬湡鏂囦欢鎴栦骇鐗?+- 浜や粯璇佹嵁瑕佹眰
++- 椋庨櫓銆侀樆濉炲拰寰呯‘璁ら棶棰?+
+ ## 鍚堟牸鏍囧噯
+ 
+ 姣忎釜 Phase 蹇呴』鍖呭惈锛?@@ -25,6 +40,41 @@
+ - 楠屾敹璇佹嵁
+ - 瀹℃煡瑕佹眰
+ 
++鏁翠釜璁″垝蹇呴』锛?+
++- 鎸夊彲楠屾敹鑳藉姏鍒囩墖锛岃€屼笉鏄彧鎸夋妧鏈眰鍒囩墖銆?+- 璁╀笅涓€涓?Phase 鍙互琚紑鍙?Agent 鐩存帴鎵ц銆?+- 璁?reviewer 鑳芥寜闇€姹傘€侀獙鏀舵爣鍑嗗拰璇佹嵁鐙珛鍒ゆ柇鏄惁閫氳繃銆?+- 鏄庣‘鍝簺闂闇€瑕佺敤鎴峰喅绛栵紝涓嶈兘浼鎴愭櫘閫氫换鍔°€?+
++## Phase 妯℃澘
++
++姣忎釜 Phase 寤鸿浣跨敤浠ヤ笅缁撴瀯锛?+
++```markdown
++## Phase N锛?鐩爣>
++
++### 鐩爣
++
++### 鑼冨洿
++
++### 涓嶅寘鍚?+
++### 浠诲姟
++
++- TASK-01锛?..
++
++### 鏄犲皠闇€姹傚拰楠屾敹鏍囧噯
++
++- REQ-01锛欰C-01, AC-02
++
++### 楠岃瘉鏂瑰紡
++
++### 浜や粯璇佹嵁
++
++### 瀹℃煡瑕佹眰
++```
++
+ ## 蹇呴』淇敼璁″垝鐨勬儏鍐? 
+ - Phase 鏃犳硶杩愯銆佹祴璇曘€佹鏌ユ垨瀹℃煡
+@@ -32,3 +82,15 @@
+ - 楠屾敹璇佹嵁缂哄け
+ - Phase 澶у埌鏃犳硶骞插噣瀹屾垚鍜屽鏌? - 璁″垝鍜屽凡鐭ラ」鐩害鏉熷啿绐?+- 浠诲姟娌℃湁鏄犲皠鍒伴渶姹傛垨楠屾敹鏍囧噯
++- 鎶婄敤鎴峰喅绛栥€佷骇鍝佽寖鍥村彉鍖栨垨楂橀闄╂湭鐭ラ」褰撴垚寮€鍙戜换鍔?+- Phase 瀹屾垚鍚庢病鏈夊彲璇绘枃浠躲€佸彲杩愯缁撴灉鎴栧彲瀹℃煡璇佹嵁
++
++## 鎵撳洖杈撳嚭
++
++璁″垝涓嶅悎鏍兼椂锛岃緭鍑哄繀椤诲寘鍚細
++
++- 鍝簺 Phase 涓嶅彲楠屾敹
++- 缂哄皯鐨勪緷璧栥€佽瘉鎹垨鐢ㄦ埛鍐崇瓥
++- 寤鸿濡備綍閲嶆柊鍒囧垎
++- 褰撳墠鍙厛鎵ц鐨勬渶灏?Phase锛屽鏋滃瓨鍦?diff --git a/.agents/skills/goal-writer/SKILL.md b/.agents/skills/goal-writer/SKILL.md
+index a7b86f3..cb44a84 100644
+--- a/.agents/skills/goal-writer/SKILL.md
++++ b/.agents/skills/goal-writer/SKILL.md
+@@ -17,10 +17,11 @@ Goal 涓嶆槸鎰挎湜銆侴oal 蹇呴』鍗曚竴銆佸彲鎵ц銆佸彲楠屾敹銆? - 瀹屾垚鏍囧噯
+ - 楠屾敹鏂瑰紡
+ 
++Goal 蹇呴』鑳借鍙︿竴涓?Agent 鐩存帴鎵ц銆傚啓瀹屽悗瑕佹鏌ュ畠鏄惁鍗曚竴銆佸彲瑙傚療銆佸彲楠屾敹銆?+
+ ## 绾㈢嚎
+ 
+ - 涓嶅啓鈥滃畬鍠勪竴涓嬧€濃€滀紭鍖栦竴涓嬧€濃€滃叏閮ㄥ疄鐜扳€濊繖绉嶇洰鏍囥€? - 涓嶆妸澶氫釜浜掔浉渚濊禆鐨勫ぇ鐩爣濉炶繘涓€鏉?Goal銆? - 涓嶇渷鐣ラ獙鏀惰瘉鎹€? - 涓嶇敤涓嶅彲瑙傚療鏍囧噯锛屼緥濡傗€滀綋楠屾洿濂解€濄€?-
+diff --git a/.agents/skills/goal-writer/agents/openai.yaml b/.agents/skills/goal-writer/agents/openai.yaml
+index e5970d7..76f71a3 100644
+--- a/.agents/skills/goal-writer/agents/openai.yaml
++++ b/.agents/skills/goal-writer/agents/openai.yaml
+@@ -1,4 +1,4 @@
+ interface:
+-  display_name: "Goal Writer"
++  display_name: "鍙€夛綔鐩爣鐢熸垚"
+   short_description: "鐢熸垚鍙氦缁?Agent 鎵ц鐨?Goal"
+   default_prompt: "浣跨敤 $goal-writer 鎶婁笅涓€姝ユ暣鐞嗘垚鍙墽琛?Goal銆?
+diff --git a/.agents/skills/goal-writer/references/stage-contract.md b/.agents/skills/goal-writer/references/stage-contract.md
+index 93fe762..2bd70a2 100644
+--- a/.agents/skills/goal-writer/references/stage-contract.md
++++ b/.agents/skills/goal-writer/references/stage-contract.md
+@@ -1,5 +1,16 @@
+ # Goal 缂栧啓闃舵濂戠害
+ 
++## 杈撳叆
++
++- 褰撳墠涓婁笅鏂囨垨鐩爣
++- 鐩稿叧闇€姹傘€佽鍒掋€侀樁娈电姸鎬佹垨鐢ㄦ埛鎸囦护
++- 闇€瑕佷氦缁?Agent 鑷富鎵ц鐨勬渶灏忓姩浣?+
++## 杈撳嚭
++
++- 涓€涓彲鐩存帴鍙戦€佺粰 Agent 鐨?Goal 鍧?+- 蹇呰鏃堕檮甯︿笉搴斿寘鍚湪 Goal 鍐呯殑鑳屾櫙璇存槑
++
+ ## 妯℃澘
+ 
+ ```markdown
+@@ -15,3 +26,32 @@
+ - <闇€瑕佽创鍑虹殑鍛戒护銆佹埅鍥俱€佹枃浠躲€佸鏌ョ粨鏋滄垨鍏朵粬璇佹嵁>
+ ```
+ 
++## 鍚堟牸鏍囧噯
++
++Goal 蹇呴』锛?+
++- 鐩爣鍗曚竴锛屼笉鎶婂涓簰鐩镐緷璧栫殑澶х洰鏍囧鍦ㄤ竴璧枫€?+- 瀹屾垚鏍囧噯鍙瀵熴€?+- 楠屾敹鏂瑰紡鑳戒骇鐢熻瘉鎹€?+- 鑼冨洿瓒冲灏忥紝Agent 鍙互鑷富璺戝畬銆?+- 鏄庣‘闇€瑕佽创鍑虹殑鍛戒护銆佹埅鍥俱€佹枃浠躲€佸鏌ョ粨鏋滄垨鍏朵粬璇佹嵁銆?+
++## 蹇呴』鎵撳洖鐨勫潖 Goal
++
++- 鈥滃畬鍠勪竴涓嬧€?+- 鈥滀紭鍖栦竴涓嬧€?+- 鈥滃叏閮ㄥ疄鐜扳€?+- 鈥滄妸椤圭洰鍋氬ソ鈥?+- 鈥滀綘鑷繁鐪嬬潃鍔炩€?+- 浣跨敤鈥滀綋楠屾洿濂解€濃€滄洿楂樼骇鈥濃€滄洿绋冲畾鈥濈瓑涓嶅彲瑙傚療鏍囧噯
++- 鐪佺暐瀹屾垚鏍囧噯鎴栭獙鏀舵柟寮?+- 鎶婇渶姹傛緞娓呫€佽璁°€佸紑鍙戙€佸彂甯冩贩鎴愪竴涓洰鏍?+
++## 杈撳嚭妫€鏌?+
++杈撳嚭鍓嶅繀椤荤‘璁わ細
++
++- 鏄惁鑳藉垽鏂畬鎴愭垨澶辫触銆?+- 鏄惁闇€瑕佺敤鎴峰厛鍐崇瓥銆?+- 鏄惁渚濊禆鏈‘璁ょ殑澶栭儴淇℃伅銆?+- 鏄惁闇€瑕?reviewer 鎴栭獙璇佸懡浠や綔涓洪獙鏀惰瘉鎹€?diff --git a/.agents/skills/product-spec-builder/SKILL.md b/.agents/skills/product-spec-builder/SKILL.md
+index 3937dc3..b2f286e 100644
+--- a/.agents/skills/product-spec-builder/SKILL.md
++++ b/.agents/skills/product-spec-builder/SKILL.md
+@@ -30,6 +30,8 @@ description: 灏嗘ā绯婄殑杞欢浜у搧鎯虫硶鏁寸悊鎴愬彲鐩存帴杩涘叆璁捐鍜岃
+ - 缂栧彿楠屾敹鏍囧噯锛屼緥濡?`AC-01`
+ - 涓嶉樆濉為鐗堜絾闇€瑕佽褰曠殑寰呯‘璁ら棶棰? 
++浜у嚭鏃跺繀椤诲尯鍒嗗凡纭浜嬪疄銆佷复鏃跺亣璁惧拰寰呯‘璁ら棶棰樸€傚悗缁樁娈靛彧鑳芥妸宸茬‘璁や簨瀹炰綔涓烘潈濞佽緭鍏ャ€?+
+ ## 鍚堟牸鏍囧噯
+ 
+ 闇€姹傛枃妗ｅ悎鏍肩殑鏍囧噯鏄細鍙︿竴涓?Agent 鍙互鎷垮畠杩涘叆璁捐鎴栬鍒掗樁娈碉紝鑰屼笉闇€瑕侀噸鏂扮寽浜у搧鎰忓浘銆?diff --git a/.agents/skills/product-spec-builder/agents/openai.yaml b/.agents/skills/product-spec-builder/agents/openai.yaml
+index 4174513..fe61868 100644
+--- a/.agents/skills/product-spec-builder/agents/openai.yaml
++++ b/.agents/skills/product-spec-builder/agents/openai.yaml
+@@ -1,4 +1,4 @@
+ interface:
+-  display_name: "Product Spec Builder"
+-  short_description: "Turn vague ideas into buildable specs"
++  display_name: "01 闇€姹傛敹闆?
++  short_description: "鎶婃ā绯婁骇鍝佹兂娉曟暣鐞嗘垚鍙紑鍙戦渶姹傛枃妗?
+   default_prompt: "浣跨敤 $product-spec-builder 鎶婃垜鐨勪骇鍝佹兂娉曟暣鐞嗘垚鍙紑鍙戠殑 Product-Spec.md銆?
+diff --git a/.agents/skills/product-spec-builder/references/stage-contract.md b/.agents/skills/product-spec-builder/references/stage-contract.md
+index 5026899..d87c01b 100644
+--- a/.agents/skills/product-spec-builder/references/stage-contract.md
++++ b/.agents/skills/product-spec-builder/references/stage-contract.md
+@@ -12,6 +12,28 @@
+ 
+ 鐩爣椤圭洰宸叉湁鏂囨。绾﹀畾鏃堕伒寰」鐩害瀹氾紱娌℃湁绾﹀畾鏃舵斁鍦?`docs/Product-Spec.md`銆? 
++杈撳嚭蹇呴』鏍囨槑锛?+
++- 宸茬‘璁や簨瀹?+- 涓存椂鍋囪
++- 寰呯‘璁ら棶棰?+- 涓嶈繘鍏ラ鐗堢殑鏈潵鎯虫硶
++
++## 鏈€灏忕粨鏋?+
++`Product-Spec.md` 鑷冲皯鍖呭惈锛?+
++- 浜у搧鐩爣
++- 闈炵洰鏍?+- 鐩爣鐢ㄦ埛
++- 鏍稿績鍦烘櫙鎴栨牳蹇冩祦绋?+- 棣栫増鑼冨洿
++- 缂栧彿闇€姹傦紝渚嬪 `REQ-01`
++- 鍏抽敭琛屼负銆佺姸鎬佸拰杈圭晫鎯呭喌
++- 鏁版嵁銆侀泦鎴愩€佸钩鍙般€侀殣绉佸拰閮ㄧ讲绾︽潫
++- 缂栧彿楠屾敹鏍囧噯锛屼緥濡?`AC-01`
++- 寰呯‘璁ら棶棰?+
+ ## 鍚堟牸鏍囧噯
+ 
+ `Product-Spec.md` 蹇呴』锛?@@ -22,6 +44,16 @@
+ - 鐢ㄥ彲瑙傚療楠屾敹鏍囧噯瀹氫箟瀹屾垚
+ - 涓嶅寘鍚湭缁忕‘璁ょ殑瀹炵幇鐚滄祴
+ 
++## 閫€鍑烘潯浠?+
++婊¤冻浠ヤ笅鏉′欢鏃讹紝鎵嶅彲浠ヨ繘鍏ヨ璁¤鑼冩垨寮€鍙戣鍒掞細
++
++- 鐩爣鐢ㄦ埛鏄庣‘銆?+- 鏍稿績娴佺▼鎴栨牳蹇冧娇鐢ㄥ満鏅槑纭€?+- 棣栫増鑼冨洿鍜岄潪鐩爣鏄庣‘鍒嗙銆?+- 姣忎釜鍏抽敭闇€姹傝嚦灏戞湁涓€涓彲瑙傚療楠屾敹鏍囧噯銆?+- 浠嶅瓨鍦ㄧ殑鏈煡椤逛笉褰卞搷棣栫増鏂瑰悜锛屾垨宸茶鏍囦负寰呯‘璁ら棶棰樸€?+
+ ## 蹇呴』鎵撳洖鐨勬儏鍐? 
+ - 鐩爣鐢ㄦ埛涓嶆竻妤?@@ -29,3 +61,14 @@
+ - 鈥滀綋楠屽ソ鈥濃€滈珮绾ф劅鈥濈瓑鐩爣娌℃湁杞垚鍙瀵熻涓? - 鏃犳硶鍒ゆ柇鎴愬姛鎴栧け璐? - 棣栫増鑼冨洿鍜屾湭鏉ユ兂娉曟贩鍦ㄤ竴璧凤紝娌℃湁浼樺厛绾?+- 闇€姹備緷璧栦笉瀛樺湪鎴栨湭缁忕‘璁ょ殑澶栭儴鎺ュ彛銆佷笟鍔¤鍒欍€佸搧鐗岃鍒?+- 鐢ㄦ埛瑕佹眰鐩存帴璁捐鎴栧紑鍙戯紝浣嗛渶姹備粛涓嶈兘楠屾敹
++
++## 鎵撳洖杈撳嚭
++
++鎵撳洖鏃朵笉瑕佹姏闀块棶鍗枫€傝緭鍑哄繀椤诲寘鍚細
++
++- 宸茬煡浜嬪疄
++- 闃诲闂
++- 涓轰粈涔堝畠浼氬奖鍝嶄骇鍝佹柟鍚戞垨楠屾敹
++- 鏈€澶?3 涓綋鍓嶅繀椤诲洖绛旂殑闂
+diff --git a/.agents/skills/release-builder/SKILL.md b/.agents/skills/release-builder/SKILL.md
+index d159e29..30fdf22 100644
+--- a/.agents/skills/release-builder/SKILL.md
++++ b/.agents/skills/release-builder/SKILL.md
+@@ -14,10 +14,11 @@ description: 鍦ㄥ疄鐜板畬鎴愬悗鎵ц闅愮瀹¤銆佹瀯寤烘鏌ャ€佹墦鍖呭彂甯? ## 宸ヤ綔鏂瑰紡
+ 
+ 1. 璇诲彇宸茬‘璁ら渶姹傘€佸紑鍙戣鍒掑拰瀹炴柦璇佹嵁銆?-2. 妫€鏌ラ殣绉佸拰鏁忔劅淇℃伅鏆撮湶銆?-3. 妫€鏌ユ瀯寤恒€佹墦鍖呫€侀厤缃拰閮ㄧ讲瑕佹眰銆?-4. 蹇呰鏃舵暣鐞嗙増鏈鏄庛€佸彂甯冭鏄庡拰鍥炴粴鏂瑰紡銆?-5. 杈撳嚭鍙戝竷璇佹嵁鍜屾湭瑙ｅ喅闃诲銆?+2. 纭寮€鍙戙€侀獙璇佸拰 reviewer 闂ㄧ鏄惁宸叉弧瓒炽€?+3. 妫€鏌ラ殣绉佸拰鏁忔劅淇℃伅鏆撮湶銆?+4. 妫€鏌ユ瀯寤恒€佹墦鍖呫€侀厤缃拰閮ㄧ讲瑕佹眰銆?+5. 蹇呰鏃舵暣鐞嗙増鏈鏄庛€佸彂甯冭鏄庡拰鍥炴粴鏂瑰紡銆?+6. 杈撳嚭鍙戝竷璇佹嵁鍜屾湭瑙ｅ喅闃诲銆? 
+ ## 鍙戝竷璇佹嵁蹇呴』鍖呭惈
+ 
+@@ -27,6 +28,7 @@ description: 鍦ㄥ疄鐜板畬鎴愬悗鎵ц闅愮瀹¤銆佹瀯寤烘鏌ャ€佹墦鍖呭彂甯? - 蹇呰鐜鍙橀噺鍜岀瀵嗘潵婧愯鏄庯紝涓嶆毚闇茬湡瀹炵瀵? - 鍙戝竷璇存槑鎴栧彉鏇存憳瑕? - 宸茬煡椋庨櫓銆侀樆濉炲拰鍥炴粴璇存槑
++- 鏄惁鎵ц鐪熷疄鍙戝竷锛屼互鍙婃巿鏉冩潵婧? 
+ ## 鍚堟牸鏍囧噯
+ 
+diff --git a/.agents/skills/release-builder/agents/openai.yaml b/.agents/skills/release-builder/agents/openai.yaml
+index 3da1ad1..c3cd822 100644
+--- a/.agents/skills/release-builder/agents/openai.yaml
++++ b/.agents/skills/release-builder/agents/openai.yaml
+@@ -1,4 +1,4 @@
+ interface:
+-  display_name: "Release Builder"
+-  short_description: "Audit privacy and prepare release evidence"
++  display_name: "鍙€夛綔鏋勫缓鍙戝竷"
++  short_description: "鍋氶殣绉佸璁°€佸彂甯冨噯澶囧拰浜や粯璇佹嵁鏁寸悊"
+   default_prompt: "浣跨敤 $release-builder 鍋氶殣绉佸璁°€佹墦鍖呭彂甯冨噯澶囧拰鍙戝竷璇佹嵁鏁寸悊銆?
+diff --git a/.agents/skills/release-builder/references/stage-contract.md b/.agents/skills/release-builder/references/stage-contract.md
+index 7200f6f..5654f11 100644
+--- a/.agents/skills/release-builder/references/stage-contract.md
++++ b/.agents/skills/release-builder/references/stage-contract.md
+@@ -14,6 +14,81 @@
+ - 闅愮瀹¤缁撴灉
+ - 鏋勫缓銆佹墦鍖呮垨閮ㄧ讲璇佹嵁
+ - 闃诲椤瑰拰闇€瑕佺敤鎴峰鐞嗙殑鍔ㄤ綔
++- 鍙戝竷璇存槑鎴栧彉鏇存憳瑕?+- 鍥炴粴鎴栨仮澶嶈矾寰?+- 鏄惁鎵ц鐪熷疄鍙戝竷鐨勬巿鏉冭褰?+
++## 鍙戝竷璇佹嵁妯℃澘
++
++```markdown
++# release-evidence.md
++
++## 鍙戝竷鍑嗗鐘舵€?+
++鐘舵€侊細鍙彂甯?/ 闃诲 / 鏈墽琛岀湡瀹炲彂甯?+
++## 瀹¤鑼冨洿
++
++## 闅愮鍜屾晱鎰熶俊鎭璁?+
++## 鏋勫缓鍜屾墦鍖呮鏌?+
++## 閮ㄧ讲鎴栧彂甯冭矾寰?+
++## 鐜鍙橀噺鍜岀瀵嗘潵婧?+
++## 鍙戝竷璇存槑
++
++## 鍙戝竷闃诲椤?+
++## 鍥炴粴鎴栨仮澶嶈矾寰?+
++## 缁撹
++```
++
++## 闅愮瀹¤妫€鏌ラ」
++
++蹇呴』妫€鏌ュ苟璇存槑锛?+
++- 鐪熷疄瀵嗛挜銆乼oken銆乸assword銆乸rivate key 鏄惁鍑虹幇鍦ㄤ粨搴撴垨杈撳嚭涓€?+- 鐢ㄦ埛鏁版嵁銆佹棩蹇椼€佷笂浼犳枃浠躲€佸垎鏋愪簨浠躲€佺涓夋柟鏈嶅姟璋冪敤鏄惁琚秹鍙娿€?+- 鎴浘銆佷簩杩涘埗銆佺ず渚嬫暟鎹垨褰掓。璧勬枡鏄惁鍙兘鍚晱鎰熶俊鎭€?+- 鍙戝竷璇佹嵁鏄惁閬垮厤鎵撳嵃鐪熷疄绉樺瘑銆?+- 鏃犳硶妫€鏌ョ殑鑼冨洿鍜屾畫浣欓闄┿€?+
++寤鸿鏂囨湰鎵弿鍖呭惈锛?+
++```powershell
++rg -n "(?i)(api[_-]?key|secret|token|password|passwd|private[_-]?key|BEGIN RSA|BEGIN OPENSSH|AKIA|sk-[A-Za-z0-9]|ghp_[A-Za-z0-9]|xox[baprs]-|client_secret)" .
++```
++
++## 鏋勫缓銆佹墦鍖呭拰閮ㄧ讲璇佹嵁
++
++蹇呴』璁板綍锛?+
++- 鏋勫缓鎴栨墦鍖呭懡浠ゃ€?+- 鍛戒护缁撴灉锛屽寘鍚垚鍔熴€佸け璐ユ垨鏃犲彲鐢ㄥ懡浠ゃ€?+- 浜х墿璺緞锛屽鏋滄湁銆?+- 閮ㄧ讲姝ラ鎴栧彂甯冩楠ゃ€?+- 渚濊禆鐨勭幆澧冨彉閲忋€佸钩鍙伴厤缃拰绉樺瘑鏉ユ簮銆?+- 鍝簺姝ラ鍙鐜帮紝鍝簺渚濊禆浜哄伐鍚庡彴鐘舵€併€?+
++娌℃湁鏋勫缓閰嶇疆鏃讹紝蹇呴』鍐欐垚闃诲鎴栤€滀笉閫傜敤骞惰鏄庡師鍥犫€濓紝涓嶈兘澹版槑鍙鐜版瀯寤恒€?+
++## 绉樺瘑鏉ユ簮璇存槑
++
++鍏佽鍐欙細
++
++- secret 鍚嶇О
++- 娉ㄥ叆浣嶇疆锛屼緥濡?CI Secret銆佸钩鍙?Secret Store銆佹湰鏈虹幆澧冨彉閲?+- 鍝釜姝ラ闇€瑕佽 secret
++
++绂佹鍐欙細
++
++- secret 鐨勭湡瀹炲€?+- token 鐨勫畬鏁村€?+- 绉侀挜鍐呭
++- 鍙敤浜庣櫥褰曟垨璋冪敤鏈嶅姟鐨勫嚟鎹? 
+ ## 鍚堟牸鏍囧噯
+ 
+@@ -24,6 +99,8 @@
+ - 鏋勫缓鎴栨墦鍖呰矾寰勫彲杩愯锛屾垨闃诲鏄庣‘
+ - 閮ㄧ讲姝ラ鍙鐜? - 蹇呰鏃舵湁鍥炴粴鎴栨仮澶嶈矾寰?+- 寮€鍙戣鍒掕姹傜殑楠岃瘉鍜?reviewer 闂ㄧ宸查€氳繃锛屾垨鏈€氳繃椤硅鍒椾负鍙戝竷闃诲
++- 鐪熷疄鍙戝竷銆佹帹閫佹垨涓婄嚎鏈夌敤鎴锋槑纭巿鏉? 
+ ## 绂佹鍙戝竷鐨勬儏鍐? 
+@@ -32,3 +109,18 @@
+ - 鏋勫缓鎴栨墦鍖呭け璐? - 閮ㄧ讲渚濊禆鏈褰曠殑鎵嬪伐鐘舵€? - 璁″垝瑕佹眰鐨勬祴璇曟垨瀹℃煡闂ㄧ缂哄け
++- 鐢ㄦ埛娌℃湁鏄庣‘鎺堟潈鐪熷疄鍙戝竷銆佹帹閫佹垨涓婄嚎
++
++## 闃诲椤规牸寮?+
++```markdown
++- BLOCK-01锛?闃诲浜嬪疄>銆傚奖鍝嶏細<涓轰粈涔堥樆姝㈠彂甯?銆傞渶瑕侊細<鐢ㄦ埛鎴栧悗缁樁娈靛姩浣?銆?+```
++
++## 蹇呴』鎵撳洖鐨勬儏鍐?+
++- 寮€鍙戣瘉鎹己澶辨垨 reviewer 鏈€氳繃銆?+- 鏃犳硶鍒ゆ柇鏄惁鏈夋晱鎰熶俊鎭毚闇层€?+- 鏋勫缓銆佹墦鍖呮垨閮ㄧ讲姝ラ鏃犳硶澶嶇幇涓旀病鏈夐樆濉炶鏄庛€?+- 闇€瑕佺湡瀹炲彂甯冧絾娌℃湁鐢ㄦ埛鎺堟潈銆?+- 鍙戝竷璇佹嵁涓寘鍚湡瀹炵瀵嗐€?diff --git a/.agents/skills/reviewer/SKILL.md b/.agents/skills/reviewer/SKILL.md
+index c690e10..b486e2b 100644
+--- a/.agents/skills/reviewer/SKILL.md
++++ b/.agents/skills/reviewer/SKILL.md
+@@ -1,6 +1,6 @@
+ ---
+ name: reviewer
+-description: 浣滀负骞插噣瀛愪唬鐞嗗鏌ヤ氦浠樼粨鏋溿€傞€傜敤浜庡紑鍙戞妧鑳藉畬鎴愪竴涓?Phase 鍚庯紝闇€瑕佷竴涓病鏈夊弬涓庡疄鐜扮殑 fresh mind 鏍规嵁 Product-Spec.md銆丏esign-Brief.md銆丏EV-PLAN.md銆佷唬鐮佸彉鏇村拰楠岃瘉璇佹嵁鍒ゆ柇鏄惁閫氳繃鐨勫満鏅€?+description: 浣滀负骞插噣瀛愪唬鐞嗗鏌ヤ氦浠樼粨鏋溿€傞€傜敤浜庡紑鍙戞妧鑳藉畬鎴愪竴涓?Phase銆佷换鍔℃垨鏂囨。浜や粯鍚庯紝闇€瑕佷竴涓病鏈夊弬涓庡疄鐜扮殑 fresh mind 鏍规嵁 Product-Spec.md銆丏esign-Brief.md銆丏EV-PLAN.md銆佷唬鐮佸彉鏇村拰楠岃瘉璇佹嵁鍒ゆ柇鏄惁閫氳繃鐨勫満鏅€? ---
+ 
+ # 瀹℃煡鍛樻妧鑳?@@ -9,11 +9,11 @@ description: 浣滀负骞插噣瀛愪唬鐞嗗鏌ヤ氦浠樼粨鏋溿€傞€傜敤浜庡紑鍙戞妧鑳藉畬
+ 
+ ## 鏍稿績鍘熷垯
+ 
+-瀹℃煡鍛樺繀椤绘病鏈夊弬涓庡綋鍓嶅疄鐜般€傚畠鍙湅鐩爣銆佽瘉鎹€佷唬鐮佸拰椋庨櫓銆?+瀹℃煡鍛樺繀椤绘病鏈夊弬涓庡綋鍓嶅疄鐜般€傚畠鐢卞紑鍙?Agent 鍦ㄥ疄鐜板拰楠岃瘉鍚庝富鍔ㄥ惎鍔紝鍙湅鐩爣銆佽瘉鎹€佷唬鐮佸拰椋庨櫓銆? 
+ ## 瀹℃煡杈撳叆
+ 
+-- 褰撳墠 Phase 鐨勭洰鏍囧拰鑼冨洿
++- 褰撳墠 Phase銆佷换鍔℃垨浜や粯鐗╃殑鐩爣鍜岃寖鍥? - 鐩稿叧闇€姹傚拰楠屾敹鏍囧噯
+ - 浠ｇ爜鎴栦骇鐗╁彉鏇? - 楠岃瘉鍛戒护鍜岀粨鏋?@@ -30,10 +30,12 @@ description: 浣滀负骞插噣瀛愪唬鐞嗗鏌ヤ氦浠樼粨鏋溿€傞€傜敤浜庡紑鍙戞妧鑳藉畬
+ 
+ 鐒跺悗鎸変弗閲嶇▼搴﹀垪鍑洪棶棰樸€傛病鏈夐樆濉為棶棰樻椂锛屼篃瑕佽鏄庢畫浣欓闄╁拰鏈鐩栭獙璇併€? 
++鍒ゅ畾蹇呴』鍩轰簬璇佹嵁锛屼笉鍩轰簬瀹炵幇鑰呰嚜杩般€傝瘉鎹笉瓒虫椂杈撳嚭鈥滄棤娉曞鏌モ€濇垨鈥滀笉閫氳繃鈥濓紝涓嶈鐚滄祴閫氳繃銆?+
+ ## 绾㈢嚎
+ 
+ - 涓嶅洜涓哄疄鐜拌€呰瀹屾垚灏遍€氳繃銆? - 涓嶆妸浼樺寲寤鸿鍜岄樆濉為棶棰樻贩鍦ㄤ竴璧枫€? - 涓嶅鏌ヨ嚜宸卞啓鐨勪唬鐮併€? - 涓嶅拷鐣ョ己澶遍獙璇併€?-
++- 涓嶆妸鈥滄湭鍚姩瀹℃煡鈥濊涓哄彲浜や粯鐘舵€併€?diff --git a/.agents/skills/reviewer/agents/openai.yaml b/.agents/skills/reviewer/agents/openai.yaml
+index 093a267..6e276ed 100644
+--- a/.agents/skills/reviewer/agents/openai.yaml
++++ b/.agents/skills/reviewer/agents/openai.yaml
+@@ -1,4 +1,4 @@
+ interface:
+-  display_name: "Reviewer"
++  display_name: "鍙€夛綔浠ｇ爜瀹℃煡"
+   short_description: "鐢ㄥ共鍑€鑴戝瓙瀹℃煡浜や粯鏄惁杈炬爣"
+   default_prompt: "浣跨敤 $reviewer 浣滀负骞插噣瀛愪唬鐞嗗鏌ヨ繖娆′氦浠樸€?
+diff --git a/.agents/skills/reviewer/references/stage-contract.md b/.agents/skills/reviewer/references/stage-contract.md
+index 852e5c1..4677544 100644
+--- a/.agents/skills/reviewer/references/stage-contract.md
++++ b/.agents/skills/reviewer/references/stage-contract.md
+@@ -1,14 +1,60 @@
+ # 瀹℃煡鍛橀樁娈靛绾? 
++## 杈撳叆
++
++瀹℃煡鍛樺繀椤绘嬁鍒拌冻澶熶笂涓嬫枃锛?+
++- 瀹℃煡鐩爣鍜岃寖鍥?+- 鐩稿叧 `Product-Spec.md` 闇€姹傜紪鍙峰拰楠屾敹鏍囧噯
++- 鐩稿叧 `Design-Brief.md` 绾︽潫锛屽鏋滄秹鍙婁綋楠屾垨鐣岄潰
++- `DEV-PLAN.md` 涓搴?Phase銆佷换鍔″拰楠屾敹璇佹嵁瑕佹眰
++- 鍙樻洿鏂囦欢鎴栦骇鐗╂竻鍗?+- 楠岃瘉鍛戒护鍜岀粨鏋?+- 瀹炵幇鑰呰鏄庣殑鍋忕銆侀闄╁拰鏈鐩栭」
++
+ ## 蹇呮煡椤? 
+-- 鏄惁婊¤冻褰撳墠 Phase 鑼冨洿
++- 鏄惁婊¤冻褰撳墠 Phase銆佷换鍔℃垨浜や粯鐗╄寖鍥? - 鏄惁瑕嗙洊瀵瑰簲楠屾敹鏍囧噯
+ - 鏄惁鏈夎涓哄洖褰? - 鏄惁鏈夌己澶辨祴璇曟垨缂哄け楠岃瘉
+ - 鏄惁鏈夊畨鍏ㄣ€侀殣绉併€佸彂甯冮闄?+- 鏄惁瀛樺湪鏈粡纭鐨勮寖鍥存墿澶с€佽璁″亸绂绘垨闇€姹傚彉鏇?+- 璇佹嵁鏄惁鍙鐜帮紝鍛戒护鍜岀粨鏋滄槸鍚﹁冻浠ユ敮鎾戦€氳繃缁撹
+ 
+ ## 杈撳嚭瑕佹眰
+ 
+ 闂浼樺厛锛岀粨璁烘槑纭€備唬鐮佸鏌ユ椂灏介噺鎻愪緵鏂囦欢鍜岃鍙枫€? 
++## 鍒ゅ畾鏍囧噯
++
++- 閫氳繃锛氶獙鏀舵爣鍑嗚璇佹嵁瑕嗙洊锛屾病鏈夐樆濉為棶棰橈紝娈嬩綑椋庨櫓鍙帴鍙椼€?+- 鏈夋潯浠堕€氳繃锛氫富浣撳彲鎺ュ彈锛屼絾瀛樺湪蹇呴』鍦ㄨ繘鍏ヤ笅涓€闃舵鍓嶈ˉ榻愮殑闈炲疄鐜伴樆濉烇紝渚嬪璁板綍鐘舵€併€佽ˉ浜よ瘉鎹€佽鏄庢畫浣欓闄┿€?+- 涓嶉€氳繃锛氬瓨鍦ㄦ紡闇€姹傘€佽涓哄洖褰掋€佺己澶卞叧閿獙璇併€佸畨鍏ㄩ殣绉侀闄┿€佽寖鍥磋秺鐣屾垨璇佹嵁涓嶈冻浠ヨ瘉鏄庡畬鎴愩€?+- 鏃犳硶瀹℃煡锛氱己灏戝繀瑕佷笂涓嬫枃銆佺己灏戝彉鏇村唴瀹广€佺己灏戦獙璇佺粨鏋滐紝鎴栧鏌ュ憳涓嶆槸 fresh mind銆?+
++## 杈撳嚭妯℃澘
++
++```markdown
++缁撹锛氶€氳繃 / 鏈夋潯浠堕€氳繃 / 涓嶉€氳繃 / 鏃犳硶瀹℃煡
++
++## 闂
++
++- <涓ラ噸绾у埆>锛?闂銆佽瘉鎹€佸奖鍝嶃€佸缓璁鐞?
++
++## 楠屾敹瑕嗙洊
++
++- <REQ/AC 鎴栦换鍔?锛氬凡瑕嗙洊 / 鏈鐩?/ 鏃犳硶鍒ゆ柇
++
++## 娈嬩綑椋庨櫓
++
++- <鍗充娇閫氳繃浠嶉渶鐭ラ亾鐨勯闄?
++```
++
++## 蹇呴』鎵撳洖鐨勬儏鍐?+
++- 瀹炵幇鑰呮病鏈夋彁渚涢獙璇佸懡浠ゅ拰缁撴灉銆?+- 楠屾敹鏍囧噯娌℃湁鏄犲皠鍒拌瘉鎹€?+- 瀹℃煡鐩爣涓嶆竻妤氥€?+- 瀹℃煡鍛樺弬涓庤繃褰撳墠瀹炵幇銆?+- 鍙戠幇闃诲闂浣嗗疄鐜拌€呰姹傞€氳繃銆?diff --git a/.agents/skills/self-evolver/SKILL.md b/.agents/skills/self-evolver/SKILL.md
+index e506c41..8596650 100644
+--- a/.agents/skills/self-evolver/SKILL.md
++++ b/.agents/skills/self-evolver/SKILL.md
+@@ -18,12 +18,12 @@ description: 灏嗙湡瀹炰娇鐢ㄤ腑鐨勯棶棰樹俊鍙锋暣鐞嗘垚瀵圭幇鏈?Skill 鐨勮ˉ涓? 3. 闃呰瀵瑰簲 Skill 鐨勭幇鏈夎鍒欍€? 4. 鍒ゆ柇搴旇鏂板銆佷慨鏀广€佸悎骞惰繕鏄垹闄ゃ€? 5. 鐢熸垚琛ヤ竵寤鸿銆?-6. 绛夌敤鎴风‘璁ゅ悗鍐嶅簲鐢ㄣ€?+6. 鍒ゆ柇鏄惁灞炰簬浣庨闄╃淮鎶わ紝杩樻槸蹇呴』鐢ㄦ埛纭銆?+7. 浣庨闄╃淮鎶ゅ彲浠ユ寜椤圭洰瑙勫垯搴旂敤锛涢珮椋庨櫓鍙樺寲蹇呴』鍏堣鐢ㄦ埛纭銆? 
+ ## 绾㈢嚎
+ 
+ - 涓嶅湪鎵ц鍏抽敭浠诲姟涓€旀敼瑙勫垯銆? - 涓嶆妸鍗曟鍋跺彂闂鍗囩骇鎴愭案涔呰鍒欍€? - 涓嶅彧鏂板涓嶅垹闄ゃ€?-- 涓嶆湭缁忕敤鎴风‘璁ょ洿鎺ヤ慨鏀?Skill銆?-
++- 涓嶆湭缁忕敤鎴风‘璁や慨鏀规祦绋嬨€佸畨鍏ㄣ€佹潈闄愭垨浜や粯鏍囧噯銆?diff --git a/.agents/skills/self-evolver/agents/openai.yaml b/.agents/skills/self-evolver/agents/openai.yaml
+index e6006a9..cc4fed7 100644
+--- a/.agents/skills/self-evolver/agents/openai.yaml
++++ b/.agents/skills/self-evolver/agents/openai.yaml
+@@ -1,4 +1,4 @@
+ interface:
+-  display_name: "Self Evolver"
++  display_name: "鍙€夛綔鑷繘鍖?
+   short_description: "鎶婄湡瀹炰娇鐢ㄤ俊鍙疯浆鎴?Skill 琛ヤ竵"
+   default_prompt: "浣跨敤 $self-evolver 娑堝寲鑷繘鍖栦俊鍙峰苟鐢熸垚琛ヤ竵寤鸿銆?
+diff --git a/.agents/skills/self-evolver/references/stage-contract.md b/.agents/skills/self-evolver/references/stage-contract.md
+index 37ec354..0b871de 100644
+--- a/.agents/skills/self-evolver/references/stage-contract.md
++++ b/.agents/skills/self-evolver/references/stage-contract.md
+@@ -13,3 +13,55 @@
+ - 鍒犻櫎鎴栧悎骞惰鍒欑殑鐞嗙敱
+ - 闇€瑕佺敤鎴风‘璁ょ殑闂
+ 
++## 淇″彿鍒ゅ畾
++
++鍙鐞嗕俊鍙峰繀椤绘潵鑷湡瀹炰娇鐢紝渚嬪锛?+
++- 鐢ㄦ埛绾犳
++- 澶氭璇В
++- 澶氭婕忛獙璇?+- 瀹℃煡鍙戠幇鏈鐢卞墠缃?Skill 闃蹭綇鐨勯棶棰?+- 鏌愭潯瑙勫垯閫犳垚鏄庢樉鎽╂摝
++- 鏌愭潯瑙勫垯闀挎湡鏃犵敤
++
++涓嶈兘澶勭悊鐨勪俊鍙凤細
++
++- 鍙湁鐞嗚鍋忓ソ锛屾病鏈夌湡瀹炰娇鐢ㄨ瘉鎹?+- 鍗曟鍋跺彂涓斿奖鍝嶅緢灏?+- 鐢ㄦ埛涓存椂鍋忓ソ琚褰撴垚閫氱敤瑙勫垯
++
++## 琛ヤ竵绛栫暐
++
++澶勭悊椤哄簭锛?+
++1. 鍏堟壘鐜版湁瑙勫垯鏄惁鍙慨鏀广€?+2. 鑳藉悎骞跺氨鍚堝苟銆?+3. 鑳藉垹闄ゆ棤鐢ㄨ鍒欏氨鍒犻櫎銆?+4. 鍙湁鐜版湁瑙勫垯鏃犳硶瑕嗙洊鏃舵墠鏂板銆?+
++## 浣庨闄╄ˉ涓?+
++浠ヤ笅閫氬父鍙互鎸夐」鐩鍒欑洿鎺ュ簲鐢細
++
++- 婢勬竻瑙﹀彂鏉′欢銆?+- 琛ュ厖楠屾敹璇佹嵁瑕佹眰銆?+- 鍚堝苟閲嶅瑙勫垯銆?+- 鍒犻櫎鏄庢樉杩囨椂鎴栨棤鐢ㄨ鍒欍€?+- 淇涓?AGENTS.md 鏄庢樉涓€鑷寸殑鎺緸銆?+
++## 蹇呴』鐢ㄦ埛纭鐨勫彉鍖?+
++- 鏀瑰彉涓绘祦绋嬮『搴忋€?+- 闄嶄綆浜や粯銆佸鏌ャ€侀殣绉佹垨鍙戝竷鏍囧噯銆?+- 鏀瑰彉鏉冮檺銆佸畨鍏ㄦ垨鐪熷疄鍙戝竷杈圭晫銆?+- 澶ц寖鍥磋法澶氫釜 Skill 閲嶅啓銆?+- 淇″彿璇佹嵁涓嶈冻浣嗗奖鍝嶈緝澶с€?+
++## 淇″彿澶勭悊缁撴灉
++
++澶勭悊鍚庡繀椤绘妸淇″彿鐘舵€佹敼涓猴細
++
++- `宸茶浆琛ヤ竵`
++- `宸插拷鐣
++
++骞朵繚鐣欑畝鐭鐞嗚鏄庛€?diff --git a/.agents/skills/skill-builder/SKILL.md b/.agents/skills/skill-builder/SKILL.md
+index 91692ef..13ed96f 100644
+--- a/.agents/skills/skill-builder/SKILL.md
++++ b/.agents/skills/skill-builder/SKILL.md
+@@ -20,6 +20,8 @@ Skill 搴旇鐭€佸噯銆佸彲瑙﹀彂銆備笉瑕佸啓鎴愮櫨绉戞垨鎿嶄綔鎵嬪唽銆? 5. 鍚屾 `agents/openai.yaml`銆? 6. 妫€鏌ュ懡鍚嶃€乫rontmatter 鍜屽崰浣嶆枃鏈畫鐣欍€? 
++淇敼 Skill 鏃跺繀椤讳紭鍏堜繚鎸佺煭銆佸噯銆佸彲瑙﹀彂锛涢獙鏀跺悎鍚屽彲浠ユ斁杩?`references/`銆?+
+ ## 绾㈢嚎
+ 
+ - 涓嶆墿灞曟棫鐗?`creator` 浣滀负鏂扮郴缁熶富绾裤€?diff --git a/.agents/skills/skill-builder/agents/openai.yaml b/.agents/skills/skill-builder/agents/openai.yaml
+index d1e2408..8008c5a 100644
+--- a/.agents/skills/skill-builder/agents/openai.yaml
++++ b/.agents/skills/skill-builder/agents/openai.yaml
+@@ -1,4 +1,4 @@
+ interface:
+-  display_name: "Skill Builder"
++  display_name: "鍙€夛綔鎶€鑳芥瀯寤?
+   short_description: "鍒涘缓鎴栨敼杩涜繖濂楃郴缁熶腑鐨?Skill"
+   default_prompt: "浣跨敤 $skill-builder 涓鸿繖濂楃郴缁熷垱寤烘垨鏀硅繘涓€涓?Skill銆?
+diff --git a/.agents/skills/skill-builder/references/stage-contract.md b/.agents/skills/skill-builder/references/stage-contract.md
+index a26cd29..11f0a69 100644
+--- a/.agents/skills/skill-builder/references/stage-contract.md
++++ b/.agents/skills/skill-builder/references/stage-contract.md
+@@ -14,3 +14,37 @@
+ - 鍋氬埌浠€涔堢畻鍚堟牸
+ - 浠€涔堢孩绾夸笉鑳界
+ 
++## 鏂板 Skill 鍚堟牸鏍囧噯
++
++鏂板 Skill 蹇呴』锛?+
++- 鏈夋槑纭Е鍙戝満鏅€?+- 涓嶄笌鐜版湁 Skill 鑱岃矗閲嶅銆?+- 鏈夋竻妤氳緭鍏ャ€佽緭鍑恒€佸悎鏍兼爣鍑嗗拰绾㈢嚎銆?+- 鏈?`agents/openai.yaml` 灞曠ず鍚嶃€佹弿杩板拰榛樿鎻愮ず銆?+- 蹇呰鏃舵湁 `references/stage-contract.md`銆?+
++## 淇敼 Skill 鍚堟牸鏍囧噯
++
++淇敼鐜版湁 Skill 蹇呴』锛?+
++- 涓嶆墿澶ф棫鐗?`creator` 浣滀负涓荤嚎銆?+- 涓嶇牬鍧?`AGENTS.md` 鐨勪富娴佺▼銆?+- 涓嶆妸涓讳綋鍐欐垚鍐楅暱鎵嬪唽銆?+- 涓嶉檷浣庨獙鏀躲€佸鏌ャ€侀殣绉佹垨鍙戝竷鏍囧噯銆?+- 鍚屾鏇存柊鐩稿叧 `stage-contract.md` 鎴?`agents/openai.yaml`銆?+
++## 鍛藉悕鍜屽睍绀鸿鍒?+
++- `name` 浣跨敤绋冲畾鑻辨枃 kebab-case銆?+- 涓讳綋瑙勫垯榛樿涓枃銆?+- 涓荤嚎鎶€鑳藉睍绀哄悕鍙娇鐢?`01-04`銆?+- 鍙€夋妧鑳藉睍绀哄悕浣跨敤 `鍙€夛綔...`銆?+
++## 蹇呴』鎵撳洖鐨勬儏鍐?+
++- 鏂?Skill 娌℃湁鏄庣‘瑙﹀彂鍦烘櫙銆?+- 鑱岃矗鍙敱鐜版湁 Skill 鎵挎媴銆?+- 瑙勫垯鍙槸澶嶅埗閫氱敤 Codex 琛屼负銆?+- 淇敼浼氶檷浣庝氦浠樻爣鍑嗐€?+- 鐢ㄦ埛瑕佹眰鍥寸粫鏃х増 `creator` 缁х画鎵╁睍涓荤嚎銆?

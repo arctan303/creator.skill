@@ -1,4 +1,4 @@
 interface:
-  display_name: "Bug Fixer"
+  display_name: "可选｜Bug 修复"
   short_description: "按证据定位缺陷并完成回归验证"
   default_prompt: "使用 $bug-fixer 按证据定位并修复这个缺陷。"
