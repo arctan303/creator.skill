@@ -6,3 +6,4 @@ docs/implementation-progress.md
 docs/release-evidence.md
 docs/Global-Initializer-Skill-Spec.md
 .codex/config.toml
+dist/
