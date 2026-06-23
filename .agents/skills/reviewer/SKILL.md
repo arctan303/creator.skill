@@ -1,6 +1,6 @@
 ---
 name: reviewer
-description: 作为没有参与实现的 fresh mind 子代理审查交付结果。适用于开发阶段完成一个 Phase 或任务后，对照 Product-Spec.md、DEV-PLAN.md、代码变更和验证证据，进行严格的二阶段审查（功能与对齐、质量与安全）。
+description: 作为干净视角（Fresh Mind）的独立子代理对交付物运行二阶段审查（Stage 1: 功能合规与防范围漂移；Stage 2: 源码安全与密钥扫描），非黑即白判定，拒绝形式化盖章。
 ---
 
 # 独立审查员技能 (Reviewer)

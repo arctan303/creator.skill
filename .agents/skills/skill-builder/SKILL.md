@@ -1,6 +1,6 @@
 ---
 name: skill-builder
-description: 当需要为本套产品交付系统创建新技能，或根据 EVOLUTION.md 规则生成自进化补丁/新 Skill 时使用。按照严密的三层模块化架构产出规范一致的技能配置。
+description: 为本产品交付系统创建全新技能或重构已有技能目录。适用于扩展系统功能边界时调用，按照三层模块化架构（SKILL.md / agents / references）与阻断设计输出规范一致的技能包。
 ---
 
 # 技能构建技能 (skill-builder)

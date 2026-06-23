@@ -1,4 +1,4 @@
 interface:
   display_name: "04 项目开发"
-  short_description: "按开发计划连续实现，并通过验证和审查闭环"
+  short_description: "按开发计划编写代码，强制进行终端编译测试验证，并唤醒 reviewer 子代理进行独立交叉审查。适用于初始化脚手架或执行分阶段编码交付"
   default_prompt: "使用 $dev-builder 按 DEV-PLAN.md 完成计划内开发范围，并通过干净子代理审查。"

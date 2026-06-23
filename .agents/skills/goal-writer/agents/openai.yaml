@@ -1,4 +1,4 @@
 interface:
   display_name: "可选｜目标生成"
-  short_description: "生成可交给 Agent 执行的 Goal"
-  default_prompt: "使用 $goal-writer 把下一步整理成可执行 Goal。"
+  short_description: "将复杂的长期托管任务翻译为带量化指标与验证逻辑的 Goal 目标。适用于准备让 Agent 自主连续运转时，防止方向偏移"
+  default_prompt: "使用 $goal-writer 将用户要求的复杂长线任务拆解为包含具体可验证指标的 Goal 目标。"

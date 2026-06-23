@@ -1,6 +1,6 @@
 ---
 name: dev-builder
-description: 根据 DEV-PLAN.md 连续执行项目开发范围。支持新项目初始化脚手架，以及已有项目的分 Phase 开发。通过严格的终端验证和召唤独立子代理审查，形成代码交付的绝对闭环。
+description: 根据 DEV-PLAN.md 进行具体的代码编写与逻辑实现。适用于新项目初始化或已有项目的分阶段开发。强制要求终端验证（编译/测试命令）与唤醒 fresh 的 reviewer 子代理进行闭环审查。
 ---
 
 # 开发技能 (dev-builder)

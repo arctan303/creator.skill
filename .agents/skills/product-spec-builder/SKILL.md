@@ -1,6 +1,6 @@
 ---
 name: product-spec-builder
-description: 将模糊的软件产品想法整理成可直接进入设计和计划的需求文档。适用于用户提出产品创意、功能想法、应用概念、或对现有产品进行改版迭代时使用。通过严格的追问，明确功能边界，并产出或维护 Product-Spec.md。
+description: 将模糊的软件产品创意整理成规范的需求文档。适用于用户提出想法、应用概念、核心功能增删、产品迭代改版时调用，通过高严格度追问明确功能边界并产出或维护 Product-Spec.md。
 ---
 
 # 需求构建技能 (product-spec-builder)

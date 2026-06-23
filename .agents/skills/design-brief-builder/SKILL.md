@@ -1,6 +1,6 @@
 ---
 name: design-brief-builder
-description: 将主观设计意图转成具体、可交接的设计规范。适用于已有产品需求，或用户提出风格方向、视觉语气、UI 感觉、品牌氛围、交互密度等，并需要 Agent 像设计师采访甲方一样产出 Design-Brief.md 的场景。
+description: 将主观的设计感觉转化为具体、可量化的 UI 视觉规范。适用于已有需求后，用户探讨色彩倾向、视觉语气、品牌风格、UI布局密度时调用，产出并维护 Design-Brief.md。
 ---
 
 # 设计规范技能 (design-brief-builder)

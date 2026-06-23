@@ -1,4 +1,4 @@
 interface:
   display_name: "可选｜Bug 修复"
-  short_description: "按证据定位缺陷并完成回归验证"
-  default_prompt: "使用 $bug-fixer 按证据定位并修复这个缺陷。"
+  short_description: "定位并修复软件报错、测试失败或审查拦截的缺陷。适用于报错排查与系统调试，内置四阶段根因分析法，同一问题 3 次修复失败强行中止反思"
+  default_prompt: "使用 $bug-fixer 诊断并修复当前项目中遇到的编译报错、测试失败或运行时缺陷。"

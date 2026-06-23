@@ -1,4 +1,4 @@
 interface:
   display_name: "03 开发计划"
-  short_description: "把需求拆成可运行、可验收的开发阶段"
-  default_prompt: "使用 $dev-planner 把需求拆成可运行、可验收的 DEV-PLAN.md。"
+  short_description: "将需求与设计规范拆解为高精度、可验证的分 Phase 编码步骤，生成/更新 DEV-PLAN.md。适用于编码前或需求变更时拆任务，必须精确到文件路径"
+  default_prompt: "使用 $dev-planner 拆解当前项目需求，生成包含文件路径和验证步骤的 DEV-PLAN.md。"
