@@ -1,4 +1,4 @@
 interface:
   display_name: "01 需求收集"
-  short_description: "将模糊的产品想法与功能创意转化为规范的需求文档，产出或更新 Product-Spec.md。适用于创意构思、新功能讨论或产品改版，明确功能边界与不做什么"
-  default_prompt: "使用 $product-spec-builder 收集并梳理产品想法，明确功能边界并生成/更新 Product-Spec.md。"
+  short_description: "定义 0→1 产品或记录产品变更，明确外部行为、边界与可观察验收标准。"
+  default_prompt: "使用 $product-spec-builder 判断 0→1 或产品变更模式，并生成或更新 docs/Product-Spec.md。"

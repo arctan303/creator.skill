@@ -1,4 +1,4 @@
 interface:
   display_name: "04 项目开发"
-  short_description: "按开发计划编写代码，强制进行终端编译测试验证，并唤醒 reviewer 子代理进行独立交叉审查。适用于初始化脚手架或执行分阶段编码交付"
-  default_prompt: "使用 $dev-builder 按 DEV-PLAN.md 完成计划内开发范围，并通过干净子代理审查。"
+  short_description: "依据产品计划或维护任务契约实施变更，并按 R0/R1/R2 提供验证与审查。"
+  default_prompt: "使用 $dev-builder 识别产品或维护路线，按对应契约实施变更并完成风险分级验证。"

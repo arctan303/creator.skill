@@ -1,4 +1,4 @@
 interface:
   display_name: "可选｜技能构建"
-  short_description: "创建全新的原子技能或维护系统 Skill 结构。适用于扩展系统的能力边界，强制遵循三层模块化与带硬阻断防呆设计"
-  default_prompt: "使用 $skill-builder 创建一个符合系统标准的三层模块化架构新技能。"
+  short_description: "创建或维护原子 Skill，遵循三层结构、明确触发边界和可验证门禁。"
+  default_prompt: "使用 $skill-builder 创建或维护一个符合当前工作流协议的三层结构 Skill。"

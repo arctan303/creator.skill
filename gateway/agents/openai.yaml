@@ -1,4 +1,4 @@
 interface:
-  display_name: "🚀 初始化工作流"
-  short_description: "在当前工作空间部署 creator.skill 全套产品交付技能"
+  display_name: "初始化 creator 工作流"
+  short_description: "在当前工作空间部署或更新 creator.skill，并验证平台、版本和技能清单。"
   default_prompt: "使用 $creator 在当前工作空间初始化 creator.skill 产品交付工作流。"

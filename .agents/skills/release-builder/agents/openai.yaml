@@ -1,4 +1,4 @@
 interface:
   display_name: "可选｜构建发布"
-  short_description: "打包构建、运行敏感路径与硬编码密钥隐私扫描、执行冒烟测试并输出发布包。适用于项目开发完成准备发布或部署"
-  default_prompt: "使用 $release-builder 执行发布前置审计、硬编码密钥与绝对路径扫描，并整理发布日志。"
+  short_description: "识别项目生态，执行原生构建打包、产物冒烟、敏感信息审计与发布准备。"
+  default_prompt: "使用 $release-builder 识别当前项目生态，构建最终产物并完成发布前审计与冒烟验证。"

@@ -1,4 +1,4 @@
 interface:
   display_name: "02 设计规范"
-  short_description: "将抽象的视觉感觉与设计倾向转化为具体的 UI 视觉规范，生成 Design-Brief.md。适用于探讨配色、字体、视觉语气、布局密度与风格锚定"
-  default_prompt: "使用 $design-brief-builder 梳理视觉风格并生成/更新 Design-Brief.md 规范文件。"
+  short_description: "为产品路线把审美词和使用场景转成可验证、可访问的设计规范；视觉维护不触发。"
+  default_prompt: "使用 $design-brief-builder 为 0→1 产品或产品变更生成或更新 docs/Design-Brief.md。"

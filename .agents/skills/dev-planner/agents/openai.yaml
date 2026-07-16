@@ -1,4 +1,4 @@
 interface:
   display_name: "03 开发计划"
-  short_description: "将需求与设计规范拆解为高精度、可验证的分 Phase 编码步骤，生成/更新 DEV-PLAN.md。适用于编码前或需求变更时拆任务，必须精确到文件路径"
-  default_prompt: "使用 $dev-planner 拆解当前项目需求，生成包含文件路径和验证步骤的 DEV-PLAN.md。"
+  short_description: "为 0→1 产品生成完整计划，或为产品变更维护可验证的增量 Phase。"
+  default_prompt: "使用 $dev-planner 根据 Product Spec 判断完整或增量计划，并更新 docs/DEV-PLAN.md。"

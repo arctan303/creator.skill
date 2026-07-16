@@ -1,4 +1,4 @@
 interface:
   display_name: "可选｜自进化"
-  short_description: "分析反馈与错误信号，根据评价模型和反规则膨胀机制对全局协议或特定技能打补丁。适用于沉淀项目教训与优化系统工作流"
-  default_prompt: "使用 $self-evolver 读取 signals.md 信号并更新系统技能规则补丁。"
+  short_description: "采集并合并真实失败信号，达到阈值后以可追溯补丁优化系统规则。"
+  default_prompt: "使用 $self-evolver 检查信号台账，处理达到阈值的规则缺陷并记录验证证据。"

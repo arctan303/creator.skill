@@ -7,3 +7,5 @@ docs/release-evidence.md
 docs/Global-Initializer-Skill-Spec.md
 .codex/config.toml
 dist/
+__pycache__/
+*.pyc

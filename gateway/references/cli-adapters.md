@@ -32,14 +32,20 @@
 
 - AGENTS.md
 - EVOLUTION.md
+- .version
+- .creator-manifest.json
 - .agents/skills/ 目录
+- .codex/evolution/signals.md（已有台账只保留，不覆盖）
 
 ### Claude Code
 
 - CLAUDE.md
 - EVOLUTION.md
+- .version
+- .creator-manifest.json
 - .claude/skills/ 目录
 - .claude/commands/ 目录
+- .claude/evolution/signals.md（已有台账只保留，不覆盖）
 
 ## AGENTS.md 到 CLAUDE.md 转换规则
 

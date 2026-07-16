@@ -1,104 +1,151 @@
 # creator.skill
 
-一套极度硬核、可移植的 AI Agent 产品交付工作流。
+面向 Codex 与 Claude Code 的产品交付工作流。它不把用户的一句话直接当成完整需求，而是先判断任务性质，再选择与风险相称的流程、文档和验证强度。
 
-如果你受够了 AI Agent “上来就盲写代码”、“自嗨式开发”、“自己测自己”、“到处留 TODO 占位符”，那么本系统正是为你准备的。
+主 Agent 名为**创造者（Creovator）**，由 Creator 与 Innovator 组合而来。它的职责不是替用户堆砌流程，而是把表面诉求拆成目的、使用者、场景、成功证据、约束与非目标；只追问真正会改变方向、范围或验收方式的问题。
 
-`creator.skill` 不是为了让 Agent 变得更会写代码，而是通过 **11 个极其严酷的协作技能（Skill）和子代理机制**，强迫 Agent 像一支顶级、冷血且极其遵守纪律的产品研发团队一样工作。
+## 为什么需要它
 
-它支持 **OpenAI Codex CLI** 和 **Claude Code**，一键初始化到任意工作空间。
+许多 Agent 工作流只有一条重型流水线：新产品、改按钮文案、修 CI 都被要求先写完整需求和开发计划。另一类工作流则完全相反，收到一句话便直接改代码，直到交付时才发现目标、边界或验证方式从未明确。
 
----
+creator.skill 将任务分成三条路线：
 
-## 🔥 系统核心理念 (The Hardcore Philosophy)
+| 路线 | 适用场景 | 主要契约 | 典型流程 |
+| --- | --- | --- | --- |
+| 0→1 产品 | 新产品、核心用户或价值主张未确定 | Product Spec，可选 Design Brief，完整 DEV-PLAN | 需求 → 设计 → 计划 → 实施 → 审查 → 发布 |
+| 产品变更 | 新增能力、改变用户可见行为、公开契约或权限边界 | 增量 Product Spec、影响分析、增量 DEV-PLAN | 变更定义 → 必要设计 → 增量计划 → 实施 → 审查 → 发布 |
+| 维护执行 | 修复既定行为、测试/CI、内部重构、文档、依赖维护 | 维护任务契约 | 契约 → 诊断或实施 → 验证 → 按风险审查 |
 
-本系统由 `AGENTS.md` 协议驱动，所有的 Skill 都内置了不可妥协的底线：
+维护任务不强制生成 `Product-Spec.md` 或 `DEV-PLAN.md`。但如果正确行为不清，或修改会改变公开 API、持久化格式、公开数据模型、权限或用户流程，任务必须升级到“产品变更”路线。
 
-1. **二选一引导，终结废话**：严禁问用户“你要什么风格”这种废话，强制提供具体选项（This-or-That）。
-2. **拒绝占位符**：所有的开发计划必须精确到具体文件路径，严禁出现 `TBD` 或 `稍后补充`。
-3. **验证即证据 (Verification is Evidence)**：代码写完必须当场运行终端命令（编译/跑通测试），没看到终端 `0 错误` 输出前，绝不允许宣称完成。
-4. **绝对隔离的交叉审查**：开发者（`dev-builder`）完成开发后，**必须强制召唤独立的子代理（`reviewer`）** 进行干净视角的代码审查。自己测自己的代码等于没测。
-5. **隐私防漏底线**：发布前强制执行命令行扫描。若发现本地文件路径、本地 DB 文件或硬编码 API Key 被打包，发布动作将被立即强行中止！
+## 维护任务契约
 
----
+维护路线开始前至少明确以下内容：
 
-## ⚙️ 核心架构与技能一览
+```markdown
+- 目标 / 预期行为：
+- 现象与证据：
+- 修改范围：
+- 非目标：
+- 完成证据 / 验证命令：
+- 风险级别：R0 / R1 / R2
+```
 
-系统的核心工作流为：**需求 → 设计 → 计划 → 开发 → 审查 → 发布**。任何后续阶段不可跳过前置阶段的严格检验。
+R0、R1 的短任务可以只在当前会话中记录；R2、跨会话、多阶段或多人协作任务写入 `docs/maintenance/<task-id>.md`。
 
-### 📌 四大核心主线 (Core Pipeline)
+## 风险与验证
 
-| 技能名称 | 角色定位 | 核心能力与门禁 | 产出物 |
-|---------|----------|--------------|--------|
-| `product-spec-builder` | 铁面产品经理 | 双模启动（0-1或迭代），不集齐 6 大核心维度（定位、流程、AI 赋能等）绝不输出文档。 | `Product-Spec.md` |
-| `design-brief-builder` | 高级 UI 规范师 | 废除主观问卷，实行“真实产品锚定”和“感受翻译”，将玄学词汇翻译成具体的视觉参数。 | `Design-Brief.md` |
-| `dev-planner` | 冷酷架构师 | 实行洋葱剥皮法拆解任务。无占位符原则，计划必须精确到文件级。技术栈必须经过联网验证兼容性。 | `DEV-PLAN.md` |
-| `dev-builder` | 资深全栈开发 | **验证即证据**：强制要求代码本地编译成功；<br>**强制闭环**：代码写完强制派发独立的子代理审查。 | 代码、验证证据 |
+| 级别 | 典型范围 | 最低门禁 |
+| --- | --- | --- |
+| R0 | 文案、注释、无行为变化的局部文档 | 结构、链接、格式或静态检查 |
+| R1 | 局部逻辑、低影响修复、有限配置变更 | 针对性测试、diff 自查、回归证据 |
+| R2 | 数据迁移、权限、安全、发布、跨模块或不确定风险 | 完整验证与 fresh reviewer 独立审查 |
 
-### 🛠️ 四大硬核支撑技能 (Peripheral Support)
+风险不清时向上取级。任何路线都不能跳过目标、权限边界和可复现的验证证据。
 
-| 技能名称 | 触发场景 | 核心防御机制 |
-|---------|----------|-------------|
-| `bug-fixer` | 报错排查、修 Bug | 实行**“四阶段调试法”**（找证据 -> 分析 -> 假设 -> 修复）。内置防死循环机制：同一问题修 3 次失败，强行停机反思。 |
-| `release-builder` | 打包、部署、上线 | 内置严苛的**终端隐私扫描流水线**。发布前强制执行真实平台的安装与在线冒烟测试。 |
-| `design-maker` | 产出设计稿/线框图 | 强制要求先提取**“全局变量”**和**“可复用组件”**，内置状态完备校验（空状态/加载态必须有）。 |
-| `skill-builder` | 扩展系统自身技能 | 强制三层模块化法则，自建技能必须带有强阻断防呆设计。 |
+## 内置技能
 
-### 🧩 系统引擎与调度
+发布包中的实际技能清单和数量以 `.creator-manifest.json` 为准。当前源码包含：
 
-- `gateway`：负责全套 Skill 的下发、安装与跨工作空间初始化。
-- `reviewer`：干净视角的**独立审查子代理**，是把控代码质量的最后一道闸门。
-- `self-evolver`：从真实的 `feedback` 中提取经验，自动修改技能或沉淀补丁，使系统越用越强。
-- `goal-writer`：负责将长线任务翻译为极其明确且带检验指标的执行指令。
+| Skill | 职责 |
+| --- | --- |
+| `product-spec-builder` | 收敛 0→1 产品或产品变更，维护 Product Spec |
+| `design-brief-builder` | 将产品目标转成可验证的视觉与交互约束 |
+| `design-maker` | 根据需求与设计规范产出设计稿、原型或线框 |
+| `dev-planner` | 生成完整或增量开发计划 |
+| `dev-builder` | 按产品契约或维护任务契约实施并验证 |
+| `bug-fixer` | 证据驱动地复现、定位和修复既定行为缺陷 |
+| `reviewer` | 独立核验契约符合性、回归、安全和风险分级 |
+| `release-builder` | 识别技术栈，完成构建、隐私检查和发布准备 |
+| `goal-writer` | 将长线目标转换为可持续执行的 Goal |
+| `self-evolver` | 从真实失败和纠正中积累信号并生成可验证补丁 |
+| `skill-builder` | 创建或维护符合本工作流约束的 Skill |
 
----
+## 自进化如何触发
 
-## 🚀 快速开始
+安装包会预建 `.codex/evolution/signals.md` 或 `.claude/evolution/signals.md`。以下事件会在安全检查点记录或合并信号：用户明确纠正、规则遗漏导致重复要求、测试或审查发现规则本应阻止的问题、规则冲突、同类人工绕行再次出现，以及用户明确要求吸取教训。
 
-### 1. 全局安装网关 Skill
+- 普通信号首次进入“观察中”，同类累计 3 次后转为“待处理”。
+- 安全、隐私、数据损坏、错误发布或越权等严重事件单次直达“待处理”。
+- 同类能力盲区出现 5 次以上时，才评估是否创建新 Skill。
+- 改变主流程、审查标准或安全边界的补丁必须先由用户确认。
 
-网关 Skill 是你唯一需要手动获取的东西。安装后，你可以在任何工作空间一键初始化流水线。
+个人偏好、无证据猜测和一次性外部故障不会被包装成“系统进化”。
 
-**让 Agent 自动安装**（强烈推荐，直接对你的 CLI 说）：
-> “帮我从 https://github.com/arctan303/creator.skill 安装 creator skill”
+## 安装与初始化
 
-**手动解压安装**：
-去 [Releases](https://github.com/arctan303/creator.skill/releases/latest) 下载 `creator-gateway.zip`，然后解压：
-- **Codex**: 解压到 `~/.codex/skills/creator/`
-- **Claude Code**: 解压到 `~/.claude/skills/creator/` 并删除里面的 `agents/` 文件夹。
+### 1. 安装 gateway Skill
 
-安装后请重启你的 CLI 会话。
+从 [最新 Release](https://github.com/arctan303/creator.skill/releases/latest) 下载 `creator-gateway.zip`，解压到对应目录：
 
-### 2. 初始化你的项目空间
+- Codex：`~/.codex/skills/creator/`
+- Claude Code：`~/.claude/skills/creator/`
 
-在任意空项目或已有项目的目录下，对 Agent 说：
-> “初始化 creator 工作流”
+也可以直接让 Agent 执行：
 
-系统会自动从云端拉取最新的 `creator.claude.zip` 或 `creator.codex.zip`，并在当前目录释放 11 个原子技能和核心协议（`AGENTS.md`）。
+> 从 https://github.com/arctan303/creator.skill 安装 creator skill。
 
-### 3. 开始干活
+安装后重启 CLI 会话，使 Skill 被重新发现。
 
-初始化完成后，直接甩出你的需求：
-> “我想做一个带 AI 翻译的浏览器插件”
+### 2. 初始化项目工作流
 
-`product-spec-builder` 会立刻接管对话，按极其严格的门禁对你进行灵魂拷问，随后整个研发流水线便会严丝合缝地运转起来。
+在目标项目目录中对 Agent 说：
 
----
+> 初始化 creator 工作流。
 
-## 📦 多平台适配与发布机制
+gateway 会检测当前 CLI，下载 `creator.codex.zip` 或 `creator.claude.zip`，检查现有文件冲突，释放到项目根目录，并校验 `.version`、`.creator-manifest.json`、技能目录与自进化台账。更新已有工作流时，现有信号台账不会被空模板覆盖。
 
-仓库维护一套源文件，每次推送会自动触发 GitHub Actions 构建，生成两套适配包：
+### 3. 直接描述任务
 
-| 特性 | OpenAI Codex | Claude Code |
-|------|-------|-------------|
+初始化完成后无需先选择 Skill。直接描述目标即可，例如：
+
+> 做一个供仓库管理员使用的依赖升级看板。
+
+> 给现有导出功能增加 CSV 格式和权限限制。
+
+> 修复 Windows 下构建产物路径错误，外部行为保持不变。
+
+创造者会先输出当前路线；只有缺失信息确实会改变交付结果时才继续追问。
+
+## 双平台发布结构
+
+| 内容 | Codex | Claude Code |
+| --- | --- | --- |
 | 系统指令 | `AGENTS.md` | `CLAUDE.md` |
 | 技能目录 | `.agents/skills/` | `.claude/skills/` |
-| 界面入口 | `agents/openai.yaml` 菜单配置 | `.claude/commands/*.md` 快捷指令 |
+| 技能入口 | `agents/openai.yaml` | `.claude/commands/*.md` |
+| 自进化台账 | `.codex/evolution/signals.md` | `.claude/evolution/signals.md` |
 
-- 自动化部署：修改 `VERSION` 文件推送到 `main` 分支，CI 自动输出三大 Release 压缩包。
-- 手动本地打包：运行 `python scripts/build_release.py`。
+修改 `VERSION` 并推送到 `main` 后，GitHub Actions 会构建并验证：
 
----
+- `creator.codex.zip`
+- `creator.claude.zip`
+- `creator-gateway.zip`
 
-## 📄 License
-MIT License
+发布 manifest 由源码目录动态生成，包含平台、语义版本、技能根目录与完整技能清单；gateway 不会用安装日期覆盖版本。
+
+## 本地开发
+
+```powershell
+python scripts/build_release.py
+python scripts/verify_build.py
+```
+
+构建器会阻止以下问题进入 Release：缺失或重复的命令映射、缺少 `openai.yaml` 必填字段、manifest 与压缩包内容不一致、Claude Code 包残留 Codex 路径或 `$skill` 语法、版本不一致以及 gateway 结构缺失。
+
+源码结构：
+
+```text
+creator.skill/
+├─ AGENTS.md                 # 全局路由、风险和交付协议
+├─ EVOLUTION.md              # 自进化信号与补丁协议
+├─ .agents/skills/           # Skill 单一源码
+├─ gateway/                  # 初始化与升级 Skill
+├─ scripts/                  # 构建和发布包验证
+├─ docs/                     # 决策与工作流记录
+└─ VERSION                   # 语义版本
+```
+
+## License
+
+[MIT License](LICENSE)
