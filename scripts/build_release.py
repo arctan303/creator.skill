@@ -148,6 +148,18 @@ def write_evolution_signals(path: Path):
     path.write_text(EVOLUTION_SIGNALS_TEMPLATE, encoding="utf-8")
 
 
+def copy_prompt_eval_assets(stage: Path):
+    """复制运行时自进化所需的 Prompt 用例和评测脚本。"""
+    source_cases = REPO_ROOT / ".creator" / "tests" / "prompt-cases"
+    source_evaluator = REPO_ROOT / ".creator" / "scripts" / "evaluate_prompt_cases.py"
+    if not source_cases.exists() or not source_evaluator.exists():
+        raise ValueError("缺少 Prompt 回归用例或评测脚本")
+    shutil.copytree(source_cases, stage / ".creator" / "tests" / "prompt-cases")
+    scripts_dir = stage / ".creator" / "scripts"
+    scripts_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source_evaluator, scripts_dir / source_evaluator.name)
+
+
 def write_release_manifest(
     stage: Path,
     skills: List[str],
@@ -230,6 +242,9 @@ def build_codex(skills: List[str], version: str):
     shutil.copy2(REPO_ROOT / "EVOLUTION.md", stage / "EVOLUTION.md")
     print("  OK: EVOLUTION.md")
 
+    copy_prompt_eval_assets(stage)
+    print("  OK: Prompt 回归用例与评测脚本")
+
     # 复制 .agents/skills/（完整目录）
     dest_skills = stage / ".agents" / "skills"
     for skill_name in skills:
@@ -280,6 +295,9 @@ def build_claude(skills: List[str], version: str):
     evo_claude = convert_agents_to_claude(evo_text)
     (stage / "EVOLUTION.md").write_text(evo_claude, encoding="utf-8")
     print("  OK: EVOLUTION.md（已转换）")
+
+    copy_prompt_eval_assets(stage)
+    print("  OK: Prompt 回归用例与评测脚本")
 
     # 复制 skills 到 .claude/skills/（去除 agents/ 目录）
     dest_skills = stage / ".claude" / "skills"

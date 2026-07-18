@@ -30,6 +30,9 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
+      - name: Validate prompt contracts
+        run: python .creator/scripts/evaluate_prompt_cases.py
+
       - name: Build release packages
         run: python scripts/build_release.py
 

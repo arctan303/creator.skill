@@ -2,6 +2,30 @@
 
 记录每次发布的变更内容。
 
+## [1.3.0] - 2026-07-18
+
+### Prompt 契约
+
+- 依据 OpenAI 官方提示词工程建议重构 `AGENTS.md`：按 Identity、Goals、Decision flow、Instructions、Output contracts、Boundaries、Examples 与 Runtime context 分层，区分稳定指令和动态任务数据。
+- 11 个 Skill 统一为 Purpose、Trigger、Required context、Workflow、Output、Stop or escalate 与 References 七段入口；详细模板和正反例保留在阶段契约，减少冗长 Prompt 的规则污染。
+- 增加 16 个代表性 Prompt 行为用例和静态/响应双模式评测脚本，覆盖三路由、追问停止、视觉边界、自进化、发布授权与异常恢复。
+- CI 在构建发布包前执行 Prompt 契约评测；没有 fresh Agent 响应时只声明静态结构通过，不冒充模型行为评测。
+- Codex 与 Claude Code 发布包在 `.creator/` 专属命名空间内置 Prompt 用例和评测脚本，使安装后的自进化补丁能够执行同一回归契约；发布验证会在两种真实解包结构中运行该脚本。
+- gateway 将 `.creator/` 纳入冲突和安装验证；更新时按 case ID 合并项目自进化用例，同 ID 差异必须用户确认，禁止静默覆盖。
+
+### 审查收敛与中断恢复
+
+- reviewer 使用“契约版本 + diff + 验证证据”形成审查指纹；相同指纹只允许一个 fresh reviewer，避免重复终审消耗资源。
+- 首轮审查一次列全问题，修复后新 diff 最多进行一次聚焦复审；相同阻塞问题连续两轮存在时停止循环并报告阻塞。
+- 模型容量、网络、工具或宿主故障统一标记为“中断”，不算审查失败；工作流保存恢复检查点，恢复后只继续未完成步骤。
+- `goal-writer` 增加重试上限、reviewer 收敛、中断条件、恢复检查点与授权边界，禁止无限执行目标。
+
+### 自进化与文档
+
+- 每个已应用的自进化补丁必须绑定至少一个可复现的 Prompt 行为回归用例；无法建立回归时只保留信号，不直接修改规则。
+- README 重写为面向用户和维护者的统一入口，补充工作原理、容量中断处理、Prompt 评测和双平台发布说明。
+- 记录 1.2.0 实际使用中的容量中断事件：平台容量是直接原因，无界重复 reviewer 是资源放大因素，二者分别处理。
+
 ## [1.2.0] - 2026-07-16
 
 ### 架构重构

@@ -1,4 +1,4 @@
 interface:
   display_name: "可选｜目标生成"
-  short_description: "将长期托管任务转成带量化指标、边界与验证逻辑的 Goal。"
-  default_prompt: "使用 $goal-writer 将用户要求的复杂长线任务拆解为包含具体可验证指标的 Goal 目标。"
+  short_description: "将长期任务转成有边界、可恢复、可验证且会停止的 Goal。"
+  default_prompt: "使用 $goal-writer 将长期任务写成有验收证据、重试上限、中断检查点和授权边界的 Goal。"

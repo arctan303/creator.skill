@@ -3,6 +3,9 @@
 
 import json
 import re
+import subprocess
+import sys
+import tempfile
 import zipfile
 from pathlib import Path
 from typing import List, Set
@@ -33,6 +36,9 @@ def verify_release_structure(
         required = {
             instruction_file,
             "EVOLUTION.md",
+            ".creator/tests/prompt-cases/cases.json",
+            ".creator/tests/prompt-cases/README.md",
+            ".creator/scripts/evaluate_prompt_cases.py",
             signal_file,
             ".creator-manifest.json",
             ".version",
@@ -40,6 +46,16 @@ def verify_release_structure(
         missing = sorted(required - names)
         if missing:
             fail(f"{zip_path.name} 缺少关键文件: {', '.join(missing)}")
+        forbidden_root_assets = {
+            "tests/prompt-cases/cases.json",
+            "scripts/evaluate_prompt_cases.py",
+        }
+        leaked = sorted(forbidden_root_assets & names)
+        if leaked:
+            fail(
+                f"{zip_path.name} Prompt 资产未放入 .creator 专属目录: "
+                f"{', '.join(leaked)}"
+            )
 
         manifest = json.loads(read_text(archive, ".creator-manifest.json"))
         if manifest.get("schema_version") != 1:
@@ -145,7 +161,37 @@ def verify_gateway():
         missing = sorted(required - names)
         if missing:
             fail(f"{zip_path.name} 缺少关键文件: {', '.join(missing)}")
+        gateway_contract = read_text(archive, "SKILL.md") + read_text(
+            archive, "references/cli-adapters.md"
+        )
+        for phrase in (
+            ".creator/tests/prompt-cases/cases.json",
+            ".creator/scripts/evaluate_prompt_cases.py",
+            "按 `id` 合并",
+            "禁止静默覆盖",
+        ):
+            if phrase not in gateway_contract:
+                fail(f"{zip_path.name} gateway 缺少 Prompt 资产保护规则: {phrase}")
     print(f"  OK: {zip_path.name} 网关结构完整")
+
+
+def verify_packaged_prompt_eval(zip_path: Path):
+    """在解包后的真实目录结构中运行 Prompt 契约评测。"""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        with zipfile.ZipFile(zip_path) as archive:
+            archive.extractall(temp_dir)
+        result = subprocess.run(
+            [sys.executable, ".creator/scripts/evaluate_prompt_cases.py"],
+            cwd=temp_dir,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+        )
+        if result.returncode != 0:
+            fail(
+                f"{zip_path.name} 内置 Prompt 评测失败:\n{result.stdout.strip()}"
+            )
+    print(f"  OK: {zip_path.name} 内置 Prompt 评测可运行")
 
 
 def main():
@@ -164,6 +210,8 @@ def main():
         ".claude/evolution/signals.md",
         "claude-code",
     )
+    verify_packaged_prompt_eval(DIST_DIR / "creator.codex.zip")
+    verify_packaged_prompt_eval(DIST_DIR / "creator.claude.zip")
     verify_claude_conversion(claude_manifest, claude_names)
     verify_gateway()
     print("\n全部发布包验证通过。")

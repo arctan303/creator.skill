@@ -1,5 +1,53 @@
 # creator.skill 工作流优化记录
 
+## 1.3.0 Prompt 契约与异常恢复
+
+### 官方指南转化为工程约束
+
+本版本依据 OpenAI 官方提示词工程资料确认并实施以下方向：
+
+- 指令放在上下文之前，稳定规则与动态输入分层。
+- 目标、范围、输出格式与停止条件写具体，减少依赖模型猜测。
+- 使用 Markdown 标题和 XML 风格运行时标签隔离不同来源的数据。
+- 对关键边界同时提供正例和反例，优先说明应该做什么。
+- 修改 Prompt 前建立代表性用例，结构校验与 fresh Agent 行为评测分开报告。
+
+因此 `AGENTS.md` 采用八段统一结构，11 个 Skill 采用七段统一入口；详细模板和 Examples 下沉到 `references/stage-contract.md`。`.creator/tests/prompt-cases/cases.json` 保存关键行为契约，`.creator/scripts/evaluate_prompt_cases.py` 负责静态检查并可评分 fresh Agent 的结构化响应。
+
+### 1.2.0 现场事件与根因
+
+实际长任务在多轮终审阶段停止，界面明确显示：`Selected model is at capacity. Please try a different model.`
+
+- **直接原因**：所选模型达到容量上限，属于平台外部中断；不是业务测试失败，也不是 reviewer 给出的不通过结论。
+- **工作流放大因素**：当时已累计大量子智能体完成记录，并出现重复终审。1.2.0 只要求 R2 fresh reviewer，没有规定同一 diff 去重、最大复审轮次和容量中断后的恢复动作。
+- **不能得出的结论**：不能仅凭这次事件认定 1.2.0 Prompt 本身让 Agent 主动停止，也不能把切换模型当作对重复审查设计的修复。
+
+### 已确认的修正规则
+
+1. 审查输入用“契约版本 + diff + 验证证据”形成稳定指纹；同一指纹只运行一个 fresh reviewer。
+2. reviewer 首轮一次列全问题，实施者批量修复；新 diff 最多一次聚焦复审。
+3. 同一阻塞问题连续两轮仍存在，停止继续生成 reviewer，报告实现、契约或环境阻塞。
+4. 模型容量、网络、工具或宿主故障标记为“中断”，不算审查轮次。
+5. 中断时保存恢复检查点：原因、已完成内容、当前 diff、最后成功验证、未完成动作、恢复命令。
+6. 恢复后只继续未完成步骤；短工具调用可重试一次，长期测试和 reviewer 不盲目重跑。
+
+### 评测决策
+
+- 当前用例集包含 16 个行为案例，覆盖 routing、questioning、visual-routing、review-convergence、interruption-recovery、evolution 和 release-boundary。
+- 无 `--responses` 时只验证 Prompt 源结构、用例字段和界面元数据。
+- fresh Agent 响应必须只看到原始请求和当前发布包，不能泄露期望答案；评分时检查路线、风险、主技能、追问数量、升级状态和新增 reviewer 数量。
+- 响应评分默认要求覆盖全部用例；`--allow-partial` 仅用于探索性抽样，不作为全量回归门禁。
+- 发布包必须携带用例与评测脚本，并在 Codex/Claude Code 的真实解包目录中验证可运行，避免自进化规则引用源码仓库才有的资产。
+- Prompt 资产放入工作流专属 `.creator/`，不占用用户项目的 `tests/` 与 `scripts/`；gateway 更新时按 case ID 合并，冲突项必须确认，保留项目累积的自进化用例。
+- 每次自进化补丁至少新增或关联一个行为用例，防止同类失败回归。
+
+### 本次验证留痕
+
+- 两个 fresh Agent 在不读取期望答案的前提下抽样处理 8 个原始请求，最终 8/8 通过结构化评分。首轮暴露的差异促使修正了“追问却标 continue”“当前请求本身已构成发布授权”等错误 fixture，并明确 `dev-builder`/`bug-fixer` 与子步骤/整体阻塞的边界。
+- fresh reviewer 首轮发现 4 项：发布包缺运行时评测资产、产品变更入口重叠、响应子集可误报通过、reviewer 模板漏“中断”。四项均已修复并建立反向检查。
+- 唯一一次聚焦复审确认上述四项修复，同时发现新增资产可能与用户项目根路径冲突。最终将资产迁入 `.creator/`，gateway 增加冲突检测、按 case ID 合并、静默覆盖禁令和安装后评测。
+- 按“两轮后停止继续生成 reviewer”的收敛规则，没有启动第三轮 reviewer。最终相邻修复由 Python 3.6 构建、两平台真实解包评测、gateway 结构校验、严格 YAML、Markdown 链接和 diff 检查覆盖；交接时必须如实披露这一审查边界。
+
 ## 1.2.0 决策结论
 
 - 主 Agent 中文名为“创造者”，英文名采用 **Creovator**（Creator + Innovator）。仓库名和 Skill 名继续使用 `creator`，避免破坏兼容性。

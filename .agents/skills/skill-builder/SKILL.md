@@ -1,52 +1,50 @@
 ---
 name: skill-builder
-description: 为本产品交付系统创建全新技能或重构已有技能目录。适用于扩展系统功能边界时调用，按照三层模块化架构（SKILL.md / agents / references）与阻断设计输出规范一致的技能包。
+description: 为 creator.skill 创建或重构技能目录。用于扩展明确且不与现有技能重叠的能力边界；按统一 Prompt 契约、三层目录和行为用例构建可触发、可验证、可阻断的技能包。
 ---
 
 # 技能构建技能 (skill-builder)
 
-你正在维护工作流的可复用能力边界。新 Skill 必须专业、可触发、可验证，并包含与风险相称的门禁；不要写成模糊的百科式说明。
+## Purpose
 
-## [依赖检测]
+建立职责明确、可触发、可验证并与三路由及风险门禁一致的可复用技能，而不是增加百科式说明。
 
-创建新技能前：
-1. 必须读取当前的 `AGENTS.md`，了解整个工厂的纪律大盘。
-2. 必须读取 1～2 个职责最接近的现有技能（如 `dev-builder` 或 `product-spec-builder`），复用结构、术语和交接方式。
+## Trigger
 
-## [第一性原则]
+- 新能力无法由现有 Skill 合理承担。
+- 现有 Skill 需要重构其触发边界、契约或验证方式。
+- 纯文案调整或通用 Agent 行为不需要新 Skill。
 
-1. **参照现有法 (Reference-Existing)**：永远不要自己凭空发明新格式！写之前找 1~2 个最接近的现有 Skill。如果是对话采集类，参考 `product-spec-builder`；如果是执行校验类，参考 `dev-builder`。
-2. **最小必要规则**：只加有用的门禁，不加废话。不能变成冗长的教科书。
-3. **可触发原则**：你创建的 Skill 必须有明确的“启动条件”、“依赖检测”和“输出结束边界”。
+## Required context
 
-## [三层模块化创建规范]
+- 当前 `AGENTS.md`。
+- 1～2 个职责最接近的现有 Skill 及阶段契约。
+- 新能力的触发/非触发场景、输入、输出、合格标准和红线。
+- 至少一个正例、一个边界反例和可自动检查的行为用例。
 
-本框架实行严格的三层隔离，你在写新 Skill 时必须遵守：
+## Workflow
 
-1. **第一层：原子能力 (Section 模块化)**
-   在编写 `SKILL.md` 时，必须使用方括号 `[]` 标注独立的能力模块，常见的原子模块有：
-   - `[依赖检测]`：定义没有哪些文件不能开工。
-   - `[第一性原则]`：该技能的最核心底线。
-   - `[清单 / 检查项]`：干这个活儿必须涵盖的要点。
-   - `[工作流]`：一、二、三、四步执行顺序。
-   这使得任意一个模块都能插拔。
+1. 先证明职责不与现有 Skill 重叠，并确定三路由中的位置。
+2. 创建 `SKILL.md`、`agents/openai.yaml` 和必要的 `references/stage-contract.md`。
+3. `SKILL.md` 使用 Purpose、Trigger、Required context、Workflow、Output、Stop or escalate、References 七个统一章节。
+4. 将详细模板、检查表和 Examples 放入阶段契约，入口保持短而明确。
+5. 更新 Prompt 用例集、YAML 展示信息和相关文档。
+6. 运行结构校验、YAML 解析、Prompt 契约评测、构建与验证。
 
-2. **第二层：技能聚合 (SKILL.md 本身)**
-   组合第一层的各个模块，形成一个解决特定问题的 `SKILL.md`。必须简短精炼，不要把长篇大论的“验收合同”写在主文件里，可以通过 `[参考]` 链接到外置文档（如 `references/stage-contract.md`）。
+## Output
 
-3. **第三层：全局工作流同步**
-   当你创建或修改好一个 `SKILL.md` 后，你的工作没完：
-   - 必须确认新 Skill 有没有在系统的主线或支线中占据一席之地。
-   - 如果需要，必须修改最外层的 `AGENTS.md` 中的“Skill 调用规则”，补充新 Skill 的触发场景。
-   - 为 Codex 菜单创建并校验 `agents/openai.yaml`；描述和默认提示必须与 SKILL.md 一致。
-   - 如果该 Skill 要进入发布包，在 `scripts/build_release.py` 的命令名映射中登记 Claude Code 命令名。发布 manifest 和 Skill 数量由构建脚本从目录自动生成，不手工填写数量。
+- 完整技能目录和职责说明。
+- 触发/非触发边界、阶段契约与 Examples。
+- `agents/openai.yaml` 展示名、描述和显式引用 `$skill-name` 的默认提示。
+- 新增或更新的行为用例和验证证据。
 
-## [红线]
+## Stop or escalate
 
-- 不写长篇空泛文字；关键规则应说明触发条件、动作和可检查结果。
-- 新 Skill 的 frontmatter 必须包含标准的 YAML `name` 和 `description`，用于系统级别的发现路由。
-- 不得在网关、验证脚本或文档中另行写死 Skill 总数；以构建生成的 `.creator-manifest.json` 为准。
-- 不得引入与 `AGENTS.md` 冲突的规则，例如允许跳过当前风险级别要求的审查。
+- 职责可由现有 Skill 承担：修改现有 Skill，不新增目录。
+- 变更破坏三路由、风险分级、权限或发布边界：停止并请求确认。
+- 没有可测试边界或只复制通用行为：打回。
+- 变更降低交付、审查、隐私或发布标准：不得实施。
 
-## 参考
-正式创建前，仔细体会已有的技能结构。
+## References
+
+执行前读取 [stage-contract.md](references/stage-contract.md)。

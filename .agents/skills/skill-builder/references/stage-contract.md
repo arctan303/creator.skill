@@ -8,11 +8,13 @@
 
 ## SKILL.md 必须说明
 
-- 什么时候用
-- 输入是什么
-- 输出是什么
-- 做到什么算合格
-- 什么红线不能碰
+- `## Purpose`
+- `## Trigger`
+- `## Required context`
+- `## Workflow`
+- `## Output`
+- `## Stop or escalate`
+- `## References`
 
 ## 新增 Skill 合格标准
 
@@ -23,6 +25,7 @@
 - 有清楚输入、输出、合格标准和红线。
 - 有 `agents/openai.yaml` 展示名、描述和默认提示。
 - 必要时有 `references/stage-contract.md`。
+- 有至少一个正例、一个边界反例，以及相应 Prompt 行为用例。
 
 ## 修改 Skill 合格标准
 
@@ -32,6 +35,7 @@
 - 不把主体写成冗长手册。
 - 不降低验收、审查、隐私或发布标准。
 - 同步更新相关 `stage-contract.md` 或 `agents/openai.yaml`。
+- 同步更新行为用例并运行 Prompt 契约评测。
 
 ## 命名和展示规则
 
