@@ -246,6 +246,68 @@
         "max_new_reviewers": 0
       },
       "rationale": "Goal 必须有停止与恢复条件，不能用无限重试扩大资源和权限边界。"
+    },
+    {
+      "id": "scope-adopt-non-goal-with-record",
+      "category": "scope-reconciliation",
+      "input": "Phase 8 承接 Product Spec 非目标中的“不新增站内搜索”，变更记录 CHANGE-42 已确认目的、范围与验收标准。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R2",
+        "primary_skill": "dev-planner",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue"
+      },
+      "rationale": "承接既有非目标但已有变更记录，规划时应修订该声明并排入 Spec 更新任务，不需要重新访谈。"
+    },
+    {
+      "id": "scope-adopt-non-goal-without-record",
+      "category": "scope-reconciliation",
+      "input": "把 Spec 非目标里“不新增站内搜索”的搜索功能做出来，但没有变更记录。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R2",
+        "primary_skill": "product-spec-builder",
+        "question_min": 1,
+        "question_max": 2,
+        "escalation": true,
+        "status": "needs-input"
+      },
+      "rationale": "承接既有非目标但无变更记录，先回 product-spec-builder 记录变更，不直接规划 Phase。"
+    },
+    {
+      "id": "batch-defer-small-copy",
+      "category": "batch-review",
+      "input": "把首页标题文案从“欢迎”改成“你好”，其他行为不变。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R0",
+        "primary_skill": "dev-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "deferred": true
+      },
+      "rationale": "明确 R0 文案小改由当前会话直接执行并进入待复查队列，不派遣子代理，也不单独触发审查。"
+    },
+    {
+      "id": "batch-no-defer-permission",
+      "category": "batch-review",
+      "input": "把用户最低权限等级从 2 改成 3，别的都不动。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R2",
+        "primary_skill": "product-spec-builder",
+        "question_min": 1,
+        "question_max": 2,
+        "escalation": true,
+        "status": "needs-input",
+        "deferred": false
+      },
+      "rationale": "权限边界变化必须升级为产品变更并即时验证，绝不能进入批处理待复查队列。"
     }
   ]
 }

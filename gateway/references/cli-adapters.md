@@ -2,11 +2,11 @@
 
 ## 环境检测
 
-判断当前 CLI 类型的方式：
+判断当前 CLI 类型的方式（按优先级）：
 
-- 存在 ~/.codex/ 目录 → Codex
-- 存在 ~/.claude/ 目录 → Claude Code
-- 都存在时询问用户
+1. **技能自身安装位置**：gateway `SKILL.md` 位于 `~/.codex/skills/creator/` → Codex；位于 `~/.claude/skills/creator/` → Claude Code。
+2. **目录存在性回退**：存在 `~/.codex/` 目录 → Codex；存在 `~/.claude/` 目录 → Claude Code。
+3. **仍无法判断时**才询问用户。
 
 ## 目录映射
 

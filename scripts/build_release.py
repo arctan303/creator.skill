@@ -118,6 +118,14 @@ def convert_agents_to_claude(text: str) -> str:
     return result
 
 
+def inject_version_line(text: str, version: str) -> str:
+    """在系统指令顶部注入可读的版本行，供安装后直接查看版本。"""
+    line = "> 工作流版本：{}\n\n".format(version)
+    if line.rstrip("\n") in text:
+        return text
+    return line + text
+
+
 def generate_command_md(description: str, prompt: str) -> str:
     """生成一个 Claude Code slash command 的 md 文件内容。"""
     # 去掉 prompt 中的 $skill-name 格式（Codex 专属语法），替换为纯名称
@@ -234,9 +242,12 @@ def build_codex(skills: List[str], version: str):
         shutil.rmtree(stage)
     stage.mkdir(parents=True)
 
-    # 复制 AGENTS.md
-    shutil.copy2(REPO_ROOT / "AGENTS.md", stage / "AGENTS.md")
-    print("  OK: AGENTS.md")
+    # 复制 AGENTS.md（顶部注入版本行）
+    agents_text = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    (stage / "AGENTS.md").write_text(
+        inject_version_line(agents_text, version), encoding="utf-8"
+    )
+    print(f"  OK: AGENTS.md (工作流版本 {version})")
 
     # 复制 EVOLUTION.md
     shutil.copy2(REPO_ROOT / "EVOLUTION.md", stage / "EVOLUTION.md")
@@ -284,11 +295,13 @@ def build_claude(skills: List[str], version: str):
         shutil.rmtree(stage)
     stage.mkdir(parents=True)
 
-    # 转换 AGENTS.md → CLAUDE.md
+    # 转换 AGENTS.md → CLAUDE.md（转换后注入版本行）
     agents_text = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
     claude_text = convert_agents_to_claude(agents_text)
-    (stage / "CLAUDE.md").write_text(claude_text, encoding="utf-8")
-    print("  OK: CLAUDE.md（已转换）")
+    (stage / "CLAUDE.md").write_text(
+        inject_version_line(claude_text, version), encoding="utf-8"
+    )
+    print(f"  OK: CLAUDE.md（已转换，工作流版本 {version}）")
 
     # 复制 EVOLUTION.md（也需要转换路径引用）
     evo_text = (REPO_ROOT / "EVOLUTION.md").read_text(encoding="utf-8")

@@ -86,6 +86,14 @@ def verify_release_structure(
             fail(f"{zip_path.name} manifest version 与 .version 不一致")
         if version != SOURCE_VERSION:
             fail(f"{zip_path.name} 版本 {version} 与源码 VERSION {SOURCE_VERSION} 不一致")
+
+        instruction_text = read_text(archive, instruction_file)
+        version_line = "工作流版本：" + version
+        if version_line not in instruction_text:
+            fail(
+                f"{zip_path.name} 系统指令 {instruction_file} 未注入版本行: "
+                f"{version_line}"
+            )
         if manifest.get("platform") != expected_platform:
             fail(f"{zip_path.name} manifest platform 不正确")
         if manifest.get("skill_root") != skill_prefix.rstrip("/"):
@@ -131,6 +139,11 @@ def verify_claude_conversion(manifest: dict, names: Set[str]):
                 fail(f"CLAUDE.md 缺少预期平台引用: {expected}")
             print(f"  OK: CLAUDE.md 包含 {expected!r}")
 
+        broken = "转换为 `CLAUDE.md`"
+        if broken in claude_md:
+            fail(f"CLAUDE.md 存在自指转换残留: {broken}")
+        print("  OK: CLAUDE.md 无自指转换残留")
+
         command_files = sorted(
             name
             for name in names
@@ -169,6 +182,7 @@ def verify_gateway():
             ".creator/scripts/evaluate_prompt_cases.py",
             "按 `id` 合并",
             "禁止静默覆盖",
+            "整体替换",
         ):
             if phrase not in gateway_contract:
                 fail(f"{zip_path.name} gateway 缺少 Prompt 资产保护规则: {phrase}")

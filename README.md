@@ -34,7 +34,7 @@ Prompt 结构参考 OpenAI 的[提示词工程最佳实践](https://help.openai.
 - 风险级别：R0 / R1 / R2
 ```
 
-R0、R1 的短任务可在当前会话记录；R2、跨会话、多阶段或多人协作任务写入 `docs/maintenance/<task-id>.md`。如果正确行为不清，或修改会改变公开 API、数据格式、权限、安全边界或用户流程，必须升级为产品变更。
+R0、R1 的小改默认记入 `docs/maintenance/batch.md` 待复查（跨会话持久），当前会话直接执行、不派遣子代理，收尾时提醒批量复查；只有用户明确同意才派 fresh reviewer 批量复核，不自动触发审查。R2、跨会话、多阶段或多人协作任务写入 `docs/maintenance/<task-id>.md`。如果正确行为不清，或修改会改变公开 API、数据格式、权限、安全边界或用户流程，必须升级为产品变更。
 
 ## 风险与审查收敛
 
@@ -109,7 +109,7 @@ R2 审查遵循有界收敛规则：
 
 > 初始化 creator 工作流。
 
-gateway 会识别宿主，下载 `creator.codex.zip` 或 `creator.claude.zip`，检查文件冲突，释放到项目根目录，并验证版本、manifest、技能目录和自进化台账。更新时不会用空模板覆盖已有信号。
+gateway 会识别宿主，下载 `creator.codex.zip` 或 `creator.claude.zip`，检查文件冲突，释放到项目根目录，并验证版本、manifest、技能目录和自进化台账。更新时不会用空模板覆盖已有信号。已初始化项目再次运行会走升级：整体替换工作流文件、保留 signals.md、按 `id` 合并 cases.json，冲突处询问你处理。
 
 ### 直接描述任务
 
@@ -146,7 +146,7 @@ python scripts/build_release.py
 python scripts/verify_build.py
 ```
 
-静态评测会验证 16 个代表性用例、`AGENTS.md` 分层、11 个 Skill 的统一章节、阶段契约 Examples 和界面元数据。若要验证 fresh Agent 的实际路由响应：
+静态评测会验证 20 个代表性用例、`AGENTS.md` 分层、11 个 Skill 的统一章节、阶段契约 Examples 和界面元数据。若要验证 fresh Agent 的实际路由响应：
 
 ```powershell
 python .creator/scripts/evaluate_prompt_cases.py --responses path/to/responses.json

@@ -41,4 +41,4 @@ python .creator/scripts/evaluate_prompt_cases.py --responses path/to/responses.j
 python .creator/scripts/evaluate_prompt_cases.py --responses path/to/responses.json --allow-partial
 ```
 
-字段约定：`escalation` 只表示是否需要把当前路线或风险向上升级；等待用户授权、记录观察或把无限 Goal 改写成有界 Goal 不算升级。`status=needs-input` 表示必须等用户回答才能继续，`status=interrupted` 表示外部容量或宿主条件中断但检查点可恢复。
+字段约定：`escalation` 只表示是否需要把当前路线或风险向上升级；等待用户授权、记录观察或把无限 Goal 改写成有界 Goal 不算升级。`status=needs-input` 表示必须等用户回答才能继续，`status=interrupted` 表示外部容量或宿主条件中断但检查点可恢复。可选字段 `deferred`（仅批处理类用例要求）：`true` 表示该小改应进入 `docs/maintenance/batch.md` 待复查队列，`false` 表示即时验证、不入队。

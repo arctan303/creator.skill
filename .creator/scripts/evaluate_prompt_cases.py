@@ -42,6 +42,8 @@ REQUIRED_CATEGORIES = {
     "interruption-recovery",
     "evolution",
     "release-boundary",
+    "scope-reconciliation",
+    "batch-review",
 }
 REQUIRED_AGENT_HEADINGS = {
     "# Identity",
@@ -138,6 +140,9 @@ def validate_cases(data: Dict, errors: List[str]) -> List[Dict]:
             value = expected["max_new_reviewers"]
             if not isinstance(value, int) or value < 0 or value > 1:
                 errors.append("{} max_new_reviewers 必须为 0 或 1".format(prefix))
+        if "deferred" in expected:
+            if not isinstance(expected["deferred"], bool):
+                errors.append("{} deferred 必须为布尔值".format(prefix))
 
     missing_categories = sorted(REQUIRED_CATEGORIES - categories)
     if missing_categories:
@@ -154,6 +159,9 @@ def validate_prompt_sources(errors: List[str]) -> None:
     for phrase in ("模型容量", "同一 diff", "两轮", "恢复检查点"):
         if phrase not in agents_text:
             errors.append("AGENTS.md 缺少审查收敛/中断恢复规则: {}".format(phrase))
+    for phrase in ("待复查队列", "不派遣子代理", "会话开场"):
+        if phrase not in agents_text:
+            errors.append("AGENTS.md 缺少轻量批处理/会话规则: {}".format(phrase))
 
     skill_names = []
     for skill_dir in sorted(path for path in SKILLS_ROOT.iterdir() if path.is_dir()):
@@ -201,6 +209,19 @@ def validate_prompt_sources(errors: List[str]) -> None:
                 errors.append("{} default_prompt 未显式引用 Skill".format(skill_dir.name))
             if not default_prompt or "\n" in default_prompt:
                 errors.append("{} default_prompt 必须为单行非空提示".format(skill_dir.name))
+
+    for skill_name, phrases in (
+        ("dev-planner", ("docs/DEV-PLAN.md", "phase-NN", "范围对账", "承接")),
+        ("dev-builder", ("batch.md", "待复查", "不派遣子代理")),
+    ):
+        contract_path = SKILLS_ROOT / skill_name / "references" / "stage-contract.md"
+        if contract_path.exists():
+            contract_text = contract_path.read_text(encoding="utf-8")
+            for phrase in phrases:
+                if phrase not in contract_text:
+                    errors.append(
+                        "{} stage-contract 缺少规则: {}".format(skill_name, phrase)
+                    )
 
     if len(skill_names) != len(set(skill_names)):
         errors.append("Skill frontmatter name 存在重复")
@@ -255,6 +276,12 @@ def evaluate_responses(
                         case_id, expected["max_new_reviewers"], actual
                     )
                 )
+        if "deferred" in expected and response.get("deferred") != expected["deferred"]:
+            errors.append(
+                "{} deferred 不匹配: expected={!r}, actual={!r}".format(
+                    case_id, expected["deferred"], response.get("deferred")
+                )
+            )
     if not allow_partial:
         missing = sorted(set(case_map) - seen)
         if missing:
