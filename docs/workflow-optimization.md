@@ -1,6 +1,6 @@
 # creator.skill 1.5 开发记录
 
-当前版本：1.5.0；用户已授权正式发布，发布回读见下方。实际运行规则以 [AGENTS](../AGENTS.md)、相关 Skill 和[共同契约](../.creator/references/workflow-contract.md)为准；本文保留本轮决定、依据与验证，不另建一套指令。此前全文见[历史档案](archive/workflow-optimization-before-1.5.md)。
+当前版本：1.5.0；已正式发布，发布回读见下方。实际运行规则以 [AGENTS](../AGENTS.md)、相关 Skill 和[共同契约](../.creator/references/workflow-contract.md)为准；本文保留本轮决定、依据与验证，不另建一套指令。此前全文见[历史档案](archive/workflow-optimization-before-1.5.md)。
 
 ## 目标、范围与状态
 
@@ -84,4 +84,12 @@ D15-04 根据用户后续反馈收紧：原“适时归档”没有明确时机�
 
 发布渠道：origin/main 的 VERSION 变化触发现有 Release workflow，生成 v1.5.0 及三个 ZIP。远端预检 main 为 10617f4、最新 Release 为 1.4.0，未发现 v1.5.0 标签。发布前保留真实任务/跨模型效果未测试的边界。
 
-发布状态：准备提交并等待 CI；成功后原位回填运行与产物证据。回退时可使用上一版 Release 安装包；项目 docs 迁移历史和运行时台账须按实际基线保留，不靠回退包覆盖。
+发布状态：正式发布成功，GitHub Latest 为 v1.5.0，非 draft、非 prerelease。
+
+- 版本提交与 v1.5.0 标签：`50fe5c0f6259502179752cb2e33f4596cf5fedc4`。
+- [Release workflow 33980910447](https://github.com/arctan303/creator.skill/actions/runs/33980910447)：success，含 34 个静态用例、9 个脚本测试、构建与包验证。
+- [v1.5.0 Release](https://github.com/arctan303/creator.skill/releases/tag/v1.5.0)：2026-09-06 01:25:31（UTC+8）发布；creator.codex.zip、creator.claude.zip、creator-gateway.zip 均已 uploaded。
+- 已实际下载三份附件，SHA-256 与 GitHub 摘要一致，ZIP 完整；两平台 manifest/版本/11 技能清单正确，三包中的共同契约和迁移手册与源码一致（忽略平台换行差异）。
+- 发布前对 44 份暂存文件及三包进行高置信凭据模式扫描，无匹配；不输出疑似秘密原值。真实任务与跨模型行为测试仍由用户后续安排。
+
+回退时可使用上一版 Release 安装包；项目 docs 迁移历史和运行时台账须按实际基线保留，不靠回退包覆盖。
