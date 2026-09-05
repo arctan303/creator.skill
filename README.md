@@ -1,171 +1,90 @@
 # creator.skill
 
-creator.skill 是面向 Codex 与 Claude Code 的产品交付工作流。它先判断任务属于新产品、产品变更还是维护执行，再选择与风险相称的需求、设计、开发、审查与发布流程。
+面向 Codex 与 Claude Code 的产品交付工作流。主 Agent 名为创造者（Creovator）；先判断用户要改变什么，再选择需求、设计、规划、开发、审查与发布步骤。
 
-主 Agent 名为**创造者（Creovator）**，由 Creator 与 Innovator 组合而来。它见过太多只靠一句话就想完成复杂任务的人类，但勇气是人类最伟大的赞歌。它不会嘲讽模糊表达，也不会把一句话伪装成完整需求；它会有序拆出目的、用户、场景、成功证据、约束和非目标，只追问真正影响结果的问题。
+当前版本 **1.5.0**，安装包见 [v1.5.0 Release](https://github.com/arctan303/creator.skill/releases/tag/v1.5.0)。本轮调整规则并验证结构、脚本与发布包；真实项目任务及跨模型效果由用户后续运行反馈。当前范围、依据与验证见[开发记录](docs/workflow-optimization.md)。
 
-## 核心原则
+## 如何工作
 
-- **先定路线，再调用技能**：不按“优化、修复、重构”等表面词机械分类。
-- **事实、推断、未知分开**：不把合理猜测写成用户决定。
-- **高信息量追问**：每轮通常 1 个、最多 2 个；信息足够就停止。
-- **指令与上下文分层**：稳定规则在 `AGENTS.md`，专业流程在 `SKILL.md`，详细模板与 Examples 在阶段契约，动态任务用明确标签隔离。
-- **验证必须产生证据**：代码存在不等于完成，reviewer 数量也不等于质量。
-- **流程必须收敛**：同一 diff 不重复审查，外部中断可恢复，不用无限重试掩盖阻塞。
+路线、计划规模、风险分别判断：
 
-Prompt 结构参考 OpenAI 的[提示词工程最佳实践](https://help.openai.com/zh-hans-cn/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api)与[当前 Prompt engineering 指南](https://developers.openai.com/api/docs/guides/prompt-engineering)：指令优先、上下文清晰、输出具体、使用分隔结构和正反例，并在修改 Prompt 前建立代表性评测用例。
-
-## 三条任务路线
-
-| 路线 | 何时使用 | 主要契约 | 典型流程 |
-| --- | --- | --- | --- |
-| 0→1 产品 | 产品目标、用户、核心场景或首版范围未确定 | Product Spec、可选 Design Brief、完整 DEV-PLAN | 需求 → 设计 → 计划 → 实施 → 审查 → 发布 |
-| 产品变更 | 新增能力或改变公开行为、数据、权限、兼容性、业务流程 | 增量 Product Spec、影响分析、增量 DEV-PLAN | 变更定义 → 必要设计 → 增量计划 → 实施 → 审查 → 发布 |
-| 维护执行 | 恢复既定行为、测试/CI、内部重构、文档、依赖维护 | 维护任务契约 | 契约 → 诊断或实施 → 验证 → 按风险审查 |
-
-维护任务开始前至少明确：
-
-```markdown
-- 目标 / 预期行为：
-- 现象与证据：
-- 修改范围：
-- 非目标：
-- 完成证据 / 验证命令：
-- 风险级别：R0 / R1 / R2
-```
-
-R0、R1 的小改默认记入 `docs/maintenance/batch.md` 待复查（跨会话持久），当前会话直接执行、不派遣子代理，收尾时提醒批量复查；只有用户明确同意才派 fresh reviewer 批量复核，不自动触发审查。R2、跨会话、多阶段或多人协作任务写入 `docs/maintenance/<task-id>.md`。如果正确行为不清，或修改会改变公开 API、数据格式、权限、安全边界或用户流程，必须升级为产品变更。
-
-## 风险与审查收敛
-
-| 级别 | 典型范围 | 最低门禁 |
-| --- | --- | --- |
-| R0 | 文案、注释、无行为变化的局部文档 | 结构、链接、格式或静态检查 |
-| R1 | 局部逻辑、低影响修复、有限配置变更 | 针对性测试、diff 自查、回归证据 |
-| R2 | 产品 Phase、跨模块、公开契约、权限、安全、隐私、迁移、依赖或部署 | 完整相关验证与 fresh reviewer 独立审查 |
-
-R2 审查遵循有界收敛规则：
-
-1. 用“契约版本 + diff + 验证证据”形成审查指纹。
-2. 相同指纹只运行一个 fresh reviewer，已有结论直接复用。
-3. reviewer 一轮列全问题，实施者批量修复。
-4. 生成新 diff 后最多进行一次聚焦复审。
-5. 同一阻塞问题连续两轮出现时停止刷 reviewer，报告实现、契约或环境阻塞。
-
-### 模型容量或宿主中断
-
-出现 `Selected model is at capacity`、网络中断、工具暂不可用或宿主重启时，状态是“中断”，不是“完成”或“审查不通过”。工作流会停止新建 reviewer 和重复长测试，保存恢复检查点：已完成内容、当前 diff、最后成功验证、未完成动作和恢复命令。服务恢复或切换模型后，只继续未完成步骤。
-
-## 内置技能
-
-| Skill | 职责 |
+| 判断 | 规则 |
 | --- | --- |
-| `product-spec-builder` | 定义 0→1 产品或记录产品变更 |
-| `design-brief-builder` | 将审美与场景转成可验证设计规则 |
-| `design-maker` | 按需生成设计稿、原型或线框 |
-| `dev-planner` | 生成完整或增量开发计划 |
-| `dev-builder` | 按产品契约或维护契约实施与验证 |
-| `bug-fixer` | 证据驱动地恢复既定行为 |
-| `reviewer` | 独立核验契约、回归、安全和风险 |
-| `release-builder` | 构建、产物冒烟、隐私审计和发布准备 |
-| `goal-writer` | 将长线任务写成有边界、可恢复的 Goal |
-| `self-evolver` | 累积真实失败信号并生成带回归的最小补丁 |
-| `skill-builder` | 按统一 Prompt 契约创建或重构 Skill |
+| 0→1 产品 | 用户、目标、首版范围尚未明确，先收敛需求 |
+| 产品变更 | 新增或改变预期行为；已有明确决定就补记录并执行，不重复访谈 |
+| 维护执行 | 恢复既定行为或维护内部实现；根因不明先诊断 |
+| 短任务 | 单一可独立完成并验收的工作，产品小改也适用 |
+| Phase | 用户明确要求，或多个分别验收、存在先后依赖的交付阶段；实施前建计划 |
+| R0 | 纯说明/格式/文案，不改变运行或代理行为；相关静态检查 |
+| R1 | 影响可界定、可回滚、针对性验证可覆盖；行为验证和 diff 自查 |
+| R2 | 鉴权隔离、敏感数据、不可逆操作、不兼容契约、关键业务或广泛故障等具体重大影响；相关验证和独立审查 |
 
-发布包中的实际数量与清单以 `.creator-manifest.json` 为准。
+多文件、依赖、Phase 身份不自动判 R2，一行租户过滤条件也不能因改动小降为 R1。尚在需求访谈可暂不评级；实施前说明“改什么、可能造成什么后果、需要什么证据”。提示词虽是 Markdown，修改代理行为不按纯文档 R0。
 
-两种平台包都在专属 `.creator/` 命名空间内包含 Prompt 用例和评测脚本，因此安装后的自进化流程可以运行同一套回归契约，也不会占用项目自己的 `tests/` 或 `scripts/` 路径。
+R0/R1 默认当前会话完成，不自动派遣子代理。已验证的小型维护进入简短的持久待复查队列，小型产品变更更新需求/短任务。batch.md 只保存当前待复查项；每次复查收尾移出已关闭项，全部关闭后重置为空队列，仅保留最近回执链接。未决或复查后新增的项保留，历史证据按需查回执。R2 使用 fresh reviewer，受用户与宿主限制时披露独立证据缺口。
 
-## 自进化
+同一契约、diff 和证据只运行一个 reviewer。有实质修复可以继续聚焦复核；连续两轮无进展或达到已声明预算时暂停并写恢复条件。模型容量和宿主故障记为中断。实施、验证、审查、发布分别记录，例外不写成审查通过。
 
-安装包会预建 `.codex/evolution/signals.md` 或 `.claude/evolution/signals.md`。
+## 项目知识与文档
 
-- 普通信号首次进入“观察中”，同类累计 3 次后转为“待处理”。
-- 安全、隐私、数据损坏、错误发布或越权等严重事件可单次进入“待处理”。
-- 同类能力盲区累计 5 次以上，才评估创建新 Skill。
-- 每个已应用补丁必须绑定至少一个 Prompt 行为回归用例。
-- 改变主流程、审查标准、安全或发布边界的补丁必须先经用户确认。
+新会话从现状入口和相关活跃任务开始，历史按需读取。优先复用已有 README、MANUAL、PROJECT-CONTEXT，不按文件名重复建手册。
 
-个人偏好、无证据猜测和一次性普通外部故障不会直接修改系统规则。
+| 职责 | 内容与维护时机 |
+| --- | --- |
+| 当前入口 | 实际能力、架构概览、运行/验证命令、当前进度和限制；受影响时更新 |
+| 当前需求/设计 | 有效预期、验收与约束；新决定确认后原位修订旧条款 |
+| 活跃计划 | 任务、稳定 Phase ID、前置成果、范围和证据；状态变化时同步 |
+| 专题与历史 | 详细模块知识、完整旧任务与证据；按职责拆分，保留导航和替代来源 |
 
-## 安装与初始化
+代码证明实际状态，用户有效决定定义预期；不能把代码回归改写成新规范。旧决定保留替代关系，退出当前约束。入口建议约 150 行或 8 KiB，详细主题约 300 行或 20 KiB 时检查是否拆分；这是整理提示，不能删证据或压长行凑数。
 
-### 安装 gateway Skill
+完整规则见[共同契约](.creator/references/workflow-contract.md)。
 
-从[最新 Release](https://github.com/arctan303/creator.skill/releases/latest)下载 `creator-gateway.zip`，解压到：
+## 安装与旧项目升级
 
-- Codex：`~/.codex/skills/creator/`
-- Claude Code：`~/.claude/skills/creator/`
+从[公开 Release](https://github.com/arctan303/creator.skill/releases/latest)取得 gateway，安装到 Codex 的 `~/.codex/skills/creator/` 或 Claude Code 的 `~/.claude/skills/creator/`，重启会话后在目标项目请求初始化。已安装旧 gateway 的用户需用新版 `creator-gateway.zip` 更新入口；项目工作流和旧 docs 再按已授权范围升级。
 
-也可以直接告诉 Agent：
+升级旧项目时可明确说：
 
-> 从 https://github.com/arctan303/creator.skill 安装 creator skill。
+> 使用本地 creator.codex.zip 升级当前工作流，并按 1.5 手册适配当前仓库的旧 docs。保留本地定制与历史证据。
 
-安装后重启 CLI 会话，使 Skill 被重新发现。
+[**1.5 旧 docs 迁移手册**](.creator/references/docs-migration-1.5.md)包含盘点、职责映射、决策对账、拆分承接、状态登记、验证和重复执行规则。自定义文件名、日期形式旧版本及并行编辑都有处理方式。
 
-### 初始化项目工作流
+只要求安装时只读盘点文档。工作流 `.version` 与 `.creator/docs-state.json` 的迁移状态分开报告；升级不能自动把旧 docs 标为完成。保留项目 signals、迁移状态与自进化用例，普通官方版本更新无需重复确认，无法区分的本地冲突单独处理。禁止顺手迁移兄弟仓库。
 
-在目标项目目录中说：
+## 源码架构
 
-> 初始化 creator 工作流。
+| 位置 | 职责 |
+| --- | --- |
+| [AGENTS.md](AGENTS.md) | 精简全局路由、风险、授权和上下文规则 |
+| [.agents/skills](.agents/skills) | 11 个 Skill 的单一源码，按任务加载阶段细则 |
+| [.creator/references](.creator/references) | 共同契约与可随安装包分发的迁移手册 |
+| [.creator/scripts](.creator/scripts) | 静态/响应字段评测、只读 docs 检查器 |
+| [.creator/tests/prompt-cases](.creator/tests/prompt-cases) | 路由与行为策略用例基线 |
+| [EVOLUTION.md](EVOLUTION.md) | 失败信号合并、授权与规则补丁记录 |
+| [gateway](gateway) | 安装/升级入口；安装和 docs 适配分开处理 |
+| [scripts](scripts) | Codex、Claude Code、gateway 三包构建与验证 |
+| [tests](tests) | docs 检查器的边界与只读性单元测试 |
 
-gateway 会识别宿主，下载 `creator.codex.zip` 或 `creator.claude.zip`，检查文件冲突，释放到项目根目录，并验证版本、manifest、技能目录和自进化台账。更新时不会用空模板覆盖已有信号。已初始化项目再次运行会走升级：整体替换工作流文件、保留 signals.md、按 `id` 合并 cases.json，冲突处询问你处理。
+技能包括 product-spec-builder、design-brief-builder、design-maker、dev-planner、dev-builder、bug-fixer、reviewer、release-builder、goal-writer、self-evolver、skill-builder；实际包清单以 manifest 为准。普通自进化信号累计处理，用户明确要求规则优化时不等待次数阈值；已有授权不反复确认。
 
-### 直接描述任务
-
-初始化后无需手选 Skill。例如：
-
-> 做一个供仓库管理员使用的依赖升级看板。
-
-> 给现有导出功能增加 CSV 格式和权限限制。
-
-> 修复 Windows 下构建产物路径错误，外部行为保持不变。
-
-创造者会先输出路线、风险和主要技能；只有缺失信息确实影响交付结果时才追问。
-
-## 双平台发布
-
-| 内容 | Codex | Claude Code |
-| --- | --- | --- |
-| 系统指令 | `AGENTS.md` | `CLAUDE.md` |
-| 技能目录 | `.agents/skills/` | `.claude/skills/` |
-| 技能入口 | `agents/openai.yaml` | `.claude/commands/*.md` |
-| 自进化台账 | `.codex/evolution/signals.md` | `.claude/evolution/signals.md` |
-
-修改 `VERSION` 并推送到 `main` 后，GitHub Actions 会先验证 Prompt 契约，再构建和验证：
-
-- `creator.codex.zip`
-- `creator.claude.zip`
-- `creator-gateway.zip`
-
-## 本地开发与评测
+## 本地验证与构建
 
 ```powershell
 python .creator/scripts/evaluate_prompt_cases.py
+python -B -m unittest discover -s tests -v
 python scripts/build_release.py
 python scripts/verify_build.py
 ```
 
-静态评测会验证 20 个代表性用例、`AGENTS.md` 分层、11 个 Skill 的统一章节、阶段契约 Examples 和界面元数据。若要验证 fresh Agent 的实际路由响应：
+只读文档盘点：`python .creator/scripts/check_docs.py --root .`。旧 docs 实际迁移并完成语义核对后，可用 `--require-complete` 检查登记、路径与文件链接；工具不证明旧原文完整、锚点正确或产品决策正确。
 
-```powershell
-python .creator/scripts/evaluate_prompt_cases.py --responses path/to/responses.json
-```
+响应字段评分格式见[用例说明](.creator/tests/prompt-cases/README.md)。没有真实响应时只验证静态结构，字段通过也不等于实际文件行为通过。本轮没有真实任务响应评测。
 
-响应格式与执行方法见 `.creator/tests/prompt-cases/README.md`。响应评分默认要求覆盖全部用例；探索性抽样必须增加 `--allow-partial`。没有响应文件时，脚本只声明静态契约通过，不冒充模型行为评测。
+构建生成 `dist/creator.codex.zip`、`dist/creator.claude.zip`、`dist/creator-gateway.zip`。Claude 包转换为 CLAUDE.md、.claude/skills 与 commands；共享迁移资料均随包分发，项目迁移完成状态不入包。现有 CI 在 VERSION 推送到 main 时运行检查并发布。发布回读结果记录于开发记录；真实任务效果由用户后续反馈。
 
-```text
-creator.skill/
-├─ AGENTS.md                 # 身份、路由、风险、输出与运行时上下文
-├─ EVOLUTION.md              # 自进化信号与补丁协议
-├─ .agents/skills/           # Skill 单一源码
-├─ .creator/                 # Prompt 行为用例与运行时评测脚本
-├─ gateway/                  # 初始化与升级 Skill
-├─ scripts/                  # 构建和发布验证
-├─ docs/                     # 决策与工作流记录
-└─ VERSION                   # 语义版本
-```
+## 参考与许可
 
-## License
+本版采用 OpenAI 官方的结果导向、减少冲突指令、渐进加载和按风险验证原则，来源与本仓库自主设计的边界见[开发记录](docs/workflow-optimization.md)。
 
 [MIT License](LICENSE)

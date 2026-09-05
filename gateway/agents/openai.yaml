@@ -1,4 +1,4 @@
 interface:
   display_name: "初始化 creator 工作流"
-  short_description: "在当前工作空间部署或更新 creator.skill，并验证平台、版本和技能清单。"
-  default_prompt: "使用 $creator 在当前工作空间初始化 creator.skill 产品交付工作流。"
+  short_description: "安装或升级 creator.skill，验证平台、版本、技能清单并区分旧 docs 迁移状态。"
+  default_prompt: "使用 $creator 在当前工作空间初始化或升级 creator.skill，按已授权范围处理工作流与旧 docs，并分别报告版本和文档状态。"

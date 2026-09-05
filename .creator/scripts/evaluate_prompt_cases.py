@@ -4,8 +4,10 @@
 import argparse
 import json
 import re
+from urllib.parse import urlsplit, unquote
 from pathlib import Path
 from typing import Dict, List
+from check_docs import markdown_links, contained
 
 
 ASSET_ROOT = Path(__file__).resolve().parent.parent
@@ -25,7 +27,7 @@ else:
     REQUIRE_OPENAI_YAML = True
 
 VALID_ROUTES = {"0→1 产品", "产品变更", "维护执行"}
-VALID_RISKS = {"R0", "R1", "R2"}
+VALID_RISKS = {"R0", "R1", "R2", "待定"}
 VALID_STATUSES = {
     "continue",
     "needs-input",
@@ -44,6 +46,9 @@ REQUIRED_CATEGORIES = {
     "release-boundary",
     "scope-reconciliation",
     "batch-review",
+    "risk-calibration",
+    "docs-lifecycle",
+    "plan-sizing",
 }
 REQUIRED_AGENT_HEADINGS = {
     "# Identity",
@@ -144,6 +149,10 @@ def validate_cases(data: Dict, errors: List[str]) -> List[Dict]:
             if not isinstance(expected["deferred"], bool):
                 errors.append("{} deferred 必须为布尔值".format(prefix))
 
+        for field, allowed in (("plan_kind", {"none", "task", "phase"}), ("doc_action", {"none", "reuse", "update-current", "migrate"}), ("batch_action", {"prune-closed", "reset-empty", "retain-open"})):
+            if field in expected and expected[field] not in allowed:
+                errors.append("{} {} 不合法".format(prefix, field))
+
     missing_categories = sorted(REQUIRED_CATEGORIES - categories)
     if missing_categories:
         errors.append("用例缺少类别: {}".format(", ".join(missing_categories)))
@@ -156,12 +165,10 @@ def validate_prompt_sources(errors: List[str]) -> None:
     missing = sorted(REQUIRED_AGENT_HEADINGS - agents_headings)
     if missing:
         errors.append("AGENTS.md 缺少统一章节: {}".format(", ".join(missing)))
-    for phrase in ("模型容量", "同一 diff", "两轮", "恢复检查点"):
-        if phrase not in agents_text:
-            errors.append("AGENTS.md 缺少审查收敛/中断恢复规则: {}".format(phrase))
-    for phrase in ("待复查队列", "不派遣子代理", "会话开场"):
-        if phrase not in agents_text:
-            errors.append("AGENTS.md 缺少轻量批处理/会话规则: {}".format(phrase))
+    # Validate assets and navigable references, not a magic phrase proving behavior.
+    for relative in ("references/workflow-contract.md", "references/docs-migration-1.5.md", "scripts/check_docs.py"):
+        if not (ASSET_ROOT / relative).is_file():
+            errors.append("缺少运行时资产: " + relative)
 
     skill_names = []
     for skill_dir in sorted(path for path in SKILLS_ROOT.iterdir() if path.is_dir()):
@@ -210,18 +217,15 @@ def validate_prompt_sources(errors: List[str]) -> None:
             if not default_prompt or "\n" in default_prompt:
                 errors.append("{} default_prompt 必须为单行非空提示".format(skill_dir.name))
 
-    for skill_name, phrases in (
-        ("dev-planner", ("docs/DEV-PLAN.md", "phase-NN", "范围对账", "承接")),
-        ("dev-builder", ("batch.md", "待复查", "不派遣子代理")),
-    ):
-        contract_path = SKILLS_ROOT / skill_name / "references" / "stage-contract.md"
-        if contract_path.exists():
-            contract_text = contract_path.read_text(encoding="utf-8")
-            for phrase in phrases:
-                if phrase not in contract_text:
-                    errors.append(
-                        "{} stage-contract 缺少规则: {}".format(skill_name, phrase)
-                    )
+    sources = [INSTRUCTION_PATH] + list(SKILLS_ROOT.rglob("*.md")) + list((ASSET_ROOT / "references").glob("*.md"))
+    for source in sources:
+        for target in markdown_links(source.read_text(encoding="utf-8")):
+            url = urlsplit(target)
+            if url.scheme or url.netloc or not url.path:
+                continue
+            resolved = source.parent / unquote(url.path)
+            if not contained(WORKFLOW_ROOT, resolved) or not resolved.exists():
+                errors.append("无效本地引用: {} -> {}".format(source.relative_to(WORKFLOW_ROOT), target))
 
     if len(skill_names) != len(set(skill_names)):
         errors.append("Skill frontmatter name 存在重复")
@@ -248,7 +252,9 @@ def evaluate_responses(
             continue
         seen.add(case_id)
         expected = case_map[case_id]["expected"]
-        for field in ("route", "risk", "primary_skill", "escalation", "status"):
+        for field in ("route", "risk", "primary_skill", "escalation", "status", "plan_kind", "doc_action", "batch_action"):
+            if field not in expected:
+                continue
             if response.get(field) != expected.get(field):
                 errors.append(
                     "{} {} 不匹配: expected={!r}, actual={!r}".format(
@@ -320,7 +326,7 @@ def main() -> int:
 
     print("Prompt 契约验证通过: {} 个行为用例".format(len(cases)))
     if args.responses:
-        print("Agent 行为评分通过: {} 个响应".format(evaluated))
+        print("Agent 响应字段评分通过: {} 个响应；实际文件行为须另行核验".format(evaluated))
     else:
         print("未提供 responses；本次仅验证用例和 Prompt 结构。")
     return 0

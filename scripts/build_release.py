@@ -64,8 +64,19 @@ COMMAND_NAMES = {
 def clean_dist():
     """清理并重建 dist 目录。"""
     if DIST_DIR.exists():
-        shutil.rmtree(DIST_DIR)
+        remove_stage(DIST_DIR)
     DIST_DIR.mkdir(parents=True)
+
+
+def remove_stage(path):
+    """Only remove concrete generated paths within this repository's dist."""
+    expected = REPO_ROOT.resolve() / "dist"
+    actual = path.resolve()
+    if DIST_DIR.is_symlink() or path.is_symlink():
+        raise ValueError("Refusing symlinked build output")
+    if actual != expected and expected not in actual.parents:
+        raise ValueError("Build cleanup leaves dist: " + str(actual))
+    shutil.rmtree(path)
 
 
 def read_version() -> str:
@@ -165,7 +176,9 @@ def copy_prompt_eval_assets(stage: Path):
     shutil.copytree(source_cases, stage / ".creator" / "tests" / "prompt-cases")
     scripts_dir = stage / ".creator" / "scripts"
     scripts_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(source_evaluator, scripts_dir / source_evaluator.name)
+    for script in (REPO_ROOT / ".creator" / "scripts").glob("*.py"):
+        shutil.copy2(script, scripts_dir / script.name)
+    shutil.copytree(REPO_ROOT / ".creator" / "references", stage / ".creator" / "references")
 
 
 def write_release_manifest(
@@ -184,6 +197,8 @@ def write_release_manifest(
         "skill_root": skill_root,
         "skill_count": len(skills),
         "skills": skills,
+        "docs_schema_version": 1,
+        "docs_guide": ".creator/references/docs-migration-1.5.md",
     }
     (stage / RELEASE_MANIFEST).write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
@@ -239,7 +254,7 @@ def build_codex(skills: List[str], version: str):
     print("=== 构建 Codex 包 ===")
     stage = DIST_DIR / "stage-codex"
     if stage.exists():
-        shutil.rmtree(stage)
+        remove_stage(stage)
     stage.mkdir(parents=True)
 
     # 复制 AGENTS.md（顶部注入版本行）
@@ -281,7 +296,7 @@ def build_codex(skills: List[str], version: str):
     print(f"  OK: 打包完成: {zip_path.name}")
 
     # 清理暂存
-    shutil.rmtree(stage)
+    remove_stage(stage)
 
 
 # ── 构建 Claude 包 ───────────────────────────────────────────────────
@@ -292,7 +307,7 @@ def build_claude(skills: List[str], version: str):
     print("\n=== 构建 Claude 包 ===")
     stage = DIST_DIR / "stage-claude"
     if stage.exists():
-        shutil.rmtree(stage)
+        remove_stage(stage)
     stage.mkdir(parents=True)
 
     # 转换 AGENTS.md → CLAUDE.md（转换后注入版本行）
@@ -318,10 +333,15 @@ def build_claude(skills: List[str], version: str):
         src = SKILLS_SRC / skill_name
         dst = dest_skills / skill_name
         shutil.copytree(src, dst)
+        for document in dst.rglob("*.md"):
+            document.write_text(
+                convert_agents_to_claude(document.read_text(encoding="utf-8")),
+                encoding="utf-8",
+            )
         # 删除 agents/ 目录（包含 openai.yaml，Claude Code 不使用）
         agents_dir = dst / "agents"
         if agents_dir.exists():
-            shutil.rmtree(agents_dir)
+            remove_stage(agents_dir)
     print(f"  OK: .claude/skills/ ({len(skills)} skills, 已去除 openai.yaml)")
 
     # 从 openai.yaml 动态生成 .claude/commands/
@@ -356,7 +376,7 @@ def build_claude(skills: List[str], version: str):
     print(f"  OK: 打包完成: {zip_path.name}")
 
     # 清理暂存
-    shutil.rmtree(stage)
+    remove_stage(stage)
 
 
 # ── 构建 Gateway 包 ──────────────────────────────────────────────────
@@ -367,10 +387,17 @@ def build_gateway():
     print("\n=== 构建 Gateway 包 ===")
     stage = DIST_DIR / "stage-gateway"
     if stage.exists():
-        shutil.rmtree(stage)
+        remove_stage(stage)
 
     # 直接复制 gateway/ 目录
     shutil.copytree(GATEWAY_SRC, stage)
+    for name in ("docs-migration-1.5.md", "workflow-contract.md"):
+        shutil.copy2(REPO_ROOT / ".creator" / "references" / name, stage / "references" / name)
+    gateway_skill = stage / "SKILL.md"
+    gateway_skill.write_text(
+        gateway_skill.read_text(encoding="utf-8").replace("../.creator/references/", "references/"),
+        encoding="utf-8",
+    )
     print("  OK: gateway/ 内容已复制")
 
     # 打包
@@ -379,7 +406,7 @@ def build_gateway():
     print(f"  OK: 打包完成: {zip_path.name}")
 
     # 清理暂存
-    shutil.rmtree(stage)
+    remove_stage(stage)
 
 
 # ── 主函数 ────────────────────────────────────────────────────────────

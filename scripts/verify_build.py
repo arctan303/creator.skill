@@ -2,6 +2,7 @@
 """验证 creator.skill 三套发布包的结构、版本与平台转换质量。"""
 
 import json
+import os
 import re
 import subprocess
 import sys
@@ -39,6 +40,9 @@ def verify_release_structure(
             ".creator/tests/prompt-cases/cases.json",
             ".creator/tests/prompt-cases/README.md",
             ".creator/scripts/evaluate_prompt_cases.py",
+            ".creator/scripts/check_docs.py",
+            ".creator/references/workflow-contract.md",
+            ".creator/references/docs-migration-1.5.md",
             signal_file,
             ".creator-manifest.json",
             ".version",
@@ -51,6 +55,8 @@ def verify_release_structure(
             "scripts/evaluate_prompt_cases.py",
         }
         leaked = sorted(forbidden_root_assets & names)
+        if ".creator/docs-state.json" in names:
+            fail("发布包不得携带项目迁移完成状态")
         if leaked:
             fail(
                 f"{zip_path.name} Prompt 资产未放入 .creator 专属目录: "
@@ -62,6 +68,8 @@ def verify_release_structure(
             fail(f"{zip_path.name} manifest schema_version 不支持")
         if manifest.get("workflow") != "creator.skill":
             fail(f"{zip_path.name} manifest workflow 不正确")
+        if manifest.get("docs_schema_version") != 1 or manifest.get("docs_guide") != ".creator/references/docs-migration-1.5.md":
+            fail(f"{zip_path.name} docs 迁移协议缺失")
 
         expected_skills = sorted(manifest.get("skills", []))
         actual_skills = sorted(
@@ -134,7 +142,7 @@ def verify_claude_conversion(manifest: dict, names: Set[str]):
             "CLAUDE.md", claude_md, [".codex/", ".agents/skills/", "AGENTS.md"]
         )
         assert_no_residue("EVOLUTION.md", evolution_md, [".codex/", "AGENTS.md"])
-        for expected in ("CLAUDE.md", ".claude/", ".claude/skills/"):
+        for expected in (".claude/skills/", ".creator/references/workflow-contract.md"):
             if expected not in claude_md:
                 fail(f"CLAUDE.md 缺少预期平台引用: {expected}")
             print(f"  OK: CLAUDE.md 包含 {expected!r}")
@@ -143,6 +151,13 @@ def verify_claude_conversion(manifest: dict, names: Set[str]):
         if broken in claude_md:
             fail(f"CLAUDE.md 存在自指转换残留: {broken}")
         print("  OK: CLAUDE.md 无自指转换残留")
+
+        for name in sorted(names):
+            if name.startswith(".claude/skills/") and name.endswith(".md"):
+                content = read_text(archive, name)
+                if any(pattern in content for pattern in ("AGENTS.md", ".codex/", ".agents/skills/")):
+                    fail(f"{name} 残留不可用的平台路径")
+        print("  OK: Claude Skill 正文与引用的平台路径已转换")
 
         command_files = sorted(
             name
@@ -170,10 +185,13 @@ def verify_gateway():
     zip_path = DIST_DIR / "creator-gateway.zip"
     with zipfile.ZipFile(zip_path) as archive:
         names = set(archive.namelist())
-        required = {"SKILL.md", "references/cli-adapters.md", "agents/openai.yaml"}
+        required = {"SKILL.md", "references/cli-adapters.md", "agents/openai.yaml",
+                    "references/docs-migration-1.5.md", "references/workflow-contract.md"}
         missing = sorted(required - names)
         if missing:
             fail(f"{zip_path.name} 缺少关键文件: {', '.join(missing)}")
+        if "references/docs-migration-1.5.md" not in read_text(archive, "SKILL.md"):
+            fail("gateway 未引用已打包的迁移手册")
         gateway_contract = read_text(archive, "SKILL.md") + read_text(
             archive, "references/cli-adapters.md"
         )
@@ -200,11 +218,22 @@ def verify_packaged_prompt_eval(zip_path: Path):
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
+            encoding="utf-8",
+            env=dict(os.environ, PYTHONIOENCODING="utf-8"),
         )
         if result.returncode != 0:
             fail(
                 f"{zip_path.name} 内置 Prompt 评测失败:\n{result.stdout.strip()}"
             )
+        inventory = subprocess.run(
+            [sys.executable, ".creator/scripts/check_docs.py", "--root", "."],
+            cwd=temp_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            universal_newlines=True,
+            encoding="utf-8",
+            env=dict(os.environ, PYTHONIOENCODING="utf-8"),
+        )
+        if inventory.returncode != 0 or json.loads(inventory.stdout).get("status") != "unregistered":
+            fail(f"{zip_path.name} 只读 docs 检查器无法在未迁移项目运行")
     print(f"  OK: {zip_path.name} 内置 Prompt 评测可运行")
 
 

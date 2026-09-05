@@ -33,6 +33,9 @@ jobs:
       - name: Validate prompt contracts
         run: python .creator/scripts/evaluate_prompt_cases.py
 
+      - name: Test docs checker
+        run: python -B -m unittest discover -s tests -v
+
       - name: Build release packages
         run: python scripts/build_release.py
 

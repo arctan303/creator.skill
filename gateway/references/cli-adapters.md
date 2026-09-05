@@ -32,8 +32,10 @@
 ### 两个平台共同检查
 
 - `.creator/` 目录
-- `.creator/tests/prompt-cases/cases.json`（更新时按 case `id` 合并；冲突项必须确认）
-- `.creator/scripts/evaluate_prompt_cases.py`（版本化文件，替换前确认）
+- `.creator/tests/prompt-cases/cases.json`（按 case `id` 合并；已证实未定制的官方条目正常升级，无法判定的本地冲突才询问）
+- `.creator/scripts/evaluate_prompt_cases.py`（版本化文件，已有升级授权时正常替换，保护未解决的本地定制）
+- `.creator/docs-state.json`（运行时迁移状态，保留，不从包覆盖）
+- `.creator/references/` 与 `.creator/scripts/check_docs.py`（版本化指南和只读检查器）
 
 ### Codex
 
@@ -60,6 +62,8 @@
 - `.creator/scripts/evaluate_prompt_cases.py` 存在。
 - 从工作空间根目录执行 `python .creator/scripts/evaluate_prompt_cases.py` 成功。
 - 更新后确认项目自进化新增的 case `id` 仍存在。
+- manifest 的 docs_schema_version 只声明包支持的协议，不能代替项目迁移状态。
+- 已授权 docs 迁移时按手册完成后运行 `python .creator/scripts/check_docs.py --root . --require-complete`，另外核对语义、旧条款失效及历史完整性。只安装工作流则可只读盘点，不写 complete。
 
 ## AGENTS.md 到 CLAUDE.md 转换规则
 

@@ -2,7 +2,7 @@
 
 ## 输入
 
-- 当前路线和对应交付契约：Product Spec + DEV-PLAN，或维护任务契约
+- 当前路线和对应交付契约：有效需求与短任务/Phase，或维护任务契约
 - 实施证据、风险级别和审查结果
 - 仓库构建、打包和部署配置
 - 项目生态、版本来源、锁文件和 CI/Wrapper 命令
@@ -56,10 +56,10 @@
 - 发布证据是否避免打印真实秘密。
 - 无法检查的范围和残余风险。
 
-建议文本扫描包含：
+初筛仅输出命中文件名，随后按需核验并脱敏记录；不要把疑似秘密原值打印到工具输出：
 
 ```powershell
-rg -n "(?i)(api[_-]?key|secret|token|password|passwd|private[_-]?key|BEGIN RSA|BEGIN OPENSSH|AKIA|sk-[A-Za-z0-9]|ghp_[A-Za-z0-9]|xox[baprs]-|client_secret)" .
+rg -l "(?i)(api[_-]?key|secret|token|password|passwd|private[_-]?key|BEGIN RSA|BEGIN OPENSSH|AKIA|sk-[A-Za-z0-9]|ghp_[A-Za-z0-9]|xox[baprs]-|client_secret)" .
 ```
 
 ## 构建、打包和部署证据
@@ -101,7 +101,7 @@ rg -n "(?i)(api[_-]?key|secret|token|password|passwd|private[_-]?key|BEGIN RSA|B
 - 最终产物经过与生态匹配的安装、启动或接口冒烟
 - 部署步骤可复现
 - 必要时有回滚或恢复路径
-- 当前路线要求的验证和 reviewer 门禁已通过，或未通过项被列为发布阻塞
+- 按具体风险要求的门禁通过，或有对应已授权例外；缺口不改写成通过
 - 真实发布、推送或上线有用户明确授权
 
 ## 禁止发布的情况
@@ -110,7 +110,7 @@ rg -n "(?i)(api[_-]?key|secret|token|password|passwd|private[_-]?key|BEGIN RSA|B
 - 用户数据处理不清楚
 - 构建或打包失败
 - 部署依赖未记录的手工状态
-- 当前交付契约要求的测试或审查门禁缺失
+- 必要门禁缺失且没有对应有效例外；一般例外不覆盖未授权外部动作、真实秘密暴露或构建失败
 - 用户没有明确授权真实发布、推送或上线
 
 ## 阻塞项格式
@@ -121,8 +121,10 @@ rg -n "(?i)(api[_-]?key|secret|token|password|passwd|private[_-]?key|BEGIN RSA|B
 
 ## 必须打回的情况
 
-- 开发/维护证据缺失，或要求的 reviewer 未通过。
+- 必要证据缺失，或 reviewer 未通过且没有对应已授权例外。
 - 无法判断是否有敏感信息暴露。
 - 构建、打包或部署步骤无法复现且没有阻塞说明。
 - 需要真实发布但没有用户授权。
 - 发布证据中包含真实秘密。
+
+文档有效性、状态、证据与恢复统一遵循[共同契约](../../../../.creator/references/workflow-contract.md)的相关章节；仅加载本任务需要的部分。
