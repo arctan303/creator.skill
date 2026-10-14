@@ -1,6 +1,6 @@
 # 1.7 field feedback and candidates
 
-Status: collection prepared for sustained use of 1.6.0, 2026-10-14. Source: the user authorized publishing 1.6.0 and said subsequent problem reports should inform 1.7. This is an evidence record, not an accepted 1.7 feature list or a claim that long-term testing has passed.
+Status: collecting feedback during sustained use of published 1.6.0, 2026-10-14. Source: the user authorized publishing 1.6.0 and said subsequent problem reports should inform 1.7. This is an evidence record, not an accepted 1.7 feature list or a claim that long-term testing has passed.
 
 ## Capture during ordinary use
 

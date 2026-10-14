@@ -1,6 +1,6 @@
 # creator.skill 1.6.0 delivery plan
 
-Status: all three phases, the Mail upgrade and the application-link checker follow-up are complete. The user authorized committing, pushing and publishing 1.6.0 on 2026-10-14; release preparation is now active. This supersedes the earlier local-only restriction for this release.
+Status: all three phases, the Mail upgrade, application-link checker follow-up and 1.6.0 publication are complete. The user's 2026-10-14 release authorization superseded the earlier local-only restriction for this release. The current stage is sustained use and evidence collection for 1.7.
 
 Authorization: 2026-10-13 conversation — implement the discussed 1.6 improvements, including bilingual support. On 2026-10-14 the user authorized a real FlareMail upgrade/cleanup and then support for its application routes/resource mappings with another Mail verification. These explicit scopes supersede the earlier read-only sample restriction for FlareMail only. Technical decisions remain delegated; ask only about unresolved experience boundaries or missing authorization.
 
@@ -15,11 +15,11 @@ Authorization: 2026-10-13 conversation — implement the discussed 1.6 improveme
 
 Non-goals: change projects other than the specifically authorized FlareMail scope, rename the GitHub repository, publish promotional posts, deploy business systems, or claim measured adoption/production gains. No autonomous telemetry, cloud memory, or unlimited agent loops.
 
-## Current release task and subsequent use
+## Completed release and current use
 
-Publish 1.6.0 through the existing main/VERSION GitHub Actions workflow, preserving the validated runtime code and prior review. Verify the exact remote commit, successful checks, tag, release assets and a downloaded-package installation. Record actual release evidence in [the 1.6 record](workflow-1.6.md); failed CI or missing assets must not be reported as a completed release.
+1.6.0 was published through the existing main/VERSION GitHub Actions workflow at `55bb1fb`, preserving the validated runtime code and prior review. Remote commit/tag, successful Ubuntu checks, release asset digests/content and downloaded-package installation were verified; see [the 1.6 release record](workflow-1.6.md).
 
-Then enter sustained real-project use and collect the user's reports as [1.7 evidence and candidates](workflow-1.7.md). This authorizes recording feedback, not inventing 1.7 features, scheduling background monitoring or upgrading other repositories without their own scope.
+Collect the user's reports during sustained real-project use as [1.7 evidence and candidates](workflow-1.7.md). This authorizes recording feedback, not inventing 1.7 features, scheduling background monitoring or upgrading other repositories without their own scope.
 
 ## Completed short task: exact application links
 

@@ -13,5 +13,5 @@
     {"source": "docs/workflow-optimization.md", "action": "keep", "targets": ["docs/workflow-optimization.md"], "reason": "Preserve 1.5 evidence as explicitly historical; current 1.6 work has its own entry."}
   ],
   "pending": [],
-  "evidence": ["docs/workflow-1.6.md records scoped reconciliation, tests and independent review.", "docs/README.md is the sole source-project current-state entry; 1.5 evidence is explicitly historical.", "The docs checker validates registration and links; semantic scope was reconciled separately. This is not release or live-host certification."]
+  "evidence": ["docs/workflow-1.6.md records scoped reconciliation, tests, independent review and verified v1.6.0 publication.", "docs/README.md is the sole source-project current-state entry; 1.5 evidence is explicitly historical.", "The docs checker validates registration and links; semantic scope was reconciled separately. It does not certify release or live-host behavior.", "docs/workflow-1.7.md owns subsequent user-feedback evidence and candidates; it does not authorize a 1.7 release or cross-project rollout."]
 }

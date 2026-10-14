@@ -1,6 +1,6 @@
 # 1.6 development contract and evidence
 
-Status: implemented and locally verified; 1.6.0 release preparation is in progress, 2026-10-14. User authorization: implementation/bilingual support on 2026-10-13, followed by explicit 1.6.0 publication and sustained-use feedback for 1.7 on 2026-10-14. Follow [current state](README.md) and [delivery plan](DEV-PLAN.md). Previous [1.5 evidence](workflow-optimization.md) remains historical.
+Status: 1.6.0 published and downloaded assets verified, 2026-10-14. User authorization: implementation/bilingual support on 2026-10-13, followed by explicit publication and sustained-use feedback for 1.7 on 2026-10-14. Follow [current state](README.md) and [delivery plan](DEV-PLAN.md). Previous [1.5 evidence](workflow-optimization.md) remains historical.
 
 ## Effective decisions and acceptance
 
@@ -51,7 +51,7 @@ Local observations through 2026-10-14:
 - The initial authorized FlareMail upgrade passed official ownership, package content, 475 preserved-file hashes, old cases and repeat-install checks. The active plan was separated from historical evidence without cancelling remaining obligations. Its original inventory remained partial with 22 unsupported application-link reports; that historical result is retained.
 - The authorized exact-link follow-up used `gpt-6.1-sol` with `high` reasoning for implementation, Mail installation and fresh review. Five declarations now yield 22 audited resolutions and zero errors across 136 Markdown documents; registration is complete, with 20 original density warnings retained. Only six expected files changed, 767 remained byte-identical, and repeat installation preserved all 773 hashes.
   Independent review also disabled declarations in memory and recovered exactly the original 22 failures. See [real workspace acceptance and limitations](validation/1.6-mail-upgrade.md); this is not a long-term memory, live HTTP or Claude evaluation.
-- `git diff --check` passed. The later user instruction authorizes this 1.6.0 publication. Live Claude discovery, Linux execution and real power-loss recovery remain unverified at the local preparation stage; compatibility conditions are documented, recovery evidence uses fixtures/simulated interruption. Actual CI and release results belong below.
+- `git diff --check` passed. The later user instruction authorized 1.6.0 publication. Linux execution was unverified at local preparation and is now covered by the Ubuntu CI result below. Live Claude discovery, interactive host loading and real power-loss recovery remain unverified; recovery evidence uses fixtures/simulated interruption.
 
 Current local artifact SHA256: creator-workflow.zip F77DEC79A24222A8F60BB5D577D54CFD1E7BC14F99D053FFA803BCCD5D7EC4F3; creator-gateway.zip A421F39B671B537287C709B0D8904FD907BB1FFEE2037B5D5A53DA35F8C8F327. These identify the rebuilt local 1.6.0 package with exact-link support, not publisher authenticity. The initial Mail upgrade's earlier package hash is retained in its acceptance record.
 
@@ -63,4 +63,17 @@ Pre-publication scope/privacy review passed: the candidate source set contains o
 
 The local checkout uses Git newline conversion. Ubuntu-generated package byte hashes may differ from the Windows preparation build; retain both baselines, verify published asset digests and contents against the release commit, and smoke-test the downloaded files. Do not silently replace an already published asset with a differently built archive.
 
-Publication result: pending actual CI, tag/commit readback, asset download and installation verification. If CI fails, keep the failure evidence and fix only the demonstrated cause before resuming. If release recovery is needed, retain `v1.5.0` and use a separately authorized corrective release; an installer rollback must first reconcile post-upgrade edits with the retained local snapshot. Do not forcibly rewrite tags or erase project knowledge.
+Publication result: [1.6.0](https://github.com/arctan303/creator.skill/releases/tag/v1.6.0) is public, non-draft, non-prerelease and GitHub's latest release, published at 2026-10-14 13:56:14 UTC. Tag `v1.6.0` resolves to `55bb1fbbbaee0b8f09a4642d34da7be414c1dfb6`, the authorized release commit.
+
+[GitHub Actions run 38576027027](https://github.com/arctan303/creator.skill/actions/runs/38576027027) succeeded on Ubuntu: 63 tests, 46 structural cases, build, package verification and publication. The private local audit material and generated archives were excluded from the 72-file release commit. No business deployment or sibling/global installation was performed.
+
+| Published asset | SHA256 |
+| --- | --- |
+| creator-workflow.zip | `4EEB754CB01021684ED020725715F3E8B0B4DE4C5FEA2363EDF83D78C59ABDAE` |
+| creator-gateway.zip | `0856D863B5DC83015659DE0CEEE0F4444ED861E180D284E15259A24C69C87323` |
+
+Downloaded asset hashes match GitHub's digests. Their 64/7 member sets match a build from the exact committed source; manifest JSON is semantically equal, and all other member bytes are identical. The first comparison exported with local Git CRLF conversion and failed; a direct blob check identified that harness issue, and canonical LF export passed without changing the published files.
+
+The downloaded gateway CLI performed a read-only preview, installed the downloaded workflow into a temporary project while preserving its README, and repeated apply without hash changes. Its installed checker ran successfully and correctly reported unregistered project knowledge. Evidence and the reproducible check remain under ignored `.creator/evaluations/release-1.6-20261014/`; downloaded public ZIPs are retained under `dist/published-1.6.0-run-38576027027/`.
+
+If release recovery is needed, retain `v1.5.0` and use a separately authorized corrective release; an installer rollback must first reconcile post-upgrade edits with the retained local snapshot. Do not forcibly rewrite tags or erase project knowledge. The next stage is [sustained-use feedback for 1.7](workflow-1.7.md), not a claim that long-term behavior is already proven.
