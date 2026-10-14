@@ -17,10 +17,6 @@ if (WORKFLOW_ROOT / ".agents" / "skills").exists():
     SKILLS_ROOT = WORKFLOW_ROOT / ".agents" / "skills"
     INSTRUCTION_PATH = WORKFLOW_ROOT / "AGENTS.md"
     REQUIRE_OPENAI_YAML = True
-elif (WORKFLOW_ROOT / ".claude" / "skills").exists():
-    SKILLS_ROOT = WORKFLOW_ROOT / ".claude" / "skills"
-    INSTRUCTION_PATH = WORKFLOW_ROOT / "CLAUDE.md"
-    REQUIRE_OPENAI_YAML = False
 else:
     SKILLS_ROOT = WORKFLOW_ROOT / ".agents" / "skills"
     INSTRUCTION_PATH = WORKFLOW_ROOT / "AGENTS.md"
@@ -49,6 +45,10 @@ REQUIRED_CATEGORIES = {
     "risk-calibration",
     "docs-lifecycle",
     "plan-sizing",
+    "experience-boundary",
+    "delegation",
+    "project-knowledge",
+    "language",
 }
 REQUIRED_AGENT_HEADINGS = {
     "# Identity",
@@ -152,6 +152,14 @@ def validate_cases(data: Dict, errors: List[str]) -> List[Dict]:
         for field, allowed in (("plan_kind", {"none", "task", "phase"}), ("doc_action", {"none", "reuse", "update-current", "migrate"}), ("batch_action", {"prune-closed", "reset-empty", "retain-open"})):
             if field in expected and expected[field] not in allowed:
                 errors.append("{} {} 不合法".format(prefix, field))
+        for field, allowed in {
+            "memory_action": {"update-existing-project", "candidate-only", "project-only"},
+            "applicability": {"active", "retired", "partial"},
+            "delegation": {"bounded-allowed", "none"},
+            "language": {"en", "zh"},
+        }.items():
+            if field in expected and expected[field] not in allowed:
+                errors.append("{} {} 不合法".format(prefix, field))
 
     missing_categories = sorted(REQUIRED_CATEGORIES - categories)
     if missing_categories:
@@ -252,7 +260,7 @@ def evaluate_responses(
             continue
         seen.add(case_id)
         expected = case_map[case_id]["expected"]
-        for field in ("route", "risk", "primary_skill", "escalation", "status", "plan_kind", "doc_action", "batch_action"):
+        for field in ("route", "risk", "primary_skill", "escalation", "status", "plan_kind", "doc_action", "batch_action", "memory_action", "applicability", "delegation", "language"):
             if field not in expected:
                 continue
             if response.get(field) != expected.get(field):

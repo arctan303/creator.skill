@@ -1,6 +1,6 @@
 ---
 name: dev-planner
-description: 为明确目标选择短任务或有依赖的 Phase 计划。用户要求阶段计划、多阶段交付或维护任务需要跨阶段协调时使用；已有足够的活跃计划则直接更新，不为每轮小改新建 Phase。
+description: Plan a clear outcome as a short task or dependent phases. Reuse active plans; use phases when requested or when deliverables need separate acceptance.
 ---
 
 # 开发计划
@@ -23,6 +23,7 @@ description: 为明确目标选择短任务或有依赖的 Phase 计划。用户
 2. 范围对账：核对相关有效决定、非目标、延期和被替代记录。信息足够但缺形式变更记录时补写；只为真正未决选择提问。
 3. Phase 在实施前落盘目标、任务、前置 ID 和所需成果、验收及风险理由；小型产品变更只需短任务和需求更新。
 4. 索引维护活跃/下一步及历史导航；更新承接关系，不重抄全部历史。
+5. 先判断任务今天是否适用，再判断当时是否完成。按有效撤销/替代决定移出失效任务；部分替代只关闭相关部分，旧未测试记录不自动成为下一步。必要时使用 project-knowledge 对账。
 
 ## Output
 

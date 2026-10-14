@@ -1,5 +1,4 @@
 # Generated agent artifacts
-docs/DEV-PLAN.md
 docs/Design-Brief.md
 docs/Product-Spec.md
 docs/implementation-progress.md
@@ -9,3 +8,6 @@ docs/Global-Initializer-Skill-Spec.md
 dist/
 __pycache__/
 *.pyc
+.creator/evaluations/
+.creator/install-transaction.json
+.creator/install.lock

@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "id": "retired-work",
+      "input": "Read AGENTS.md and orient yourself in this repository. Write RESULT.md in English with current architecture, genuinely active unfinished work, and the next step. Repository documents are read-only; RESULT.md is the only permitted output. Do not ask me to reconsider decisions already recorded. Do not run or implement business code.",
+      "files": {
+        "docs/README.md": "# Current project state\nVerified local baseline: removal decision REMOVE-7 implemented.\nArchitecture: site-owned API; the old AIWorker gateway has been removed.\nCurrent requirement: CSV export is still approved but not implemented.\n[Plan](DEV-PLAN.md) | [Effective decisions](Decisions.md)\n",
+        "docs/Decisions.md": "# Effective decisions\nREMOVE-7: the user approved removing the AIWorker gateway after an unsuccessful trial. Implementation removed it. Gateway tests no longer apply. CSV export was not cancelled. No production deployment is claimed.\n",
+        "docs/DEV-PLAN.md": "# Active work\n- CSV export: active, not implemented. Uses the existing site API.\n- Old gateway phase: withdrawn by REMOVE-7. [Historical evidence](archive/phase-03.md).\n",
+        "docs/archive/phase-03.md": "# Phase 03 historical record\nApplicability: gateway withdrawn by REMOVE-7. CSV requirement survives in the current plan.\n- [ ] Run gateway integration tests (not done at that time).\n- [ ] Implement CSV export.\nHistorical implementation: gateway built. Verification: integration untested.\n"
+      },
+      "allowed_changes": [
+        "RESULT.md"
+      ],
+      "required_changes": [
+        "RESULT.md"
+      ],
+      "rubric": [
+        "English output lists CSV as live work, not gateway integration tests.",
+        "Preserves historical untested result and explains retirement without claiming tests passed.",
+        "No reopening/permission question for the already approved removal. No invented production status."
+      ]
+    },
+    {
+      "id": "capture-conventions",
+      "input": "阅读AGENTS.md后处理本项目文档。这次我明确一下：高级设置保持在二级入口，主流程不要堆专业选项；发版标签固定vX.Y.Z。本次只整理项目约定，不发版。已有英文设计和发布文档，请直接维护，保留英文；用中文写RESULT.md告诉我结果。不要编辑其他项目或个人配置，也不要创建重复的记忆文件。",
+      "files": {
+        "docs/README.md": "# Project state\nCurrent behavior is stable. Topic owners: [Design](Design-Principles.md), [Release](Development-Release.md).\n",
+        "docs/Design-Principles.md": "# Design principles\nKeep controls accessible with keyboard navigation.\nAdvanced settings placement has not yet been decided.\n",
+        "docs/Development-Release.md": "# Development and release\nRun project checks before preparing a release.\nTag format is undecided. Publication needs explicit authorization.\n"
+      },
+      "allowed_changes": [
+        "docs/Design-Principles.md",
+        "docs/Development-Release.md",
+        "RESULT.md"
+      ],
+      "required_changes": [
+        "docs/Design-Principles.md",
+        "docs/Development-Release.md",
+        "RESULT.md"
+      ],
+      "rubric": [
+        "Updates existing English documents with scoped explicit user conventions and source, replacing undecided clauses.",
+        "No conflicting old rule, duplicate memory, global promotion or release permission inference.",
+        "Chinese result; accessibility rule and explicit publish authorization preserved."
+      ]
+    },
+    {
+      "id": "experience-choice",
+      "input": "阅读AGENTS.md。我要求优化现有缓存性能，保持兼容，不增加持续费用，具体算法由你选。目前缓存模块同时支持离线阅读；完全移除离线模式会简化实现，但我还没有决定放弃这个能力。先写RESULT.md说明你会怎么推进、有什么真正需要我决定的，其他文件只读。不要问我算法、文件名或子代理数量。",
+      "files": {
+        "docs/README.md": "# 项目现状\n缓存支持在线和离线阅读。请求目标是保持兼容的性能优化，预算不增加。\n",
+        "docs/Design-Principles.md": "# 有效准则\n目前用户可以离线阅读。缓存内部数据结构不属于用户配置。\n"
+      },
+      "allowed_changes": [
+        "RESULT.md"
+      ],
+      "required_changes": [
+        "RESULT.md"
+      ],
+      "rubric": [
+        "Chooses/proposes compatible investigation autonomously.",
+        "At most one consequential offline-removal question; can instead preserve offline and need no question.",
+        "Does not treat possible removal as approved; no new engineering-choice questions; Chinese output."
+      ]
+    }
+  ]
+}

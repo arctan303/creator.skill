@@ -10,6 +10,26 @@
 - 新决定确认后同次更新受影响需求、设计、活跃任务；旧条款在当前正文被修订/移出，历史只补替代元数据，不篡改当时任务或证据。
 - “暂不做”注明适用基线或重审条件；后续承接时撤销旧限制。证据冲突先分类，不能只按时间较新或代码现状决定正确行为。
 
+### Project knowledge and current state
+
+Use [project-knowledge](project-knowledge.md) for explicit project conventions, affected current-state updates and document retirement. Keep the current-state entry as a short verified snapshot: actual capabilities/architecture, active work, real limitations, consequential removals/replacements, baseline and topic links. Reuse an existing entry and register it in docs-state; do not create a competing overview. A stale snapshot needs reconciliation, not blind priority over evidence.
+
+Capture explicit design/release/collaboration decisions at the next safe task checkpoint, without waiting for a “remember” request or a repetition threshold. Reuse the relevant topic document. Store scope and a concise source; observations/inferences remain candidates, not user decisions. A one-off exception is not a permanent principle. Project-first scope is the default; cross-project commonalities may be proposed after comparison but must not silently become global rules. Keep secrets and private transcripts out of memory.
+
+Task **applicability** (active / superseded / withdrawn) is independent of implementation and verification. When an approved change removes a capability, retire its affected requirements, active tasks and obsolete validation obligations in the same closure; retain historical test results unchanged and link the replacement/removal decision. Partial replacement closes only the affected portion. Remaining cleanup, migration or security obligations still need their own valid task. Do not mark cancelled tests passed.
+
+On “understand the repository” or “list unfinished work”, start from current state and effective active tasks. Old unchecked boxes, archived failures or chronological successors are not enough to reopen work. Reopening needs a current requirement or new authorized decision; absence from code or placement in archive alone does not prove cancellation.
+
+### Adaptive execution and experience boundary
+
+Choose only the skills and artifacts that resolve this task's uncertainty; no mandatory requirement → design → plan → implementation chain. Complete the whole authorized request, including integration and verification, before handing back. Prefer a short task where sufficient; preserve required Phase dependencies when they exist.
+
+Investigate engineering questions and choose ordinary reversible implementation details. Ask only for a necessary unresolved experience/capability tradeoff, meaningful cost, privacy/scope choice or missing authorization. Already accepted behavior needs no second approval. Explain the consequence and continue independent work while awaiting the answer.
+
+Choose subagents by separability and value, not R0/R1/R2. Give them bounded deliverables, file ownership, context, evidence and stopping conditions. Avoid overlapping edits and duplicate work; integrate their result before claiming completion. Independent review remains a separate risk-based requirement. Respect a user's ban or an unavailable host.
+
+Replies follow the user's language; edits preserve the document's language. Names, identifiers and canonical rule paths remain stable. English and Chinese public guides describe the same behavior; do not maintain two independent instruction trees or duplicate project memory by language.
+
 ## 计划与承接
 
 - Phase 适用于用户点名或多个有依赖、分别验收的阶段；其余使用短任务。路由到计划技能也可以输出短任务，不为凑 Phase 拆碎工作。
@@ -27,6 +47,7 @@ supersedes：有替代关系时列旧 ID 与原因
 验收与验证：
 风险及具体影响：
 状态与证据：
+当前适用性：active / superseded / withdrawn；变化时说明范围和决定来源
 ```
 
 - 前置阶段标完成不保证所需成果今天仍有效，开工核对相关接口/文件。后继关系从 depends_on 派生，不维护两套关系表。
@@ -62,10 +83,13 @@ reviewer 收到有效契约、风险理由、相关变更基线、验证证据�
 | 设计变化 | 当前设计规则及受影响引用，不把审美材料扩大为功能需求 |
 | 规划 | 相关范围对账、依赖、活跃任务，不重抄历史 |
 | 开发/修复 | 验证后更新受影响能力、模块/命令/限制及任务状态 |
+| 能力撤销/替代 | 更新现状和有效条款，关闭失效任务/测试义务，历史补撤销来源；部分替代保留有效部分 |
 | 审查 | 检查上述相关文档是否同步、旧决定是否失效、证据是否仍适用 |
 | 发布 | 对应版本/环境和真实回读证据；不凭构建推断生产状态 |
 
 没有影响现状摘要的小改无需改入口。不要每轮写流水账；阶段完成、决定替代、归档和实质变化时整理。
+
+普通任务只维护受影响知识；里程碑关闭时对账相关计划与专题；发现具体冲突/重复或用户要求整理时才扩大盘点。文件旧、未引用或超过大小建议都不是删除理由。确定为可再生成的临时产物可在授权范围内清理；唯一历史先保留或归档。真实文档冲突需判断有效决定，不能仅凭链接检查通过宣布整理完成。
 
 现状入口建议约 150 行或 8 KiB 内便于扫读，详细主题约 300 行或 20 KiB 时检查拆分必要性；任一超过只是整理提示，不自动失败。也检查重复内容、长表格和 token 负担。不能压成超长行规避，更不能删除证据凑预算。
 

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "docs_schema_version": 1,
+  "workflow_version": "1.6.0",
+  "status": "complete",
+  "verified_at": "2026-10-14",
+  "entrypoints": {
+    "context": "docs/README.md",
+    "spec": "docs/workflow-1.6.md",
+    "plan": "docs/DEV-PLAN.md"
+  },
+  "mappings": [
+    {"source": "docs/workflow-optimization.md", "action": "keep", "targets": ["docs/workflow-optimization.md"], "reason": "Preserve 1.5 evidence as explicitly historical; current 1.6 work has its own entry."}
+  ],
+  "pending": [],
+  "evidence": ["docs/workflow-1.6.md records scoped reconciliation, tests and independent review.", "docs/README.md is the sole source-project current-state entry; 1.5 evidence is explicitly historical.", "The docs checker validates registration and links; semantic scope was reconciled separately. This is not release or live-host certification."]
+}

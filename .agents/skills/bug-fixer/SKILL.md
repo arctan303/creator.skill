@@ -1,6 +1,6 @@
 ---
 name: bug-fixer
-description: 在维护路线中根据报错、失败测试、审查意见或可复现现象定位并修复软件缺陷。用于恢复已经明确的预期行为；如果正确行为不清或修复需要改变产品契约，停止并升级到 product-spec-builder 的产品变更模式。
+description: Diagnose reproducible failures and restore established behavior. Investigate missing facts; unresolved changes to user experience belong to product requirements.
 ---
 
 # 缺陷修复技能 (bug-fixer)
@@ -29,7 +29,7 @@ description: 在维护路线中根据报错、失败测试、审查意见或可�
 ## Workflow
 
 1. 复现问题，区分已证实事实、合理推断和未知项。
-2. 一次验证一个根因假设，找到最小充分证据链。
+2. 提出有证据的有限根因假设，优先验证最能区分原因的检查；独立调查可并行，避免重复写入和无界尝试，收敛到最小充分证据链。
 3. 实施最小完整修复，不用大重构掩盖未知根因。
 4. 复跑原失败证据，并补充与风险相称的回归检查。
 5. 范围改变时更新相关契约，按具体影响重新评级；只有 R2 才自动要求 fresh reviewer，路线升级不自动等于 R2。

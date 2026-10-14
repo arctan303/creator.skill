@@ -74,7 +74,7 @@
 }
 ```
 
-status 为 `pending / partial / complete`；缺失表示未登记。action 为 `keep / update / split / merge / archive / pending`。待处理映射可以 targets 为空并写原因；source 可指搬迁前路径，targets/entrypoints 必须指向仓库内现存文件。
+status 为 `pending / partial / complete`；缺失表示未登记。action 为 `keep / update / split / merge / archive / pending`。待处理映射可以 targets 为空并写原因；source 可指搬迁前路径，entrypoints 必须指向仓库内现存文件，targets 可指向现存文件或目录。站点路由和源码行号链接的检查边界见[项目知识维护](project-knowledge.md)。
 
 workflow_version 是本次适配依据，不替代 `.version`。docs_schema_version 表示文档协议。部分迁移保留 pending 和路径映射；不得有两个互相矛盾的当前入口。恢复前核对相关文件变化，只补未完成项，不阻塞无关工作。
 

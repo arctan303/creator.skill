@@ -33,7 +33,7 @@ jobs:
       - name: Validate prompt contracts
         run: python .creator/scripts/evaluate_prompt_cases.py
 
-      - name: Test docs checker
+      - name: Test workflow tools and safe installation
         run: python -B -m unittest discover -s tests -v
 
       - name: Build release packages
@@ -63,6 +63,5 @@ jobs:
           name: ${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.notes }}
           files: |
-            dist/creator.codex.zip
-            dist/creator.claude.zip
+            dist/creator-workflow.zip
             dist/creator-gateway.zip

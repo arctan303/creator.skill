@@ -1,6 +1,6 @@
 ---
 name: design-maker
-description: （可选技能）为 0→1 产品或产品变更绘制 UI 页面原型、线框图与交互状态设计稿，输出全局变量、组件和空/加载/错误等核心变体。仅在设计产物能降低开发不确定性时使用；不用于恢复既有视觉行为的维护任务。
+description: Create prototypes, wireframes and interaction states when a visual artifact will reduce uncertainty. Optional for new or changed designs; not required for routine maintenance.
 ---
 
 # 设计制图技能 (design-maker)

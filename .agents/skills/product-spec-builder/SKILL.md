@@ -1,6 +1,6 @@
 ---
 name: product-spec-builder
-description: 将一句话或模糊产品创意整理成可验收的 Product Spec，并为已有产品记录增量变更。用于 0→1 产品定义，或新增能力、改变用户可见行为、公开 API、持久化格式、公开数据模型、权限和业务流程的产品变更；不用于只恢复既定行为的普通维护。
+description: Turn an idea or product change into testable requirements. Use when intended user behavior or scope is unresolved; skip repeated interviews for already confirmed changes.
 ---
 
 # 需求构建技能 (product-spec-builder)
@@ -28,9 +28,10 @@ description: 将一句话或模糊产品创意整理成可验收的 Product Spec
 
 1. 先判断 0→1、产品变更或维护执行，不按用户使用的“优化/修复”字眼机械分类。
 2. 抽取已知目的、目标用户、核心场景、外部行为、范围和非目标。
-3. 只追问会改变路线、首版范围、公开行为或验收方式的高信息量问题；每轮通常 1 个，最多 2 个。
+3. 只追问必要且未决的体验边界：用户能力、交互/默认行为、兼容性、显著成本、隐私/知识作用范围或缺失授权。已有决定不重问；工程实现与可自行核查的事实直接处理，每轮最多 2 个问题。
 4. 信息足够时停止追问，把未知项写成临时假设或明确阻塞。
 5. 0→1 生成 Product Spec；产品变更原位修订条款，标明待实现和旧决定替代关系。历史明细按需移出当前正文，不只追加相反声明。
+6. 明确且可复用的项目准则交给 project-knowledge 原位沉淀；一次性例外与助手推断不能自动变成长期用户偏好。未决问题只暂停其依赖部分。
 
 ## Output
 

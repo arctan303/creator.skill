@@ -1,77 +1,63 @@
-# CLI 适配差异
+# Host adapters and installation / 宿主适配与安装
 
-## 环境检测
+## One policy / 一份规则
 
-判断当前 CLI 类型的方式（按优先级）：
+| Content | Canonical location | Host discovery |
+| --- | --- | --- |
+| Project workflow | `AGENTS.md` | Codex; supported Claude sessions |
+| Skill policy and resources | `.agents/skills/<name>/` | Codex directly |
+| Claude Skill adapter | `.claude/skills/<name>/SKILL.md` | Metadata and a link to the canonical Skill; no second rule body |
+| New evolution ledger | `.creator/evolution/signals.md` | Shared; preserve older host ledgers |
+| Package baseline | `.creator-manifest.json`, `.creator/install-state.json` | Installer ownership and case baselines |
+| Docs state | `.creator/docs-state.json` | Project runtime state, never distributed |
 
-1. **技能自身安装位置**：gateway `SKILL.md` 位于 `~/.codex/skills/creator/` → Codex；位于 `~/.claude/skills/creator/` → Claude Code。
-2. **目录存在性回退**：存在 `~/.codex/` 目录 → Codex；存在 `~/.claude/` 目录 → Claude Code。
-3. **仍无法判断时**才询问用户。
+## Installer commands / 安装命令
 
-## 目录映射
+Python 3.9+ is required. Run from any directory; select the project explicitly. The gateway ZIP has `SKILL.md` at its root, plus `scripts/install_workflow.py`.
 
-| 内容 | Codex | Claude Code |
-|------|-------|-------------|
-| 系统指令文件 | AGENTS.md | CLAUDE.md |
-| 项目 Skill 目录 | .agents/skills/ | .claude/skills/ |
-| 配置目录 | .codex/ | .claude/ |
-| 信号文件 | .codex/evolution/signals.md | .claude/evolution/signals.md |
-| 界面配置 | agents/openai.yaml | 不适用 |
-| 快捷命令 | openai.yaml default_prompt | .claude/commands/*.md |
-| Prompt 回归资产 | `.creator/tests/`、`.creator/scripts/` | `.creator/tests/`、`.creator/scripts/` |
+```powershell
+python <gateway-directory>/scripts/install_workflow.py --root C:/git/my-project --package C:/downloads/creator-workflow.zip
+python <gateway-directory>/scripts/install_workflow.py --root C:/git/my-project --package C:/downloads/creator-workflow.zip --apply
+```
 
-## 释放包映射
+For legacy ownership evidence, add the matching original official ZIP. Repeat the option when both old platform packages were installed:
 
-| CLI | 下载文件 |
-|-----|---------|
-| Codex | creator.codex.zip |
-| Claude Code | creator.claude.zip |
+```powershell
+python <gateway-directory>/scripts/install_workflow.py --root C:/git/my-project --package C:/downloads/creator-workflow.zip --baseline-package C:/downloads/creator.claude-1.5.zip
+```
 
-## 冲突检测清单
+The old filename is arbitrary; contents, manifest and hashes establish the baseline. Do not use a ZIP created from a modified project as an “official” baseline: doing so would incorrectly mark custom content as replaceable.
 
-### 两个平台共同检查
+Defaults are read-only. `--apply` writes only a conflict-free plan. Exit codes: `0` successful plan/apply, `2` unresolved conflicts with no apply, `1` unsafe input or operation failure. All package paths are validated before mutation; archives are never extracted over the project. Installer state stores original official case definitions so later upgrades can preserve local cases.
 
-- `.creator/` 目录
-- `.creator/tests/prompt-cases/cases.json`（按 case `id` 合并；已证实未定制的官方条目正常升级，无法判定的本地冲突才询问）
-- `.creator/scripts/evaluate_prompt_cases.py`（版本化文件，已有升级授权时正常替换，保护未解决的本地定制）
-- `.creator/docs-state.json`（运行时迁移状态，保留，不从包覆盖）
-- `.creator/references/` 与 `.creator/scripts/check_docs.py`（版本化指南和只读检查器）
+An interrupted apply retains `.creator/install-transaction.json` with recovery snapshots. Keep it private: snapshots can contain local instruction content. Do not hand-edit or discard it to bypass recovery.
 
-### Codex
+```powershell
+python <gateway-directory>/scripts/install_workflow.py --root C:/git/my-project --recover
+python <gateway-directory>/scripts/install_workflow.py --root C:/git/my-project --recover --apply
+```
 
-- AGENTS.md
-- EVOLUTION.md
-- .version
-- .creator-manifest.json
-- .agents/skills/ 目录
-- .codex/evolution/signals.md（已有台账只保留，不覆盖）
+Recovery restores pre-install file contents only when current content still matches the recorded before/after state. Concurrent modifications stay intact and require reconciliation. Empty directories created before interruption may remain. For project conflicts, preserve/extract useful customization, deliberately reconcile the affected files, and rerun; there is no force option.
 
-### Claude Code
+Apply/recovery operations use an OS lock on the empty runtime file `.creator/install.lock`. It stays on disk and contains no project content; the operating system releases the lock if a process exits. Do not delete the lock file to bypass another running installation.
 
-- CLAUDE.md
-- EVOLUTION.md
-- .version
-- .creator-manifest.json
-- .claude/skills/ 目录
-- .claude/commands/ 目录
-- .claude/evolution/signals.md（已有台账只保留，不覆盖）
+## Claude discovery / Claude 发现机制
 
-## 安装后验证
+Official documentation checked 2026-10-13: [AGENTS.md discovery](https://code.claude.com/docs/en/memory#agentsmd), [Skills](https://code.claude.com/docs/en/skills).
 
-- `.creator/tests/prompt-cases/cases.json` 存在且 JSON 可解析。
-- `.creator/scripts/evaluate_prompt_cases.py` 存在。
-- 从工作空间根目录执行 `python .creator/scripts/evaluate_prompt_cases.py` 成功。
-- 更新后确认项目自进化新增的 case `id` 仍存在。
-- manifest 的 docs_schema_version 只声明包支持的协议，不能代替项目迁移状态。
-- 已授权 docs 迁移时按手册完成后运行 `python .creator/scripts/check_docs.py --root . --require-complete`，另外核对语义、旧条款失效及历史完整性。只安装工作流则可只读盘点，不写 complete。
+Native AGENTS support requires Claude Code 2.1.277+. Version 2.1.281 fixes additional session/provider cases. A disabled built-in AGENTS plugin or user/managed configuration can still prevent loading. `--claude-version 2.1.281` only records a supplied version for installer diagnostics; it does not run or configure Claude.
 
-## AGENTS.md 到 CLAUDE.md 转换规则
+By default, project/ancestor `CLAUDE.md`, `.claude/CLAUDE.md` and `CLAUDE.local.md` take precedence over AGENTS discovery. The user-level `~/.claude/CLAUDE.md` loads alongside AGENTS and is not itself a shadowing file. The installer lists existing candidate paths without reading or changing their content; a planned removal may still appear in the pre-install diagnosis.
 
-仅做以下文本替换，不改动业务逻辑：
+After installation start a fresh session and inspect `/context`. Confirm the canonical `AGENTS.md` appears and invoke a relevant Skill to verify its adapter resolves to `.agents/skills/`. Document the actual version, settings and result. Structural tests do not establish this compatibility.
 
-| 查找 | 替换为 |
-|------|--------|
-| `AGENTS.md` | `CLAUDE.md` |
-| `Codex` | `Claude Code`（仅 CLI 名称引用处） |
-| `.codex/` | `.claude/` |
-| `.agents/skills/` | `.claude/skills/` |
+If support is unavailable, an explicitly chosen fallback is a real `@AGENTS.md` import in a root `CLAUDE.md`; when importing from `.claude/CLAUDE.md`, use `@../AGENTS.md`. Preserve other project instructions. This is a reference to the same policy, not a translated/copied second policy. Modern sessions that already load AGENTS need no generated CLAUDE file.
+
+## Installed checks / 安装后检查
+
+```powershell
+python -B .creator/scripts/evaluate_prompt_cases.py
+python -B .creator/scripts/check_docs.py --root .
+```
+
+Run these from the selected project. The first is structural without real response evidence. The second is read-only inventory; use `--require-complete` only after an authorized docs migration and semantic verification. Updating `.version` does not migrate docs. Do not install project source `docs/README.md` into a business project.

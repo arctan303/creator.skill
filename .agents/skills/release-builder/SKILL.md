@@ -1,6 +1,6 @@
 ---
 name: release-builder
-description: 对 Node、Python、Rust、Go、Java、.NET、移动端或桌面项目执行发布准备、原生构建打包、产物冒烟测试与敏感信息审计。适用于开发完成、准备生成交付包或部署上线前调用；根据仓库生态选择命令，不假设 package.json 或 npm。
+description: Prepare builds, packages, smoke tests and release evidence for the actual project ecosystem. External publishing requires explicit authorization; a local build is not a release.
 ---
 
 # 发布技能 (release-builder)

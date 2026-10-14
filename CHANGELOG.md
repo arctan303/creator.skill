@@ -2,6 +2,19 @@
 
 记录每次发布的变更内容。
 
+## [1.6.0] - 2026-10-14
+
+- One canonical AGENTS.md policy and creator-workflow.zip; thin Claude discovery adapters replace duplicated policies and legacy commands. / 统一规则与工作流包，Claude 仅保留技能发现适配。
+- Ownership-aware offline upgrades with hash baselines, preserved customizations/cases/signals, obsolete-file cleanup, process locking and recoverable transactions. / 可核验归属的升级清理，保留项目定制，支持冲突报告和中断恢复。
+- Experience-boundary questions and task-dependent subagents; review remains based on concrete risk. / 只问必要未决体验取舍，按任务组织子代理，按风险独立审查。
+- Project knowledge captures explicit local conventions and maintains current state, effective decisions and task retirement without reviving historical tests. / 自然沉淀项目准则，维护现状与旧任务失效，不把未测历史重新列为待办。
+- Paired English/Chinese README, quickstarts and illustrative continuity examples; replies follow user language and existing documents keep their language. / 中英文入口、安装和使用说明，单一技能规范源。
+- Declared article routes, scoped exact application/resource mappings, directory/source-line links, 46 policy cases and answer-free synthetic task fixtures supplement real filesystem regressions. / 支持文章路由、带真实目标与依据的精确应用及资源映射，修正文档链接误报；策略、脚本与模型验证分别记录。
+
+Upgrade note: download `creator-workflow.zip` and `creator-gateway.zip`; the former replaces separate Codex/Claude packages. Existing 1.5 installs need their original official ZIP as an ownership baseline. See the [English quickstart](https://github.com/arctan303/creator.skill/blob/v1.6.0/docs/quickstart.md) / [中文快速开始](https://github.com/arctan303/creator.skill/blob/v1.6.0/docs/quickstart.zh-CN.md).
+
+Validation: 63 local script regressions, 46 structural cases, three bounded synthetic tasks and an actual Mail upgrade; these are separate evidence categories. Long-term use and live Claude discovery remain observation gaps. / 已验证脚本、规则结构、有限模型场景与 Mail 实际升级；长期使用效果和 Claude 实时加载继续观察。
+
 ## [1.5.0] - 2026-09-06
 
 - `batch.md` 明确为当前待复查批次；复查收尾立即移出已关闭项，保留未决/并行新增项，全清后重置。复用批次回执保留证据，不累计已复查表。

@@ -3,7 +3,7 @@
 ## 输入
 
 - `EVOLUTION.md`
-- `.codex/evolution/signals.md` 或 `.claude/evolution/signals.md`
+- `.creator/evolution/signals.md`；核对并保留既有 `.codex/evolution/signals.md`、`.claude/evolution/signals.md`，不静默丢失或重复合并
 - 相关 Skill、`AGENTS.md` 与可验证证据
 
 ## 台账状态

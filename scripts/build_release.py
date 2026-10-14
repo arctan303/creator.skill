@@ -1,459 +1,175 @@
 #!/usr/bin/env python3
-"""
-build_release.py — 从 creator.skill 源仓库生成三套释放包。
-
-产物：
-  dist/creator.codex.zip   — Codex 工作空间初始化包
-  dist/creator.claude.zip  — Claude Code 工作空间初始化包
-  dist/creator-gateway.zip — 网关 Skill 安装包
-
-用法：
-  python scripts/build_release.py
-"""
-
+"""Build one canonical workflow package and the standalone installation gateway."""
+import hashlib
 import json
 import re
 import shutil
+import stat
+import tempfile
 import zipfile
-from typing import List
 from pathlib import Path
-
-# ── 路径 ──────────────────────────────────────────────────────────────
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DIST_DIR = REPO_ROOT / "dist"
-SKILLS_SRC = REPO_ROOT / ".agents" / "skills"
+SKILLS_SRC = REPO_ROOT / ".agents/skills"
 GATEWAY_SRC = REPO_ROOT / "gateway"
 RELEASE_MANIFEST = ".creator-manifest.json"
+CASES_PATH = ".creator/tests/prompt-cases/cases.json"
+SIGNALS_PATH = ".creator/evolution/signals.md"
+SIGNALS_TEMPLATE = """# Workflow evolution signals / 工作流改进信号
 
-EVOLUTION_SIGNALS_TEMPLATE = """# 自进化信号
+No recorded signals / 暂无记录。
 
-| ID | 关联规则 | 问题类别 | 摘要 | 首次出现 | 最近出现 | 次数 | 严重度 | 状态 |
-| --- | --- | --- | --- | --- | --- | ---: | --- | --- |
-
-## 证据
-
-<!--
-### EVO-001
-- 用户纠正 / 报错 / 测试 / 审查 / 规则冲突：
-- 处理说明：
--->
+Record real events and patch evidence using EVOLUTION.md. Preserve existing host-specific ledgers; do not import their content automatically.
+按 EVOLUTION.md 记录真实事件与补丁证据。保留已有宿主台账，不自动搬迁其内容。
 """
 
-# ── 中文命令名映射（skill-name → 命令文件名） ─────────────────────────
-# 构建时从 openai.yaml 读取 description 和 prompt，此处仅定义命令文件名
 
-COMMAND_NAMES = {
-    "product-spec-builder": "需求",
-    "design-brief-builder": "设计规范",
-    "design-maker": "设计制图",
-    "dev-planner": "开发计划",
-    "dev-builder": "项目开发",
-    "release-builder": "发布准备",
-    "bug-fixer": "修复缺陷",
-    "reviewer": "代码审查",
-    "goal-writer": "Goal生成",
-    "self-evolver": "自进化",
-    "skill-builder": "技能构建",
-}
+def write_text(path, text):
+    path.write_bytes(text.encode("utf-8"))
 
 
-# ── 工具函数 ──────────────────────────────────────────────────────────
-
-
-def clean_dist():
-    """清理并重建 dist 目录。"""
-    if DIST_DIR.exists():
-        remove_stage(DIST_DIR)
-    DIST_DIR.mkdir(parents=True)
-
-
-def remove_stage(path):
-    """Only remove concrete generated paths within this repository's dist."""
-    expected = REPO_ROOT.resolve() / "dist"
-    actual = path.resolve()
-    if DIST_DIR.is_symlink() or path.is_symlink():
-        raise ValueError("Refusing symlinked build output")
-    if actual != expected and expected not in actual.parents:
-        raise ValueError("Build cleanup leaves dist: " + str(actual))
-    shutil.rmtree(path)
-
-
-def read_version() -> str:
-    """从 VERSION 文件读取语义版本号。"""
-    version_file = REPO_ROOT / "VERSION"
-    if not version_file.exists():
-        raise ValueError("缺少 VERSION 文件")
-    version = version_file.read_text(encoding="utf-8").strip()
+def read_version():
+    version = (REPO_ROOT / "VERSION").read_text(encoding="utf-8").strip()
     if not re.fullmatch(r"\d+\.\d+\.\d+", version):
-        raise ValueError(f"VERSION 不是有效语义版本号: {version!r}")
+        raise ValueError("VERSION must be a semantic version")
     return version
 
 
-def parse_openai_yaml(yaml_path: Path) -> dict:
-    """简易解析 openai.yaml，提取 display_name / short_description / default_prompt。
-
-    文件格式固定，不引入 PyYAML 依赖。
-    """
-    result = {}
-    text = yaml_path.read_text(encoding="utf-8")
-    for line in text.splitlines():
-        line = line.strip()
-        for key in ("display_name", "short_description", "default_prompt"):
-            if line.startswith(f"{key}:"):
-                # 去掉 key: 前缀，去掉引号
-                value = line[len(key) + 1 :].strip().strip('"').strip("'")
-                result[key] = value
-    return result
+def is_link(path):
+    info = path.lstat()
+    return stat.S_ISLNK(info.st_mode) or bool(getattr(info, "st_file_attributes", 0) & 0x400)
 
 
-def convert_agents_to_claude(text: str) -> str:
-    """将 AGENTS.md 内容转换为 CLAUDE.md 格式。
-
-    替换规则（仅路径和 CLI 名称，不改动业务逻辑）：
-    1. AGENTS.md → CLAUDE.md
-    2. .agents/skills/ → .claude/skills/
-    3. .codex/ → .claude/
-    4. Codex → Claude Code（仅独立出现的 CLI 名称）
-    """
-    result = text
-
-    # 先替换路径（顺序重要，避免二次替换）
-    result = result.replace("AGENTS.md", "CLAUDE.md")
-    result = result.replace(".agents/skills/", ".claude/skills/")
-    result = result.replace(".codex/", ".claude/")
-
-    # 替换 CLI 名称：仅匹配独立的 "Codex"（前面不是 . / 字母）
-    result = re.sub(r"(?<!\.)(?<!/)(?<!\w)Codex(?!\w)", "Claude Code", result)
-
-    return result
-
-
-def inject_version_line(text: str, version: str) -> str:
-    """在系统指令顶部注入可读的版本行，供安装后直接查看版本。"""
-    line = "> 工作流版本：{}\n\n".format(version)
-    if line.rstrip("\n") in text:
-        return text
-    return line + text
-
-
-def generate_command_md(description: str, prompt: str) -> str:
-    """生成一个 Claude Code slash command 的 md 文件内容。"""
-    # 去掉 prompt 中的 $skill-name 格式（Codex 专属语法），替换为纯名称
-    clean_prompt = re.sub(r"\$(\S+)", r"\1", prompt)
-    return (
-        f"---\n"
-        f'description: "{description}"\n'
-        f"---\n"
-        f"\n"
-        f"{clean_prompt}\n"
-        f"\n"
-        f"$ARGUMENTS\n"
-    )
-
-
-def zip_directory(source_dir: Path, zip_path: Path):
-    """将目录内容打包成 zip，保留目录结构但不含顶层目录名。"""
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-        for file_path in sorted(source_dir.rglob("*")):
-            if file_path.is_file():
-                arcname = file_path.relative_to(source_dir)
-                zf.write(file_path, arcname)
-
-
-def write_evolution_signals(path: Path):
-    """为新安装预建自进化信号台账。"""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(EVOLUTION_SIGNALS_TEMPLATE, encoding="utf-8")
-
-
-def copy_prompt_eval_assets(stage: Path):
-    """复制运行时自进化所需的 Prompt 用例和评测脚本。"""
-    source_cases = REPO_ROOT / ".creator" / "tests" / "prompt-cases"
-    source_evaluator = REPO_ROOT / ".creator" / "scripts" / "evaluate_prompt_cases.py"
-    if not source_cases.exists() or not source_evaluator.exists():
-        raise ValueError("缺少 Prompt 回归用例或评测脚本")
-    shutil.copytree(source_cases, stage / ".creator" / "tests" / "prompt-cases")
-    scripts_dir = stage / ".creator" / "scripts"
-    scripts_dir.mkdir(parents=True, exist_ok=True)
-    for script in (REPO_ROOT / ".creator" / "scripts").glob("*.py"):
-        shutil.copy2(script, scripts_dir / script.name)
-    shutil.copytree(REPO_ROOT / ".creator" / "references", stage / ".creator" / "references")
-
-
-def write_release_manifest(
-    stage: Path,
-    skills: List[str],
-    version: str,
-    platform: str,
-    skill_root: str,
-):
-    """写入由源码目录动态生成的发布清单。"""
-    manifest = {
-        "schema_version": 1,
-        "workflow": "creator.skill",
-        "version": version,
-        "platform": platform,
-        "skill_root": skill_root,
-        "skill_count": len(skills),
-        "skills": skills,
-        "docs_schema_version": 1,
-        "docs_guide": ".creator/references/docs-migration-1.5.md",
-    }
-    (stage / RELEASE_MANIFEST).write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-
-
-def discover_skills() -> List[str]:
-    """自动发现所有 skill 目录（含 SKILL.md 的子目录）。"""
-    skills = []
-    for d in sorted(SKILLS_SRC.iterdir()):
-        if d.is_dir() and (d / "SKILL.md").exists():
-            skills.append(d.name)
-    return skills
-
-
-def validate_skill_interfaces(skills: List[str]):
-    """验证每个 Skill 的跨平台界面文件可用于生成发布包。"""
-    required_fields = {"display_name", "short_description", "default_prompt"}
-    errors = []
-
-    unmapped = sorted(set(skills) - set(COMMAND_NAMES))
-    stale_mappings = sorted(set(COMMAND_NAMES) - set(skills))
-    if unmapped:
-        errors.append(f"缺少 Claude command 名映射: {', '.join(unmapped)}")
-    if stale_mappings:
-        errors.append(f"存在无对应 Skill 的 command 名映射: {', '.join(stale_mappings)}")
-
-    command_names = [COMMAND_NAMES[name] for name in skills if name in COMMAND_NAMES]
-    duplicates = sorted({name for name in command_names if command_names.count(name) > 1})
-    if duplicates:
-        errors.append(f"Claude command 文件名重复: {', '.join(duplicates)}")
-
-    for skill_name in skills:
-        yaml_path = SKILLS_SRC / skill_name / "agents" / "openai.yaml"
-        if not yaml_path.exists():
-            errors.append(f"{skill_name} 缺少 agents/openai.yaml")
+def source_files(directory):
+    for path in sorted(directory.rglob("*")):
+        if any(part in {"__pycache__", "results", "runs"} for part in path.relative_to(directory).parts):
             continue
-        info = parse_openai_yaml(yaml_path)
-        missing = sorted(field for field in required_fields if not info.get(field))
-        if missing:
-            errors.append(f"{skill_name} 的 openai.yaml 缺少非空字段: {', '.join(missing)}")
-
-    if errors:
-        raise ValueError("Skill 发布界面校验失败:\n- " + "\n- ".join(errors))
+        if is_link(path):
+            raise ValueError("Refusing linked package source: " + str(path))
+        if path.is_file() and path.suffix not in {".pyc", ".pyo"}:
+            yield path
 
 
-# ── 构建 Codex 包 ────────────────────────────────────────────────────
+def copy_tree(source, target):
+    for path in source_files(source):
+        dest = target / path.relative_to(source)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(path, dest)
 
 
-def build_codex(skills: List[str], version: str):
-    """构建 creator.codex.zip。"""
-    print("=== 构建 Codex 包 ===")
-    stage = DIST_DIR / "stage-codex"
-    if stage.exists():
-        remove_stage(stage)
-    stage.mkdir(parents=True)
+def discover_skills():
+    return sorted(path.name for path in SKILLS_SRC.iterdir() if (path / "SKILL.md").is_file())
 
-    # 复制 AGENTS.md（顶部注入版本行）
-    agents_text = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
-    (stage / "AGENTS.md").write_text(
-        inject_version_line(agents_text, version), encoding="utf-8"
+
+def metadata(text, key):
+    """Repository interfaces use single-line YAML scalars; fail on other forms."""
+    frontmatter = text.split("---", 2)
+    if len(frontmatter) != 3 or frontmatter[0].strip():
+        raise ValueError("Missing Skill frontmatter")
+    match = re.search(r"(?m)^" + re.escape(key) + r":\s*(.+)$", frontmatter[1])
+    if not match or match.group(1).strip() in {"|", ">", "|-", ">-"}:
+        raise ValueError("Missing single-line Skill " + key)
+    value = match.group(1).strip()
+    return json.loads(value) if value.startswith('"') else value.strip("'")
+
+
+def claude_adapter(skill_name, canonical):
+    return (
+        "---\nname: " + skill_name + "\ndescription: " + json.dumps(metadata(canonical, "description"), ensure_ascii=False) + "\n---\n\n"
+        + "Read and follow the [canonical skill](../../../.agents/skills/" + skill_name + "/SKILL.md) before acting. "
+        + "Resolve its relative references from that canonical file's directory.\n"
     )
-    print(f"  OK: AGENTS.md (工作流版本 {version})")
 
-    # 复制 EVOLUTION.md
-    shutil.copy2(REPO_ROOT / "EVOLUTION.md", stage / "EVOLUTION.md")
-    print("  OK: EVOLUTION.md")
 
-    copy_prompt_eval_assets(stage)
-    print("  OK: Prompt 回归用例与评测脚本")
+def zip_directory(source, destination):
+    """Fixed ZIP metadata makes identical source builds byte-reproducible."""
+    with zipfile.ZipFile(destination, "w", zipfile.ZIP_DEFLATED) as archive:
+        for path in source_files(source):
+            entry = zipfile.ZipInfo(path.relative_to(source).as_posix(), (2020, 1, 1, 0, 0, 0))
+            entry.compress_type = zipfile.ZIP_DEFLATED
+            entry.create_system = 3
+            entry.external_attr = (stat.S_IFREG | 0o644) << 16
+            archive.writestr(entry, path.read_bytes())
 
-    # 复制 .agents/skills/（完整目录）
-    dest_skills = stage / ".agents" / "skills"
+
+def write_release_manifest(stage, skills, version):
+    files = {}
+    for path in source_files(stage):
+        name = path.relative_to(stage).as_posix()
+        kind = "merge-cases" if name == CASES_PATH else "create-only" if name == SIGNALS_PATH else "managed"
+        files[name] = {"sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "kind": kind}
+    manifest = {
+        "schema_version": 2, "workflow": "creator.skill", "version": version,
+        "platform": "unified", "instruction_file": "AGENTS.md", "skill_root": ".agents/skills",
+        "skill_count": len(skills), "skills": skills, "adapters": {"claude-code": ".claude/skills"},
+        "docs_schema_version": 1, "docs_guide": ".creator/references/docs-migration-1.5.md",
+        "preserve": [SIGNALS_PATH, ".codex/evolution/signals.md", ".claude/evolution/signals.md", ".creator/docs-state.json", ".creator/project-knowledge/"],
+        "files": files,
+    }
+    write_text(stage / RELEASE_MANIFEST, json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
+
+
+def build_workflow(stage, skills, version):
+    stage.mkdir()
+    policy = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    write_text(stage / "AGENTS.md", "> Workflow version / 工作流版本: " + version + "\n\n" + policy)
+    shutil.copyfile(REPO_ROOT / "EVOLUTION.md", stage / "EVOLUTION.md")
+    for name in ("references", "scripts", "tests"):
+        copy_tree(REPO_ROOT / ".creator" / name, stage / ".creator" / name)
+    shutil.copyfile(REPO_ROOT / "scripts/install_workflow.py", stage / ".creator/scripts/install_workflow.py")
     for skill_name in skills:
-        src = SKILLS_SRC / skill_name
-        dst = dest_skills / skill_name
-        shutil.copytree(src, dst)
-    print(f"  OK: .agents/skills/ ({len(skills)} skills)")
-
-    # 预建 .codex/evolution/signals.md
-    write_evolution_signals(stage / ".codex" / "evolution" / "signals.md")
-    print("  OK: .codex/evolution/signals.md")
-
-    write_release_manifest(stage, skills, version, "codex", ".agents/skills")
-    print(f"  OK: {RELEASE_MANIFEST} ({len(skills)} skills)")
-
-    # 写入 .version
-    (stage / ".version").write_text(version, encoding="utf-8")
-    print(f"  OK: .version ({version})")
-
-    # 打包
-    zip_path = DIST_DIR / "creator.codex.zip"
-    zip_directory(stage, zip_path)
-    print(f"  OK: 打包完成: {zip_path.name}")
-
-    # 清理暂存
-    remove_stage(stage)
+        if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", skill_name):
+            raise ValueError("Unsafe Skill name: " + skill_name)
+        source = SKILLS_SRC / skill_name
+        canonical = (source / "SKILL.md").read_text(encoding="utf-8")
+        if metadata(canonical, "name") != skill_name:
+            raise ValueError("Skill name does not match directory: " + skill_name)
+        if not (source / "agents/openai.yaml").is_file():
+            raise ValueError("Missing Codex discovery metadata: " + skill_name)
+        copy_tree(source, stage / ".agents/skills" / skill_name)
+        adapter = stage / ".claude/skills" / skill_name / "SKILL.md"
+        adapter.parent.mkdir(parents=True)
+        write_text(adapter, claude_adapter(skill_name, canonical))
+    signal = stage / SIGNALS_PATH
+    signal.parent.mkdir(parents=True)
+    write_text(signal, SIGNALS_TEMPLATE)
+    write_text(stage / ".version", version + "\n")
+    write_release_manifest(stage, skills, version)
 
 
-# ── 构建 Claude 包 ───────────────────────────────────────────────────
-
-
-def build_claude(skills: List[str], version: str):
-    """构建 creator.claude.zip。"""
-    print("\n=== 构建 Claude 包 ===")
-    stage = DIST_DIR / "stage-claude"
-    if stage.exists():
-        remove_stage(stage)
-    stage.mkdir(parents=True)
-
-    # 转换 AGENTS.md → CLAUDE.md（转换后注入版本行）
-    agents_text = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
-    claude_text = convert_agents_to_claude(agents_text)
-    (stage / "CLAUDE.md").write_text(
-        inject_version_line(claude_text, version), encoding="utf-8"
-    )
-    print(f"  OK: CLAUDE.md（已转换，工作流版本 {version}）")
-
-    # 复制 EVOLUTION.md（也需要转换路径引用）
-    evo_text = (REPO_ROOT / "EVOLUTION.md").read_text(encoding="utf-8")
-    evo_claude = convert_agents_to_claude(evo_text)
-    (stage / "EVOLUTION.md").write_text(evo_claude, encoding="utf-8")
-    print("  OK: EVOLUTION.md（已转换）")
-
-    copy_prompt_eval_assets(stage)
-    print("  OK: Prompt 回归用例与评测脚本")
-
-    # 复制 skills 到 .claude/skills/（去除 agents/ 目录）
-    dest_skills = stage / ".claude" / "skills"
-    for skill_name in skills:
-        src = SKILLS_SRC / skill_name
-        dst = dest_skills / skill_name
-        shutil.copytree(src, dst)
-        for document in dst.rglob("*.md"):
-            document.write_text(
-                convert_agents_to_claude(document.read_text(encoding="utf-8")),
-                encoding="utf-8",
-            )
-        # 删除 agents/ 目录（包含 openai.yaml，Claude Code 不使用）
-        agents_dir = dst / "agents"
-        if agents_dir.exists():
-            remove_stage(agents_dir)
-    print(f"  OK: .claude/skills/ ({len(skills)} skills, 已去除 openai.yaml)")
-
-    # 从 openai.yaml 动态生成 .claude/commands/
-    commands_dir = stage / ".claude" / "commands"
-    commands_dir.mkdir(parents=True, exist_ok=True)
-    cmd_count = 0
-    for skill_name in skills:
-        yaml_path = SKILLS_SRC / skill_name / "agents" / "openai.yaml"
-        cmd_name = COMMAND_NAMES[skill_name]
-        info = parse_openai_yaml(yaml_path)
-        description = info["short_description"]
-        prompt = info["default_prompt"]
-        cmd_file = commands_dir / f"{cmd_name}.md"
-        cmd_file.write_text(generate_command_md(description, prompt), encoding="utf-8")
-        cmd_count += 1
-    print(f"  OK: .claude/commands/ ({cmd_count} commands)")
-
-    # 预建 .claude/evolution/signals.md
-    write_evolution_signals(stage / ".claude" / "evolution" / "signals.md")
-    print("  OK: .claude/evolution/signals.md")
-
-    write_release_manifest(stage, skills, version, "claude-code", ".claude/skills")
-    print(f"  OK: {RELEASE_MANIFEST} ({len(skills)} skills)")
-
-    # 写入 .version
-    (stage / ".version").write_text(version, encoding="utf-8")
-    print(f"  OK: .version ({version})")
-
-    # 打包
-    zip_path = DIST_DIR / "creator.claude.zip"
-    zip_directory(stage, zip_path)
-    print(f"  OK: 打包完成: {zip_path.name}")
-
-    # 清理暂存
-    remove_stage(stage)
-
-
-# ── 构建 Gateway 包 ──────────────────────────────────────────────────
-
-
-def build_gateway():
-    """构建 creator-gateway.zip。"""
-    print("\n=== 构建 Gateway 包 ===")
-    stage = DIST_DIR / "stage-gateway"
-    if stage.exists():
-        remove_stage(stage)
-
-    # 直接复制 gateway/ 目录
-    shutil.copytree(GATEWAY_SRC, stage)
-    for name in ("docs-migration-1.5.md", "workflow-contract.md"):
-        shutil.copy2(REPO_ROOT / ".creator" / "references" / name, stage / "references" / name)
-    gateway_skill = stage / "SKILL.md"
-    gateway_skill.write_text(
-        gateway_skill.read_text(encoding="utf-8").replace("../.creator/references/", "references/"),
-        encoding="utf-8",
-    )
-    print("  OK: gateway/ 内容已复制")
-
-    # 打包
-    zip_path = DIST_DIR / "creator-gateway.zip"
-    zip_directory(stage, zip_path)
-    print(f"  OK: 打包完成: {zip_path.name}")
-
-    # 清理暂存
-    remove_stage(stage)
-
-
-# ── 主函数 ────────────────────────────────────────────────────────────
+def build_gateway(stage):
+    copy_tree(GATEWAY_SRC, stage)
+    # Shared references link to one another; include their complete small closure.
+    copy_tree(REPO_ROOT / ".creator/references", stage / "references")
+    script = stage / "scripts/install_workflow.py"
+    script.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(REPO_ROOT / "scripts/install_workflow.py", script)
+    skill = stage / "SKILL.md"
+    write_text(skill, skill.read_text(encoding="utf-8").replace("../.creator/references/", "references/"))
 
 
 def main():
-    try:
-        version = read_version()
-    except ValueError as exc:
-        print(f"错误: {exc}")
-        return 1
-    print(f"creator.skill 发布构建 — 版本 {version}")
-    print(f"仓库根目录: {REPO_ROOT}")
-    print(f"输出目录: {DIST_DIR}\n")
-
-    # 验证源文件
-    if not SKILLS_SRC.exists():
-        print(f"错误: 找不到 skills 目录 {SKILLS_SRC}")
-        return 1
-    if not GATEWAY_SRC.exists():
-        print(f"错误: 找不到 gateway 目录 {GATEWAY_SRC}")
-        return 1
-
-    # 自动发现 skills
+    version = read_version()
     skills = discover_skills()
     if not skills:
-        print("错误: 没有发现任何 Skill")
-        return 1
-    print(f"发现 {len(skills)} 个 Skill: {', '.join(skills)}\n")
-
-    try:
-        validate_skill_interfaces(skills)
-    except ValueError as exc:
-        print(f"错误: {exc}")
-        return 1
-
-    clean_dist()
-    build_codex(skills, version)
-    build_claude(skills, version)
-    build_gateway()
-
-    # 汇总
-    print("\n=== 构建完成 ===")
-    for f in sorted(DIST_DIR.glob("*.zip")):
-        size_kb = f.stat().st_size / 1024
-        print(f"  {f.name} ({size_kb:.1f} KB)")
-
+        raise ValueError("No skills found")
+    if DIST_DIR.exists() and is_link(DIST_DIR):
+        raise ValueError("Refusing linked dist directory")
+    DIST_DIR.mkdir(exist_ok=True)
+    # Do not erase unrelated outputs. Replace only these two generated archives.
+    for name in ("creator-workflow.zip", "creator-gateway.zip"):
+        output = DIST_DIR / name
+        if output.exists() and is_link(output):
+            raise ValueError("Refusing linked output: " + name)
+    with tempfile.TemporaryDirectory(prefix="creator-build-") as temp:
+        workflow = Path(temp) / "workflow"
+        gateway = Path(temp) / "gateway"
+        build_workflow(workflow, skills, version)
+        build_gateway(gateway)
+        zip_directory(workflow, DIST_DIR / "creator-workflow.zip")
+        zip_directory(gateway, DIST_DIR / "creator-gateway.zip")
+    print("Built creator-workflow.zip and creator-gateway.zip: version {}, {} canonical skills".format(version, len(skills)))
     return 0
 
 

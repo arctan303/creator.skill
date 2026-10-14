@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "creator.skill 1.5 路由、风险、规模、文档生命周期与审查策略基线；静态校验不代表模型行为通过",
+  "description": "creator.skill 1.6 routing, experience boundaries, project knowledge, task applicability, delegation and language cases. Static/field checks do not establish real agent behavior.",
   "cases": [
     {
       "id": "route-zero-to-one-vague",
@@ -546,6 +546,203 @@
         "batch_action": "retain-open"
       },
       "rationale": "重读队列后保留变更和新增项；旧审查不能覆盖新内容，也不能整文件清空。"
+    },
+    {
+      "id": "experience-internal-choice",
+      "category": "experience-boundary",
+      "input": "优化已有缓存实现，保持外部行为、资源预算和兼容性，使用哪种内部数据结构由你决定。目标和验收已确认。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R1",
+        "primary_skill": "dev-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "plan_kind": "task"
+      },
+      "rationale": "内部专业选择可直接调查和决定，不问用户算法偏好。"
+    },
+    {
+      "id": "experience-remove-offline",
+      "category": "experience-boundary",
+      "input": "已核验：在本项目指定设备和既定预算下，当前性能目标与保留完整离线阅读能力无法同时满足。可选降低性能目标或移除离线能力；用户尚未作出这个取舍。请推进能独立完成的优化，并处理这个必要选择。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "待定",
+        "primary_skill": "product-spec-builder",
+        "question_min": 1,
+        "question_max": 1,
+        "escalation": false,
+        "status": "needs-input"
+      },
+      "rationale": "移除已承诺能力是尚未授权的体验取舍，暂停该部分并提出一个必要问题。"
+    },
+    {
+      "id": "delegation-bounded-r1",
+      "category": "delegation",
+      "input": "已确认的局部R1兼容功能可分为互不写同一文件的两个模块，相关测试独立；宿主支持子代理，用户未禁止。选有效协作方式并完成集成。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R1",
+        "primary_skill": "dev-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "delegation": "bounded-allowed",
+        "max_new_reviewers": 0
+      },
+      "rationale": "任务结构允许委派，R1不禁止子代理也不要求独立审查。"
+    },
+    {
+      "id": "delegation-prohibited",
+      "category": "delegation",
+      "input": "请独立完成已明确的R1兼容修复，禁止使用子代理。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R1",
+        "primary_skill": "dev-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "delegation": "none",
+        "max_new_reviewers": 0
+      },
+      "rationale": "用户禁止委派持续有效。"
+    },
+    {
+      "id": "knowledge-explicit-design",
+      "category": "project-knowledge",
+      "input": "这个项目的设计准则是高级设置放二级入口，主流程保持简单。请在当前已授权的小改中遵循；已有docs/Design-Principles.md。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R1",
+        "primary_skill": "project-knowledge",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "memory_action": "update-existing-project"
+      },
+      "rationale": "明确准则自然进入既有专题，项目作用域，不等用户另说记住。"
+    },
+    {
+      "id": "knowledge-inference",
+      "category": "project-knowledge",
+      "input": "用户只在一次原型里选了蓝色。助手猜用户所有项目都只喜欢蓝色。现在整理本项目知识。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R1",
+        "primary_skill": "project-knowledge",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "memory_action": "candidate-only"
+      },
+      "rationale": "推断与一次选择不升级为跨项目用户原则。"
+    },
+    {
+      "id": "knowledge-release-scope",
+      "category": "project-knowledge",
+      "input": "Tune项目用X.Y.Z标签、Mail项目用vX.Y.Z。用户选择约定先在当前项目生效，共性以后提炼。现在整理Tune发版文档。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R1",
+        "primary_skill": "project-knowledge",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "memory_action": "project-only"
+      },
+      "rationale": "不把另一个项目的标签格式或单次发布授权全局化。"
+    },
+    {
+      "id": "docs-retired-aiworker",
+      "category": "docs-lifecycle",
+      "input": "现状与批准移除决定明确AIWorker已删除，旧Phase仍有未勾选的集成测试。只读熟悉仓库并列当前待办。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R0",
+        "primary_skill": "project-knowledge",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "applicability": "retired",
+        "doc_action": "none"
+      },
+      "rationale": "保留当年未测事实，不列当前待办，不补测、不再次确认撤销。"
+    },
+    {
+      "id": "docs-partial-replacement",
+      "category": "docs-lifecycle",
+      "input": "一个旧Phase有网关集成与本站导出两项。新决定仅撤销网关，本站导出仍是有效需求且未实现。整理当前计划。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R1",
+        "primary_skill": "project-knowledge",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "applicability": "partial",
+        "doc_action": "update-current"
+      },
+      "rationale": "只关闭失效部分；不能因整文归档或代码不存在把仍有效需求撤销。"
+    },
+    {
+      "id": "docs-code-absence",
+      "category": "docs-lifecycle",
+      "input": "有效需求仍要求导出，代码里没有实现，也无取消决定。核对当前状态。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R0",
+        "primary_skill": "project-knowledge",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "applicability": "active"
+      },
+      "rationale": "代码不存在不能证明需求取消，应记录有效待实现。"
+    },
+    {
+      "id": "language-english-user",
+      "category": "language",
+      "input": "Please orient me in this repository. Read the existing current-state entry and list only active work. Reply in English and do not edit files.",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R0",
+        "primary_skill": "project-knowledge",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "language": "en",
+        "doc_action": "none"
+      },
+      "rationale": "English interaction must not inherit Chinese output from historical skill text."
+    },
+    {
+      "id": "language-existing-document",
+      "category": "language",
+      "input": "用中文回复我。把明确的本项目发版准则更新到现有英文Development-Release.md，保持文档英文，不要另建中文副本。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R1",
+        "primary_skill": "project-knowledge",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "language": "zh",
+        "memory_action": "update-existing-project"
+      },
+      "rationale": "回复语言与文档语言分别遵循授权，不复制两套知识。"
     }
   ]
 }

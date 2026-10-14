@@ -49,6 +49,12 @@ python .creator/scripts/evaluate_prompt_cases.py --responses path/to/responses.j
 
 静态通过只证明结构、字段和本地引用有效。响应字段正确也不证明 Agent 实际修改了文档、保留了旧证据或遵守只读限制；实际任务需结合文件 diff、命令记录、范围边界和人工判断核验。不得复制 expected 生成响应充当模型测试。
 
-1.5 本轮只维护用例与脚本，由用户后续运行真实任务并反馈，不启动跨模型试跑。后续反馈记录实际版本/模型、任务范围、相关 diff 与证据，再合并进对应案例；不预先声称问题已在所有模型消失。
+1.5 历史版本只维护用例与脚本，未做跨模型试跑。1.6 在此基础上提供[隔离任务夹具](../behavior/README.md)，观察实际文件行为；本地抽样不代表真实业务迁移或所有宿主/模型兼容。
 
 批量复查收尾用例增加可选 `batch_action`：prune-closed（仅移出已关闭项）、reset-empty（全部关闭后重置）、retain-open（保留尚未被有效审查覆盖的项）。实际文件清理仍由后续任务验证，字段评分不代替 diff 核验。
+
+## 1.6 behavior boundaries
+
+Additional cases cover experience-boundary questions, bounded delegation, automatic project conventions, retired/partially replaced tasks, and reply/document languages. Optional fields memory_action, applicability, delegation and language describe expected decisions only; their scores do not prove actual edits.
+
+Never give cases.json (which contains expected/rationale) to the evaluated agent. Use prepare_behavior_run.py to construct answer-free workspaces, retain the private rubric outside the model context, and inspect actual changed files and tool evidence. The source repository's 1.6 development record distinguishes synthetic model execution, static checks, filesystem fixtures and unavailable live-host validation.

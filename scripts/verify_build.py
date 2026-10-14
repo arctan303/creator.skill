@@ -1,264 +1,91 @@
 #!/usr/bin/env python3
-"""验证 creator.skill 三套发布包的结构、版本与平台转换质量。"""
-
-import json
+"""Validate the unified artifacts and perform isolated real installation checks."""
 import os
-import re
+import posixpath
 import subprocess
 import sys
 import tempfile
-import zipfile
 from pathlib import Path
-from typing import List, Set
+from urllib.parse import unquote, urlsplit
+
+import build_release
+import install_workflow as installer
+
+ROOT = Path(__file__).resolve().parent.parent
+DIST = ROOT / "dist"
+sys.path.insert(0, str(ROOT / ".creator/scripts"))
+from check_docs import markdown_links
 
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-DIST_DIR = REPO_ROOT / "dist"
-SOURCE_VERSION = (REPO_ROOT / "VERSION").read_text(encoding="utf-8").strip()
+def require(condition, message):
+    if not condition:
+        raise RuntimeError(message)
 
 
-def fail(message: str):
-    raise SystemExit(f"验证失败: {message}")
+def run_script(root, name, *arguments):
+    result = subprocess.run([sys.executable, "-B", name, *arguments], cwd=root, capture_output=True,
+                            text=True, encoding="utf-8", env=dict(os.environ, PYTHONIOENCODING="utf-8"))
+    require(result.returncode == 0, name + " failed:\n" + result.stdout + result.stderr)
 
 
-def read_text(archive: zipfile.ZipFile, name: str) -> str:
-    return archive.read(name).decode("utf-8")
-
-
-def verify_release_structure(
-    zip_path: Path,
-    instruction_file: str,
-    skill_prefix: str,
-    signal_file: str,
-    expected_platform: str,
-):
-    with zipfile.ZipFile(zip_path) as archive:
-        names = set(archive.namelist())
-        required = {
-            instruction_file,
-            "EVOLUTION.md",
-            ".creator/tests/prompt-cases/cases.json",
-            ".creator/tests/prompt-cases/README.md",
-            ".creator/scripts/evaluate_prompt_cases.py",
-            ".creator/scripts/check_docs.py",
-            ".creator/references/workflow-contract.md",
-            ".creator/references/docs-migration-1.5.md",
-            signal_file,
-            ".creator-manifest.json",
-            ".version",
-        }
-        missing = sorted(required - names)
-        if missing:
-            fail(f"{zip_path.name} 缺少关键文件: {', '.join(missing)}")
-        forbidden_root_assets = {
-            "tests/prompt-cases/cases.json",
-            "scripts/evaluate_prompt_cases.py",
-        }
-        leaked = sorted(forbidden_root_assets & names)
-        if ".creator/docs-state.json" in names:
-            fail("发布包不得携带项目迁移完成状态")
-        if leaked:
-            fail(
-                f"{zip_path.name} Prompt 资产未放入 .creator 专属目录: "
-                f"{', '.join(leaked)}"
-            )
-
-        manifest = json.loads(read_text(archive, ".creator-manifest.json"))
-        if manifest.get("schema_version") != 1:
-            fail(f"{zip_path.name} manifest schema_version 不支持")
-        if manifest.get("workflow") != "creator.skill":
-            fail(f"{zip_path.name} manifest workflow 不正确")
-        if manifest.get("docs_schema_version") != 1 or manifest.get("docs_guide") != ".creator/references/docs-migration-1.5.md":
-            fail(f"{zip_path.name} docs 迁移协议缺失")
-
-        expected_skills = sorted(manifest.get("skills", []))
-        actual_skills = sorted(
-            name[len(skill_prefix) :].split("/", 1)[0]
-            for name in names
-            if name.startswith(skill_prefix) and name.endswith("/SKILL.md")
-        )
-        if not expected_skills:
-            fail(f"{zip_path.name} manifest 没有声明任何 Skill")
-        if len(expected_skills) != len(set(expected_skills)):
-            fail(f"{zip_path.name} manifest 包含重复 Skill")
-        if actual_skills != expected_skills:
-            fail(
-                f"{zip_path.name} Skill 清单不一致: "
-                f"manifest={expected_skills}, package={actual_skills}"
-            )
-        if manifest.get("skill_count") != len(expected_skills):
-            fail(f"{zip_path.name} manifest skill_count 与 skills 列表不一致")
-
-        version = read_text(archive, ".version").strip()
-        if manifest.get("version") != version:
-            fail(f"{zip_path.name} manifest version 与 .version 不一致")
-        if version != SOURCE_VERSION:
-            fail(f"{zip_path.name} 版本 {version} 与源码 VERSION {SOURCE_VERSION} 不一致")
-
-        instruction_text = read_text(archive, instruction_file)
-        version_line = "工作流版本：" + version
-        if version_line not in instruction_text:
-            fail(
-                f"{zip_path.name} 系统指令 {instruction_file} 未注入版本行: "
-                f"{version_line}"
-            )
-        if manifest.get("platform") != expected_platform:
-            fail(f"{zip_path.name} manifest platform 不正确")
-        if manifest.get("skill_root") != skill_prefix.rstrip("/"):
-            fail(f"{zip_path.name} manifest skill_root 不正确")
-
-        signals = read_text(archive, signal_file)
-        for field in ("关联规则", "问题类别", "次数", "严重度", "状态"):
-            if field not in signals:
-                fail(f"{zip_path.name} 信号模板缺少字段: {field}")
-
-        print(
-            f"  OK: {zip_path.name} 包含 {len(expected_skills)} 个 Skill，"
-            f"平台={expected_platform}，版本={version}"
-        )
-        return manifest, names
-
-
-def assert_no_residue(label: str, text: str, patterns: List[str]):
-    for pattern in patterns:
-        lines = [
-            index + 1
-            for index, line in enumerate(text.splitlines())
-            if pattern in line
-        ]
-        if lines:
-            fail(f"{label} 残留 {pattern!r}，行号: {lines}")
-        print(f"  OK: {label} 无 {pattern!r} 残留")
-
-
-def verify_claude_conversion(manifest: dict, names: Set[str]):
-    zip_path = DIST_DIR / "creator.claude.zip"
-    with zipfile.ZipFile(zip_path) as archive:
-        claude_md = read_text(archive, "CLAUDE.md")
-        evolution_md = read_text(archive, "EVOLUTION.md")
-
-        print("=== Claude Code 平台转换检查 ===")
-        assert_no_residue(
-            "CLAUDE.md", claude_md, [".codex/", ".agents/skills/", "AGENTS.md"]
-        )
-        assert_no_residue("EVOLUTION.md", evolution_md, [".codex/", "AGENTS.md"])
-        for expected in (".claude/skills/", ".creator/references/workflow-contract.md"):
-            if expected not in claude_md:
-                fail(f"CLAUDE.md 缺少预期平台引用: {expected}")
-            print(f"  OK: CLAUDE.md 包含 {expected!r}")
-
-        broken = "转换为 `CLAUDE.md`"
-        if broken in claude_md:
-            fail(f"CLAUDE.md 存在自指转换残留: {broken}")
-        print("  OK: CLAUDE.md 无自指转换残留")
-
-        for name in sorted(names):
-            if name.startswith(".claude/skills/") and name.endswith(".md"):
-                content = read_text(archive, name)
-                if any(pattern in content for pattern in ("AGENTS.md", ".codex/", ".agents/skills/")):
-                    fail(f"{name} 残留不可用的平台路径")
-        print("  OK: Claude Skill 正文与引用的平台路径已转换")
-
-        command_files = sorted(
-            name
-            for name in names
-            if name.startswith(".claude/commands/") and name.endswith(".md")
-        )
-        if len(command_files) != manifest["skill_count"]:
-            fail(
-                "Claude command 数量与 Skill 数量不一致: "
-                f"commands={len(command_files)}, skills={manifest['skill_count']}"
-            )
-
-        print("=== Claude commands 检查 ===")
-        for command_file in command_files:
-            content = read_text(archive, command_file)
-            prompt_body = content.split("---")[-1].split("$ARGUMENTS")[0]
-            if re.search(r"\$[a-zA-Z][\w-]*", prompt_body):
-                fail(f"{command_file} 残留 Codex $skill 语法")
-            if "$ARGUMENTS" not in content:
-                fail(f"{command_file} 缺少 $ARGUMENTS")
-            print(f"  OK: {Path(command_file).name}")
-
-
-def verify_gateway():
-    zip_path = DIST_DIR / "creator-gateway.zip"
-    with zipfile.ZipFile(zip_path) as archive:
-        names = set(archive.namelist())
-        required = {"SKILL.md", "references/cli-adapters.md", "agents/openai.yaml",
-                    "references/docs-migration-1.5.md", "references/workflow-contract.md"}
-        missing = sorted(required - names)
-        if missing:
-            fail(f"{zip_path.name} 缺少关键文件: {', '.join(missing)}")
-        if "references/docs-migration-1.5.md" not in read_text(archive, "SKILL.md"):
-            fail("gateway 未引用已打包的迁移手册")
-        gateway_contract = read_text(archive, "SKILL.md") + read_text(
-            archive, "references/cli-adapters.md"
-        )
-        for phrase in (
-            ".creator/tests/prompt-cases/cases.json",
-            ".creator/scripts/evaluate_prompt_cases.py",
-            "按 `id` 合并",
-            "禁止静默覆盖",
-            "整体替换",
-        ):
-            if phrase not in gateway_contract:
-                fail(f"{zip_path.name} gateway 缺少 Prompt 资产保护规则: {phrase}")
-    print(f"  OK: {zip_path.name} 网关结构完整")
-
-
-def verify_packaged_prompt_eval(zip_path: Path):
-    """在解包后的真实目录结构中运行 Prompt 契约评测。"""
-    with tempfile.TemporaryDirectory() as temp_dir:
-        with zipfile.ZipFile(zip_path) as archive:
-            archive.extractall(temp_dir)
-        result = subprocess.run(
-            [sys.executable, ".creator/scripts/evaluate_prompt_cases.py"],
-            cwd=temp_dir,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            universal_newlines=True,
-            encoding="utf-8",
-            env=dict(os.environ, PYTHONIOENCODING="utf-8"),
-        )
-        if result.returncode != 0:
-            fail(
-                f"{zip_path.name} 内置 Prompt 评测失败:\n{result.stdout.strip()}"
-            )
-        inventory = subprocess.run(
-            [sys.executable, ".creator/scripts/check_docs.py", "--root", "."],
-            cwd=temp_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            universal_newlines=True,
-            encoding="utf-8",
-            env=dict(os.environ, PYTHONIOENCODING="utf-8"),
-        )
-        if inventory.returncode != 0 or json.loads(inventory.stdout).get("status") != "unregistered":
-            fail(f"{zip_path.name} 只读 docs 检查器无法在未迁移项目运行")
-    print(f"  OK: {zip_path.name} 内置 Prompt 评测可运行")
+def validate_local_links(files, label):
+    """Check every Markdown member, including transitive references in gateway ZIPs."""
+    for name, data in files.items():
+        if not name.endswith(".md"):
+            continue
+        for target in markdown_links(data.decode("utf-8-sig")):
+            url = urlsplit(target)
+            if url.scheme or url.netloc or not url.path:
+                continue
+            path = unquote(url.path)
+            resolved = posixpath.normpath(path.lstrip("/") if path.startswith("/")
+                                         else posixpath.join(posixpath.dirname(name), path))
+            require(resolved != ".." and not resolved.startswith("../") and "\\" not in resolved,
+                    label + " link escapes archive: " + name + " -> " + target)
+            exists = resolved in files or any(member.startswith(resolved.rstrip("/") + "/") for member in files)
+            require(exists, label + " missing local link: " + name + " -> " + target)
 
 
 def main():
-    print("=== 发布包结构检查 ===")
-    verify_release_structure(
-        DIST_DIR / "creator.codex.zip",
-        "AGENTS.md",
-        ".agents/skills/",
-        ".codex/evolution/signals.md",
-        "codex",
-    )
-    claude_manifest, claude_names = verify_release_structure(
-        DIST_DIR / "creator.claude.zip",
-        "CLAUDE.md",
-        ".claude/skills/",
-        ".claude/evolution/signals.md",
-        "claude-code",
-    )
-    verify_packaged_prompt_eval(DIST_DIR / "creator.codex.zip")
-    verify_packaged_prompt_eval(DIST_DIR / "creator.claude.zip")
-    verify_claude_conversion(claude_manifest, claude_names)
-    verify_gateway()
-    print("\n全部发布包验证通过。")
+    package = installer.load_package(DIST / "creator-workflow.zip")
+    manifest, files = package["manifest"], package["files"]
+    require(manifest["version"] == build_release.read_version(), "Package VERSION differs from source")
+    require("CLAUDE.md" not in files and not any(name.startswith(".claude/commands/") for name in files),
+            "Unified package must not contain duplicate policy or legacy commands")
+    require(".creator/docs-state.json" not in files and not any(name.startswith("docs/") for name in files),
+            "Package must not contain source-project state or project knowledge")
+    expected_policy = ("> Workflow version / 工作流版本: " + manifest["version"] + "\n\n" +
+                       (ROOT / "AGENTS.md").read_text(encoding="utf-8"))
+    require(files["AGENTS.md"].decode("utf-8") == expected_policy, "Canonical policy differs from source")
+    for skill in manifest["skills"]:
+        canonical = files[".agents/skills/" + skill + "/SKILL.md"].decode("utf-8")
+        adapter = files[".claude/skills/" + skill + "/SKILL.md"].decode("utf-8")
+        require(adapter == build_release.claude_adapter(skill, canonical), "Adapter duplicated or changed policy: " + skill)
+        names = [name for name in files if name.startswith(".claude/skills/" + skill + "/")]
+        require(len(names) == 1, "Claude adapter contains copied policy assets: " + skill)
+    gateway, _ = installer.read_archive(DIST / "creator-gateway.zip")
+    require({"SKILL.md", "agents/openai.yaml", "references/cli-adapters.md", "scripts/install_workflow.py"}.issubset(gateway),
+            "Gateway is incomplete")
+    source_installer = (ROOT / "scripts/install_workflow.py").read_bytes()
+    require(gateway["scripts/install_workflow.py"] == source_installer == files[".creator/scripts/install_workflow.py"],
+            "Gateway and workflow installer must match source")
+    for reference in build_release.source_files(ROOT / ".creator/references"):
+        name = reference.relative_to(ROOT / ".creator/references").as_posix()
+        require(gateway.get("references/" + name) == files[".creator/references/" + name], "Shared reference missing/differs: " + name)
+    validate_local_links(files, "workflow")
+    validate_local_links(gateway, "gateway")
+    with tempfile.TemporaryDirectory(prefix="creator-package-verify-") as directory:
+        root = Path(directory)
+        plan = installer.make_plan(root, package)
+        require(not plan["conflicts"] and not list(root.iterdir()), "Fresh dry-run changed files or conflicted")
+        installer.apply_plan(root, plan)
+        require(not installer.make_plan(root, package)["changes"], "Same-package install is not idempotent")
+        run_script(root, ".creator/scripts/evaluate_prompt_cases.py")
+        run_script(root, ".creator/scripts/check_docs.py", "--root", ".")
+    print("Unified workflow and gateway verified: hashes, adapters, real temporary install, idempotence and packaged checks.")
+    print("Claude/Codex live discovery and model-task behavior remain separate evidence; this check does not prove them.")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Optional | Project knowledge"
+  short_description: "Keep project decisions, current docs and active work aligned."
+  default_prompt: "Use $project-knowledge to capture explicit project conventions, reconcile current documentation and retire superseded work while preserving historical evidence."

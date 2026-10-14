@@ -1,6 +1,6 @@
 # creator.skill 1.5 开发记录
 
-当前版本：1.5.0；已正式发布，发布回读见下方。实际运行规则以 [AGENTS](../AGENTS.md)、相关 Skill 和[共同契约](../.creator/references/workflow-contract.md)为准；本文保留本轮决定、依据与验证，不另建一套指令。此前全文见[历史档案](archive/workflow-optimization-before-1.5.md)。
+历史基线：1.5.0；当时的发布回读见下方。后续 1.6 工作见[当前开发记录](workflow-1.6.md)，项目现状见[入口](README.md)。本文仅保留 1.5 当时的决定、依据与验证，不将旧规则重新加载为当前指令。更早全文见[历史档案](archive/workflow-optimization-before-1.5.md)。
 
 ## 目标、范围与状态
 

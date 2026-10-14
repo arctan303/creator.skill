@@ -1,6 +1,6 @@
 ---
 name: skill-builder
-description: 为 creator.skill 创建或重构技能目录。用于扩展明确且不与现有技能重叠的能力边界；按统一 Prompt 契约、三层目录和行为用例构建可触发、可验证、可阻断的技能包。
+description: Create or refactor creator.skill capabilities when an existing skill cannot cover the required boundary. Maintain concise triggers, shared contracts and meaningful regression cases.
 ---
 
 # 技能构建技能 (skill-builder)

@@ -1,6 +1,6 @@
 ---
 name: dev-builder
-description: 在明确目标与验收范围内实现产品或维护变更。支持短任务及 Phase；根因未知的故障交给 bug-fixer。按具体影响选择验证并同步受影响文档，不因产品或 Phase 标签自动启动独立审查。
+description: Implement a defined product or maintenance change, integrate results and verify relevant behavior. Use bug-fixer for unknown failure causes; independent review depends on concrete risk.
 ---
 
 # 开发实施
@@ -23,8 +23,9 @@ description: 在明确目标与验收范围内实现产品或维护变更。支�
 2. 核对代码与他人修改，按当前有效契约实施；新决定替代旧规则时先对账，不以代码差异静默改需求。
 3. 用针对性行为检查验证；必要构建/测试通过后，有新变更、失败或疑点才重复。
 4. 验证后更新受影响现状、需求状态、设计和计划；无影响的入口不机械刷新。
-5. R0/R1 当前会话完成，不派遣子代理；轻量维护进入 batch.md 待复查，小型产品变更保留需求/短任务记录。R2 按具体风险安排 fresh reviewer，并遵守用户子代理约束。
+5. 按任务可分离性与收益选择有边界的子代理，明确文件归属并由主会话集成；风险决定独立审查而非是否可委派。R0/R1 不自动审查；轻量维护进入 batch.md，小型产品变更保留需求/短任务。R2 使用 fresh reviewer，尊重用户/宿主限制。
 6. 聚焦处理审查发现，有实质修复可再复核，无进展或资源预算用尽时保存恢复检查点。
+7. 在安全收尾点使用 project-knowledge 沉淀明确项目准则和受影响现状；撤销能力时关闭失效任务及测试义务，不能把历史未验收项重新列为待办。完成整个已授权目标和必要集成后交接，不因一个子任务结束提前退出。
 
 ## Output
 

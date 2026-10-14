@@ -1,6 +1,6 @@
 ---
 name: self-evolver
-description: 采集、合并并处理 creator.skill 的真实失败与用户纠正信号。首次普通信号进入观察，累计达到阈值或出现安全、隐私、数据损坏、错误发布等严重事件时生成补丁；每个补丁必须绑定回归用例，避免规则膨胀。
+description: Merge demonstrated workflow failures and user corrections into evidence-backed rule improvements. Project preferences belong to project-knowledge, not global rule evolution.
 ---
 
 # 自进化技能 (self-evolver)
@@ -22,7 +22,7 @@ description: 采集、合并并处理 creator.skill 的真实失败与用户纠�
 ## Required context
 
 - `EVOLUTION.md`。
-- `.codex/evolution/signals.md` 或 `.claude/evolution/signals.md`；不存在时按模板创建。
+- `.creator/evolution/signals.md`（兼容保留并核对旧 `.codex/evolution/signals.md`、`.claude/evolution/signals.md`）；不存在时按模板创建。
 - 相关 `AGENTS.md`、Skill、阶段契约和可验证证据。
 - 能复现旧行为并验证新规则的 Prompt 行为用例。
 

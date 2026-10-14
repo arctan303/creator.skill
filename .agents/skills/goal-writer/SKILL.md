@@ -1,6 +1,6 @@
 ---
 name: goal-writer
-description: 将长期、复杂且需要完全托管给 Agent 自行执行的任务转化为有边界、可恢复、可量化验收的 Goal 文件。适用于配置宿主机自动或持续执行前；禁止无限重试、无限审查和没有停止条件的目标。
+description: Write a bounded, recoverable Goal with measurable acceptance only when the user explicitly requests a persistent or long-running goal. Never create unlimited retry loops.
 ---
 
 # Goal 编写技能 (goal-writer)
