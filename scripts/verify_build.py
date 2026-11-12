@@ -46,6 +46,17 @@ def validate_local_links(files, label):
             require(exists, label + " missing local link: " + name + " -> " + target)
 
 
+def validate_design_distribution(workflow, gateway, source):
+    """The complete authoring library travels only with the standalone gateway."""
+    require(not any("design-library" in name.split("/") for name in workflow),
+            "Workflow must not contain the design authoring library")
+    expected = {"design-library/" + path.relative_to(source).as_posix(): path.read_bytes()
+                for path in build_release.source_files(source)}
+    require("design-library/README.md" in expected, "Design authoring library has no README.md entry")
+    actual = {name: data for name, data in gateway.items() if name.startswith("design-library/")}
+    require(actual == expected, "Gateway design authoring library is incomplete or differs from source")
+
+
 def main():
     package = installer.load_package(DIST / "creator-workflow.zip")
     manifest, files = package["manifest"], package["files"]
@@ -72,6 +83,7 @@ def main():
     for reference in build_release.source_files(ROOT / ".creator/references"):
         name = reference.relative_to(ROOT / ".creator/references").as_posix()
         require(gateway.get("references/" + name) == files[".creator/references/" + name], "Shared reference missing/differs: " + name)
+    validate_design_distribution(files, gateway, build_release.DESIGN_LIBRARY_SRC)
     validate_local_links(files, "workflow")
     validate_local_links(gateway, "gateway")
     with tempfile.TemporaryDirectory(prefix="creator-package-verify-") as directory:

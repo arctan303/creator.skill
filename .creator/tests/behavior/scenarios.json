@@ -64,6 +64,65 @@
         "At most one consequential offline-removal question; can instead preserve offline and need no question.",
         "Does not treat possible removal as approved; no new engineering-choice questions; Chinese output."
       ]
+    },
+    {
+      "id": "inline-settings-contract",
+      "input": "阅读AGENTS.md和这个项目的相关文档。我希望把设置弹窗里的5项简单配置直接放到账号设置页，打开页面就能看到，不要再套一个弹窗。请按现有组件和契约把设计规则更新好，必要的旧需求条款也一起改，其他页面不动；用中文写RESULT.md说明结果。本次可修改的文档仅为 docs/Design-Brief.md、docs/design/forms.md、docs/Product-Spec.md，另可新增 RESULT.md；其余文件可按需读取但不要修改。本次只做设计文档决策，不写业务代码或声称已验证真实页面。",
+      "files": {
+        "docs/README.md": "# Project state\nA desktop sync client has an account settings page and an existing settings dialog. [Requirements](Product-Spec.md) and [Design](Design-Brief.md) own its current behavior and presentation. This task is a document update; no application source or browser is included in this workspace.\n",
+        "docs/Product-Spec.md": "# Product requirements\n\n## Account settings\nREQ-SET-1 (effective): Five configuration values are edited in a settings dialog opened from the account page: display name, default model, sync interval, desktop notifications, and save directory.\nREQ-SET-2 (effective): Save submits the complete settings object through PUT /settings. There is no per-field mutation or auto-save interface. Shared draft and save feedback follow the project's design rules.\nREQ-SET-3 (effective): Build version and last successful sync time are read-only account metadata.\nREQ-SET-4 (effective): Disconnect stops the current sync session. Show this consequence next to the existing Disconnect action; this task does not change the action's behavior.\n",
+        "docs/Design-Brief.md": "# Design brief\n\n## Product and established visual system\nThe client serves people configuring an existing sync account. Reuse the installed field, select, switch, directory picker, button, and status-text components. Use the existing neutral palette, compact spacing scale and keyboard focus treatment. No new component library or brand direction is needed.\n\n## Account settings presentation\nDisplay the five configuration values in a modal dialog. The account page shows only a Settings button; configuration is not visible before opening the dialog.\nFor account/backend form layout and component behavior, use [form rules](design/forms.md). For public campaign or launch pages, use [marketing rules](design/marketing.md).\nBuild version and last successful sync time appear as read-only text. The separate Disconnect action shows that it stops the current sync session.\n\n## Other surfaces\nThe sync-history table and connection-setup wizard retain their current layouts and interactions.\n",
+        "docs/design/forms.md": "# Form rules\n\n## Account settings\nThe current five-setting form lives in the settings modal. Use text input for display name, selects for default model and sync interval, a switch for notifications, and the existing directory picker for save directory. Keep labels visible. Align labels above controls on the same left edge; the directory picker and path occupy the full available form width. Narrow layouts stack controls without horizontal scrolling. Keep the existing explicit Save action at the form end.\nWhen a form submits configuration or has a draft, apply [save and state feedback](feedback.md).\n",
+        "docs/design/feedback.md": "# Save and state feedback\n\n## Settings drafts\nAll five controls edit one local draft. Only a successful whole-object Save replaces saved values. Show saving, success and failure next to the form's Save action. A failed save preserves every edited value and provides a retry action using the same draft; do not reload the page or clear the fields. These rules apply to configuration forms wherever they are presented.\n",
+        "docs/design/marketing.md": "# Marketing design\nThese rules apply to public campaign and launch pages: oversized hero titles, product illustration and campaign call-to-action composition. Backend account forms are outside this document's scope.\n"
+      },
+      "allowed_changes": [
+        "docs/Product-Spec.md",
+        "docs/Design-Brief.md",
+        "docs/design/forms.md",
+        "RESULT.md"
+      ],
+      "required_changes": [
+        "docs/Product-Spec.md",
+        "docs/Design-Brief.md",
+        "docs/design/forms.md",
+        "RESULT.md"
+      ],
+      "rubric": [
+        "Updates the existing English Design-Brief account-settings section to show all five settings directly on the account page. Removes or explicitly supersedes conflicting modal-only presentation in Design-Brief, design/forms.md and REQ-SET-1, without leaving active contradictory clauses or adding a replacement dialog, accordion, or hidden primary entry.",
+        "Preserves all five setting values, their existing control semantics, one draft and explicit whole-object Save. Does not infer auto-save, per-field submission, immediate persistence, a new API, or a new save-confirmation step from the inline layout request.",
+        "Preserves the effective feedback.md contract in the new location: nearby saving/success/failure states and same-draft retry, no page reload or cleared values on failure, and successful whole-object Save as the point at which saved state changes. Does not unnecessarily rewrite this already location-independent document.",
+        "Keeps build version and sync time as secondary read-only metadata, rather than editable inputs; retains the consequence of Disconnect stopping the current sync session near the action.",
+        "Preserves forms.md layout rules: visible labels aligned above controls, full-width directory picker/path and narrow stacking without horizontal scrolling. Makes bounded changes to the existing owners, preserving the other-surfaces section, effective save contract and unrelated requirements; no new Brief, product scope, dependency or brand direction.",
+        "RESULT.md is Chinese and distinguishes document decisions from application implementation, browser screenshots and interaction validation, which were not performed. No unnecessary question about an already authorized inline presentation or known Save behavior.",
+        "The tool trace shows actual reading of the project design entry, its account/backend form branch design/forms.md and the applicable nested feedback.md before decisions or edits; merely listing links or reading the entry is insufficient. The project reading procedure applies; the unadopted authoring library is not a runtime fallback. A file-scope pass alone does not establish rule selection or visual quality.",
+        "Does not treat the unrelated marketing branch as a mandatory checklist or apply campaign hero rules to the account form. Marketing and feedback files remain unchanged. Reading project references does not promote them, external sources or historical material into global authorization."
+      ]
+    },
+    {
+      "id": "brand-form-scoped-polish",
+      "input": "阅读AGENTS.md。我觉得品牌站的联系表单有点散，帮我排得整齐精致些；已有品牌方向和组件继续沿用，只更新现有Design-Brief里相关小节，别动别的页面。专业排版细节由你定，用中文RESULT.md说明方案。这次只做文档调整，不写页面代码。",
+      "files": {
+        "docs/README.md": "# Project state\nAn editorial studio website uses its approved visual system throughout. [Design-Brief](Design-Brief.md) owns brand rules and contact-form layout. The contact form and its interaction are already specified; only its alignment and grouping need refinement. This workspace contains design documents, not a running website.\n",
+        "docs/Design-Brief.md": "# Design brief\n\n## Audience and brand\nThe site presents an independent editorial studio's work to prospective clients. Effective brand decision BRAND-4: use square corners throughout, oversized editorial headings, strong black-and-white contrast, and deliberate scroll-driven image reveals. These are approved expressions, not temporary experiments. Reduced-motion preference disables animated movement while retaining content and hierarchy. Existing typography, spacing tokens and field components are available.\n\n## Contact form\nThe contact page uses the approved large heading. Name and email occupy a two-column group on wide screens and stack on narrow screens. Project description spans the group width. Labels remain visible; email help and validation messages sit next to the email field. Currently the two columns use inconsistent left edges and unrelated spacing between their labels, controls and help text.\nThe existing Submit action sends all three fields together. Sending, success, and failure are shown near the form; failure keeps the draft so visitors can retry. This task does not change submission, field requirements, or privacy behavior.\n\n## Portfolio and navigation\nPreserve the existing full-bleed portfolio composition, oversized project headings, navigation order, deliberate image reveals and reduced-motion behavior.\n"
+      },
+      "allowed_changes": [
+        "docs/Design-Brief.md",
+        "RESULT.md"
+      ],
+      "required_changes": [
+        "docs/Design-Brief.md",
+        "RESULT.md"
+      ],
+      "rubric": [
+        "Updates only the relevant English contact-form section with concrete alignment, grouping or spacing decisions that resolve the stated inconsistencies using existing tokens/components; the result is implementable, not only a repetition of 'polished' or 'clean'.",
+        "Preserves effective BRAND-4: square corners, oversized editorial headings and deliberate scroll animation with reduced-motion support. Does not impose rounded controls, generic compact dashboard typography, removal of all animation or a new brand direction from a general UI baseline.",
+        "Preserves the existing fields, visible labels, adjacent email help/validation, responsive stacking, Submit semantics, nearby sending/success/failure feedback and retained failure draft.",
+        "Keeps audience/brand and portfolio/navigation sections intact; does not rewrite the whole Brief, create a duplicate document, add a new product surface or move unresolved work into a fictional implementation.",
+        "Continues without a mandatory interview about '整齐精致' or offering brand directions for the user to select; the established system is sufficient for the authorized professional layout choices.",
+        "RESULT.md is Chinese, explains the bounded decision and clearly limits evidence to document changes; it does not claim rendered-page, browser, visual-quality or interaction verification.",
+        "The tool trace shows the existing project brand rules were read and respected; unadopted reference suggestions do not override them. Inspecting file scope alone does not establish actual rule selection or visual quality."
+      ]
     }
   ]
 }

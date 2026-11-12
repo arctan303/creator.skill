@@ -2,6 +2,14 @@
 
 记录每次发布的变更内容。
 
+## Unreleased
+
+- Require UI tasks to read existing project design documents and applicable nested references before designing, implementing, repairing or reviewing. / UI 任务实际读取既有项目设计入口及适用的逐层引用，跳过设计技能也不跳过规范。
+- Add nine scenario references for project-specific adaptation: foundations, forms/settings, admin/data, dashboards, reading, media, workspaces, onboarding and brand. The authoring library ships only with the gateway; daily work uses adopted project rules. / 增加九类场景参考，网关按需裁切，日常工作只读项目实际采纳准则。
+- Route new-project authoring and existing-rule reconciliation through the gateway and shared procedure, preserving local ownership, language, exceptions and save semantics. Ordinary installation does not rewrite project design. / 网关支持新建与补充既有规范，保留本地约定，安装升级不顺带改写设计文档。See [usage](docs/design-adaptation.md) / [中文说明](docs/design-adaptation.zh-CN.md).
+- Reconcile scoped design updates and consequential questions; add six structural cases and two synthetic document-decision fixtures. / 修正局部设计与采访契约冲突，增加六项结构用例及两个文档决策夹具。See [scope/evidence](docs/validation/1.7-ui-baseline.md); not a published version.
+- Add six further structural cases, separate package/transport regressions and three source-only adaptation trial scenarios. / 另增六项结构用例、分发与试验工具回归及三个源码适配场景。Actual execution evidence is tracked in the [bounded task](docs/tasks/design-library-20261111.md); fixtures alone are not model results.
+
 ## [1.6.0] - 2026-10-14
 
 - One canonical AGENTS.md policy and creator-workflow.zip; thin Claude discovery adapters replace duplicated policies and legacy commands. / 统一规则与工作流包，Claude 仅保留技能发现适配。

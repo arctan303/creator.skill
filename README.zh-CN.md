@@ -42,6 +42,12 @@ python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-proje
 
 > 请按这套工作流适配现有项目文档。复用当前入口、保留历史，并区分有效需求与已退役任务。
 
+## 设计适配——尚未发布的源码能力
+
+当前源码新增[场景设计参考库](design-library/README.md)与网关适配入口：为新项目裁切生成准则，或补充既有准则的空白，保留项目自己的约定。日常 UI 工作只读取项目已采纳规则及适用的本地引用。资料库随网关分发，不装进项目工作流。
+
+新项目和已有项目的用法见[设计适配指南](docs/design-adaptation.zh-CN.md)。这项能力**不在已发布的 1.6.0 资产中**；本地构建不会自动升级任何已安装副本。
+
 ## 包含什么
 
 发布资产包含项目安装包 `creator-workflow.zip`，以及内含安装器和可选个人技能的 `creator-gateway.zip`。两个宿主共用 `AGENTS.md` 和 `.agents/skills/` 下的规范技能；Claude 使用 `.claude/skills/` 下的薄入口发现技能，不生成第二套翻译规则或 `CLAUDE.md`。

@@ -1,9 +1,21 @@
 ---
 name: creator
-description: Install or upgrade creator.skill in the selected project from a trusted release or local ZIP, preserving project customization and knowledge. 在指定项目安装或升级 creator.skill，保留本地定制、知识与历史。
+description: Install or upgrade creator.skill, or adapt scenario design references into new or existing project conventions while preserving local decisions. 安装升级工作流，或按项目裁切、合并设计准则，保留本地约定。
 ---
 
-# Install creator.skill / 安装 creator.skill
+# Creator gateway / 工作流与设计适配入口
+
+## Choose the requested route / 按请求分流
+
+- **Install/upgrade:** follow the installation workflow below. Installation permission does not include rewriting project design documents.
+- **Establish/adapt/enrich project design:** read the [shared adaptation procedure](../.creator/references/design-adaptation.md), then the [scenario library index](../design-library/README.md) and only applicable modules. Reuse installed design-brief-builder for design decisions and project-knowledge for reconciliation when available and consistent with the procedure; otherwise perform that same procedure here. A design-only request does not require or authorize workflow installation.
+- **Ordinary UI development/repair:** use the project's adopted rules and [reading procedure](../.creator/references/project-design.md); do not load the scenario library or regenerate conventions as a side effect.
+
+设计适配可用于新项目，也可补充已有准则。先读取项目文档、逐层适用引用、真实组件与有效例外，再把相关参考转成本项目的具体规则。保留原文件、语言和约定；资料升级不会自动改变项目准则。只在必要未决体验边界处提问，已有充分依据时直接完成授权范围。
+
+例如：“为这个项目建立设计准则，只采用相关场景”；“完善现有后台表单规范，保留品牌和整体保存”；“按新参考库检查这部分准则是否值得更新”。这些是自然语言任务，不是安装器 CLI 参数。无必要变更时报告保留理由即可。
+
+## Installation / 安装
 
 Install the prepared package; do not generate another policy tree. Both hosts use `creator-workflow.zip`, canonical `AGENTS.md` and `.agents/skills/`. Claude discovery uses thin `.claude/skills/` adapters. No `CLAUDE.md` or legacy slash commands are generated.
 

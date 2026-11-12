@@ -99,7 +99,7 @@
     {
       "id": "visual-vague-style",
       "category": "visual-routing",
-      "input": "现有产品想改得更有科技感，但不知道具体要什么。",
+      "input": "现有产品想改得更有科技感，目前没有既有品牌或设计体系可继承。用户提出两种尚未选择的体验：继续以高密度表格为主服务专业用户，或改成低密度逐步引导服务新手；这会改变用户完成主要任务的方式，尚无目标用户依据可收敛。请先帮助确认必要方向。",
       "expected": {
         "route": "产品变更",
         "risk": "待定",
@@ -109,7 +109,7 @@
         "escalation": false,
         "status": "needs-input"
       },
-      "rationale": "视觉规则将改变，应把空泛词汇转成有代价的候选方向。"
+      "rationale": "提问依据是不能由现有事实收敛的关键任务体验与用户取舍，而不是科技感这个形容词本身。"
     },
     {
       "id": "visual-maintenance-restore-token",
@@ -711,6 +711,110 @@
       "rationale": "代码不存在不能证明需求取消，应记录有效待实现。"
     },
     {
+      "id": "ui-inline-settings-preserve-save",
+      "category": "visual-routing",
+      "input": "请把现有后台5项简单设置从弹窗放到页面原位，整体保持简洁。现有契约是修改后统一点Save，失败保留草稿；接口只支持整组提交，没有自动保存。只改变展示位置，保存语义已明确，请更新受影响设计规则并继续，不要新增确认步骤。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R1",
+        "primary_skill": "design-brief-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "plan_kind": "task",
+        "doc_action": "update-current",
+        "max_new_reviewers": 0
+      },
+      "rationale": "原位呈现不等于自动保存；在既定整组Save及失败草稿契约内调整布局，不添加弹窗或反复确认。"
+    },
+    {
+      "id": "ui-metadata-hierarchy-retain-risk",
+      "category": "visual-routing",
+      "input": "现有账号后台表单太乱，请让已确认内容更有层级。主要任务是填写连接参数；构建号和上次同步时间是只读元数据；断开连接会中断当前同步且必须保留这条既有后果说明。项目已有表单组件和字色tokens。只整理这些内容的展示，不改变功能或删除信息。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R1",
+        "primary_skill": "design-brief-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "doc_action": "update-current",
+        "max_new_reviewers": 0
+      },
+      "rationale": "可自主区分主要控件、次要元数据与后果提示；不能把只读元数据做成可编辑字段，也不能为减少文字隐藏关键风险。"
+    },
+    {
+      "id": "ui-brand-exception-preserved",
+      "category": "visual-routing",
+      "input": "品牌站已有明确设计规则：零圆角、编辑性大标题、有意的滚动动画，同时提供减少动态效果模式。这次只把联系表单排整齐一些，沿用已有组件和品牌语言，不增加页面或改动动画策略。请更新现有Design-Brief对应小节。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R1",
+        "primary_skill": "design-brief-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "doc_action": "update-current",
+        "max_new_reviewers": 0
+      },
+      "rationale": "基础后台/表单基线服从有效项目品牌与局部例外；不将常规圆角、紧凑标题或关闭所有动画当作通用硬规则。"
+    },
+    {
+      "id": "ui-existing-system-vague-polish",
+      "category": "experience-boundary",
+      "input": "已有设计体系明确表单分组、组件、tokens、密度和断点，账号设置页的内容及保存行为也已确认。请让这个页面更简洁精致：只统一字段对齐、相关项间距与辅助文字层级，沿用现有体系。专业细节由你决定，不改信息入口、业务行为或品牌。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R1",
+        "primary_skill": "design-brief-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "plan_kind": "task",
+        "doc_action": "update-current",
+        "max_new_reviewers": 0
+      },
+      "rationale": "已有体系和已确认体验足以收敛；模糊美化词或多个合理间距实现不触发采访，不为局部工作重写整份Brief。"
+    },
+    {
+      "id": "ui-conditional-design-reference-chain",
+      "category": "experience-boundary",
+      "input": "请直接实施一个已确认的后台表单小改：沿用当前组件，把5项设置改为原位展示，整体Save保持不变。项目现状登记docs/Design.md为设计入口；该入口把后台表单路由到design/forms.md，forms.md又把配置提交路由到feedback.md。保存失败草稿与布局规则只在这两个被引用文件中；同一入口还链接了仅适用于营销落地页的marketing.md。本次不做营销页面，不需要新品牌或设计采访。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R1",
+        "primary_skill": "dev-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "plan_kind": "task",
+        "doc_action": "update-current",
+        "max_new_reviewers": 0
+      },
+      "rationale": "UI直接开发同样需要实际读设计入口及按任务条件适用的forms→feedback引用链，不止扫链接，不要求Design-Brief固定文件名或读取全部营销材料；有效项目规则不能扩张外部授权。结构响应字段只能核对路由与问题数，实际读取链须由夹具工具记录核验。"
+    },
+    {
+      "id": "ui-unsettled-immediate-charge",
+      "category": "experience-boundary",
+      "input": "我们准备给付费计算资源做新的设置界面，目前每次改参数都先保存配置，再单独点启动才收费。有人提议改参数立即生效并自动启动资源，这会即时产生费用；用户尚未决定是否接受，也没有现有约定可推导。请帮我收敛这个交互方案，先不要替我确定计费触发方式。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "待定",
+        "primary_skill": "design-brief-builder",
+        "question_min": 1,
+        "question_max": 2,
+        "escalation": false,
+        "status": "needs-input",
+        "max_new_reviewers": 0
+      },
+      "rationale": "即时生效会改变明确的计费与启动体验，属于必要未决成本选择；基础UI准则不能替用户授权自动收费。"
+    },
+    {
       "id": "language-english-user",
       "category": "language",
       "input": "Please orient me in this repository. Read the existing current-state entry and list only active work. Reply in English and do not edit files.",
@@ -743,6 +847,114 @@
         "memory_action": "update-existing-project"
       },
       "rationale": "回复语言与文档语言分别遵循授权，不复制两套知识。"
+    },
+    {
+      "id": "design-adapt-new-project",
+      "category": "visual-routing",
+      "input": "用网关为已明确范围的小型待办网页建立设计准则。已有字体与间距tokens，主任务是列表、新增和三个字段的条目编辑。按相关场景裁切，只做项目设计文档和现状入口，不安装工作流或写业务代码。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R1",
+        "primary_skill": "design-brief-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "plan_kind": "task",
+        "doc_action": "update-current",
+        "max_new_reviewers": 0
+      },
+      "rationale": "选少量参考并形成一个可独立读取的本地设计入口；复用已有tokens，不整库复制或强制安装。静态字段不证明实际文档质量，另有新项目模型夹具。"
+    },
+    {
+      "id": "design-adapt-existing-preserve",
+      "category": "project-knowledge",
+      "input": "通过网关完善现有英文设计文档，只补保存失败反馈和列表层级。保留直角、整体Save/Cancel、低频复杂编辑器弹窗例外及原文件名，不新增产品能力。其他专业细节你决定。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R1",
+        "primary_skill": "design-brief-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "plan_kind": "task",
+        "doc_action": "update-current",
+        "max_new_reviewers": 0
+      },
+      "rationale": "原位补缺、沿用语言和条件引用，已批准例外不被通用建议覆盖。实际文本保存边界由模型夹具核验。"
+    },
+    {
+      "id": "design-library-update-not-adoption",
+      "category": "project-knowledge",
+      "input": "资料库版本更新了，请只检查有哪些变化可能值得项目采用。项目有明确直角品牌与整体保存约定；这次不修改项目规范、不实施UI，也不安装升级。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R0",
+        "primary_skill": "project-knowledge",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "plan_kind": "task",
+        "doc_action": "none",
+        "max_new_reviewers": 0
+      },
+      "rationale": "更新只产生候选，不能据上游较新而自动改写本地选择；此为只读分析。"
+    },
+    {
+      "id": "design-daily-local-only",
+      "category": "visual-routing",
+      "input": "只补本地forms.md的上传失败规则：保留输入、失败附件单独重试、键盘可定位。已登记DESIGN.md且条件引用forms.md；外部参考库只是当初出处。不要重新适配全库或改其他文档。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R1",
+        "primary_skill": "design-brief-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "plan_kind": "task",
+        "doc_action": "update-current",
+        "max_new_reviewers": 0
+      },
+      "rationale": "普通局部设计按有效本地引用完成，来源不变成运行时依赖；新日常任务夹具检查范围和结果。"
+    },
+    {
+      "id": "design-adaptation-no-install",
+      "category": "release-boundary",
+      "input": "此项目没有安装工作流。请使用已有独立creator网关为已经明确范围和组件的账号页编写本地设计规范，只做文档。不要安装技能、不改全局配置或其他项目。",
+      "expected": {
+        "route": "产品变更",
+        "risk": "R1",
+        "primary_skill": "design-brief-builder",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "plan_kind": "task",
+        "doc_action": "update-current",
+        "max_new_reviewers": 0
+      },
+      "rationale": "网关设计入口可独立按共享程序完成文档；缺少安装不能把设计任务变成安装授权。静态skill字段代表设计决策职责而非要求已安装该skill。"
+    },
+    {
+      "id": "design-adapt-mature-no-rewrite",
+      "category": "project-knowledge",
+      "input": "对现有设计规则做一次有界参考检查，用户范围、组件、状态、保存、可访问性、验收和例外已经充分且一致。没有新需求；若没有具体缺口就说明原因并保持文档，不要凑新增条款。",
+      "expected": {
+        "route": "维护执行",
+        "risk": "R0",
+        "primary_skill": "project-knowledge",
+        "question_min": 0,
+        "question_max": 0,
+        "escalation": false,
+        "status": "continue",
+        "plan_kind": "task",
+        "doc_action": "none",
+        "max_new_reviewers": 0
+      },
+      "rationale": "充分的本地准则允许无变更结果，库未涉及不表示规则有误；不为适配产生重写。"
     }
   ]
 }

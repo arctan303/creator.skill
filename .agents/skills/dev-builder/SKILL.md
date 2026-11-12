@@ -17,6 +17,8 @@ description: Implement a defined product or maintenance change, integrate result
 
 现状入口、有效需求/设计、相关任务或 Phase、工作区修改、验证入口和授权；只读相关材料。
 
+涉及 UI 时，在实施前按[读取流程](../../../.creator/references/project-design.md)读取项目已采用规范及适用的逐层引用，检查组件/tokens/素材与有效例外。直接开发或维护也不省略；不加载未采纳的设计参考库或用其新版本改写项目规则。无 UI 任务不加载设计手册。
+
 ## Workflow
 
 1. 确认路线、规模和具体影响。符合 Phase 条件却缺计划时先补计划，其余短任务直接执行。

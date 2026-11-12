@@ -21,6 +21,8 @@ For meaningful decisions record enough to recover the rule: what applies, where 
 
 ## One home per responsibility
 
+Design adaptation uses the [shared procedure](../../../../.creator/references/design-adaptation.md). Keep the project's existing design owner, language and conditional references. An adopted rule should be usable locally without loading its upstream source; provenance is not a live policy import. Preserve local amendments on subsequent library updates, and allow a justified no-change result.
+
 - **Current state**: verified capabilities, architecture, entry commands, current milestone, limitations and navigation. Do not fill it with every execution event.
 - **Effective expectations**: accepted product requirements, design principles and release conventions, including requirements not yet implemented.
 - **Active work**: still-applicable tasks, dependencies, verification gaps and recovery conditions. A missing file or absent implementation alone does not cancel a requirement.

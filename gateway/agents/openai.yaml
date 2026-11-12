@@ -1,4 +1,4 @@
 interface:
-  display_name: "Creator setup / 工作流安装"
-  short_description: "Install one workflow; preserve project knowledge and local edits."
-  default_prompt: "Use $creator to install or upgrade the unified workflow in the selected project, preserving customization and reporting installation, docs and host-discovery evidence separately."
+  display_name: "Creator gateway / 工作流与设计适配"
+  short_description: "Install workflows or adapt design references to project rules."
+  default_prompt: "Use $creator for the requested installation or project-design adaptation. Preserve existing conventions and local edits; keep installation, adopted design rules and actual UI evidence separate."

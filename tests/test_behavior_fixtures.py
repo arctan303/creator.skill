@@ -19,7 +19,8 @@ class BehaviorFixtureTests(unittest.TestCase):
 
     def test_answers_are_not_in_agent_workspaces(self):
         paths = behavior.prepare(self.output)
-        self.assertEqual(3, len(paths))
+        definitions = json.loads(behavior.SCENARIOS.read_text(encoding="utf-8"))
+        self.assertEqual(len(definitions["scenarios"]), len(paths))
         for task in paths:
             root = Path(task).parent
             self.assertTrue((root / "AGENTS.md").is_file())

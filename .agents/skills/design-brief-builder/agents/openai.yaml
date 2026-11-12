@@ -1,4 +1,4 @@
 interface:
   display_name: "Design brief"
-  short_description: "Translate visual and interaction goals into project decisions."
-  default_prompt: "Use $design-brief-builder for this task, following the user language and effective project conventions."
+  short_description: "Adapt design goals and references into project-owned rules."
+  default_prompt: "Use $design-brief-builder to establish or update the relevant project design rules, preserving effective conventions and adopting only suitable scoped references."

@@ -22,6 +22,7 @@ description: Create prototypes, wireframes and interaction states when a visual 
 - 当前相关需求与设计规则（复用 Spec/Design Brief、等价文档或明确确认）。
 - 页面/流程范围、目标平台和响应式约束。
 - 用户提供的截图、品牌资产、参考图或原型资料。
+- 按[读取流程](../../../.creator/references/project-design.md)实际读过的项目已采用设计入口、适用逐层引用与例外，以及现有组件、tokens 和素材；不加载未采纳的场景库作为运行时规则。
 
 ## Workflow
 

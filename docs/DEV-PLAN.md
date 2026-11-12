@@ -1,4 +1,8 @@
-# creator.skill 1.6.0 delivery plan
+# creator.skill delivery plan
+
+Current planning item: [evaluation-first skill improvement loop](tasks/workflow-eval-loop-20261112.md), awaiting user confirmation before evaluation or skill edits. Latest completed local task: [project design adaptation and scenario library](tasks/design-library-20261111.md), verified 2026-11-11 and still unreleased. The completed 1.6 evidence below remains historical and unchanged.
+
+## Completed 1.6.0 delivery
 
 Status: all three phases, the Mail upgrade, application-link checker follow-up and 1.6.0 publication are complete. The user's 2026-10-14 release authorization superseded the earlier local-only restriction for this release. The current stage is sustained use and evidence collection for 1.7.
 

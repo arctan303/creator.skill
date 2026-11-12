@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "id": "new-project-design",
+      "input": "阅读 AGENTS.md。这个小型网页工具已经确定：一个人在浏览器里管理自己的待办，主界面是列表和一个新增入口，点击条目后编辑标题、到期日和备注，三个字段都很简单。已有视觉 tokens，请沿用。请使用 tools/creator/SKILL.md 提供的设计适配能力，为后续开发补齐本项目可直接执行的设计规范，并在现状入口登记。后续开发者拿到项目文档就应能工作。只做英文文档：允许新增 docs/DESIGN.md、修改 docs/README.md、另写中文 RESULT.md；这三项都要完成。其他文件只读，不安装工作流、不发布、不写业务代码，也不要把本地未运行的网页说成已验证。",
+      "files": {
+        "docs/README.md": "# Current state\nScope is confirmed in [Product spec](Product-Spec.md). The project has visual tokens in design/tokens.css; project interaction rules have not been written. No application implementation or rendering evidence exists.\n",
+        "docs/Product-Spec.md": "# Personal task list\nOne person manages local tasks in a small browser app. The main screen is a list with one Add task action. Each task has title, due date and optional notes. Editing those three simple fields is part of the ordinary task flow. No collaboration, account management, analytics or advanced settings are in scope.\n",
+        "design/tokens.css": ":root { --surface: #ffffff; --text: #182434; --muted: #637186; --accent: #185abd; --radius: 4px; --space-unit: 4px; --font-body: system-ui, sans-serif; }\n"
+      },
+      "allowed_changes": ["docs/DESIGN.md", "docs/README.md", "RESULT.md"],
+      "required_changes": ["docs/DESIGN.md", "docs/README.md", "RESULT.md"],
+      "rubric": [
+        "Creates one English project-owned design entry and registers it from the existing README; no competing current-state entry or unrelated product capability is invented.",
+        "Selects relevant authoring modules for the small task-list flow and records adopted modules plus a concise source/provenance note. A source note does not turn the library into a mandatory runtime dependency.",
+        "Converts guidance into concrete local rules covering list hierarchy, simple task editing, feedback and accessible controls; uses the supplied token values and keeps scope proportionate.",
+        "The finished project rules are sufficient for later work without reading tools/creator/design-library; does not copy the whole library or its directory tree into docs or workflow assets.",
+        "Only the three authorized documents change. Chinese RESULT distinguishes document checks from unexecuted application/rendering checks; no installation, publication or business-code change is claimed."
+      ]
+    },
+    {
+      "id": "existing-project-adaptation",
+      "input": "阅读 AGENTS.md。请通过 tools/creator/SKILL.md 的设计适配能力，完善现有项目的英文设计规范。我这次只点名两个缺口：保存失败时，用户需要知道失败了、输入不能丢失并能重试；列表里的更新时间和内部编号不应抢过标题和状态的注意力。项目已有设计文件和编辑约定，请在原文内做局部合并。本次允许修改 docs/Design-Principles.md、docs/design/forms.md、docs/design/lists.md，另写中文 RESULT.md；四项都要完成，其余文件只读。不要实现界面、不安装工作流、不发布。",
+      "files": {
+        "docs/README.md": "# Current project state\nThe application is stable; this task updates documentation only. The design entry is [Design principles](Design-Principles.md).\n",
+        "docs/Design-Principles.md": "# Design principles\n## Effective choices\nUse the project tokens in design/tokens.css. Controls and panels use square corners. Preserve keyboard access and visible focus.\nRead [form rules](design/forms.md) whenever a task changes editing or saving. Read [list rules](design/lists.md) whenever a task changes list content or hierarchy. These conditional references are part of this entry.\nCurrent coverage: editing and basic list structure are documented. The next scoped update covers save-failure feedback and secondary metadata hierarchy.\n",
+        "docs/design/forms.md": "# Form rules\nSimple fields are edited directly in the relevant page section. All fields in a form are committed together by one explicit Save action; Cancel restores the last saved values.\nException FORM-EX-2: the monthly allocation editor is a low-frequency operation with many dependent fields and a preview. Keep that complex editor in its existing dialog, with whole-form Save and Cancel. This approved exception is limited to that editor.\nThe save-failure interaction is not yet specified.\n",
+        "docs/design/lists.md": "# List rules\nEach row shows a task title, status, last-updated timestamp and internal identifier. Title opens the task detail. Keep row actions keyboard accessible.\nThe visual hierarchy between these fields is not yet specified.\n",
+        "design/tokens.css": ":root { --surface: #fff; --text: #202630; --muted: #667080; --accent: #215ab5; --radius: 0px; --space-unit: 4px; }\n"
+      },
+      "allowed_changes": ["docs/Design-Principles.md", "docs/design/forms.md", "docs/design/lists.md", "RESULT.md"],
+      "required_changes": ["docs/Design-Principles.md", "docs/design/forms.md", "docs/design/lists.md", "RESULT.md"],
+      "rubric": [
+        "Keeps the existing English design entry, both conditional forms/list references and the project tokens; preserves square corners, keyboard/focus rules and document language.",
+        "Specifies observable save failure: clear failure feedback, retained input and an actionable retry; preserves explicit whole-form Save/Cancel rather than silently switching to autosave or per-field commits.",
+        "Keeps FORM-EX-2's approved low-frequency complex dialog exception with its preview/dependent fields and scope; generic authoring guidance does not erase it.",
+        "Makes title and status primary while timestamp and internal identifier are secondary; does not remove existing information or invent new product behavior.",
+        "Locally reconciles the two undecided clauses and entry coverage, records selected module/provenance notes, and leaves self-contained project rules rather than a runtime obligation to consult the authoring library.",
+        "Changes exactly the four authorized documents without copying the whole library, changing tokens, creating duplicate design entries, installing or publishing; RESULT describes document evidence honestly."
+      ]
+    },
+    {
+      "id": "daily-local-design-update",
+      "input": "阅读 AGENTS.md。这是已采用设计规范的项目。请把附件上传失败时的局部规则补充到现有表单文档：保留当前表单内容，失败项可单独重试，并让键盘用户能够定位到失败项。只修改 docs/design/forms.md，另写中文 RESULT.md，两项都需要完成。其他文档、工具和源码只读；不要重新梳理全套规范，不安装、不发布，也不要声称完成了真实页面验证。",
+      "files": {
+        "docs/README.md": "# Current state\nThe application uses its established [design entry](DESIGN.md). This task is a local documentation update.\n",
+        "docs/DESIGN.md": "# Project design\nProject tokens use square corners and 4px spacing. Read [forms](design/forms.md) for editing/upload tasks and [lists](design/lists.md) for list tasks.\nAdopted authoring modules: forms, feedback and information hierarchy from the creator design library, adapted on 2026-11-11. This is provenance only; these project documents contain the effective rules. Routine work does not require reading the external authoring library.\n",
+        "docs/design/forms.md": "# Forms\nOrdinary forms edit inline. Save commits the whole form and Cancel restores saved values.\nException FORM-EX-2: the low-frequency allocation editor remains a dialog because its dependent fields and preview need a separate work area.\nSuccessful attachment upload shows the uploaded filename next to its control. Upload failure behavior is not yet specified.\n",
+        "docs/design/lists.md": "# Lists\nTitle and status are primary. Last-updated timestamps and internal IDs are secondary, remain readable and never depend on color alone.\n",
+        "design/tokens.css": ":root { --radius: 0px; --space-unit: 4px; --text: #202630; --muted: #667080; }\n"
+      },
+      "allowed_changes": ["docs/design/forms.md", "RESULT.md"],
+      "required_changes": ["docs/design/forms.md", "RESULT.md"],
+      "rubric": [
+        "Updates the existing English forms document with retained form values, per-failed-attachment retry and an accessible way for keyboard users to locate the failed item.",
+        "Preserves whole-form Save/Cancel semantics, inline ordinary forms and the explicitly scoped complex-dialog exception; does not use generic library material to override them.",
+        "Uses the effective local design entry and applicable forms reference. Gateway availability does not cause a fresh full-library adaptation, copying or edits to DESIGN, README, list rules, tokens or tooling.",
+        "Retains the entry's adopted-module/source note as provenance, not an external runtime dependency; the updated forms rule remains sufficient without later external-library reading.",
+        "Changes only the two authorized documents and does not install, publish or implement business code. Chinese RESULT limits evidence to this local documentation change and leaves real rendering unclaimed."
+      ]
+    }
+  ]
+}

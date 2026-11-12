@@ -1,6 +1,6 @@
 ---
 name: design-brief-builder
-description: Turn visual goals, brand context and scenarios into a reasoned Design Brief. Use when visual or interaction rules change, not to restore established behavior.
+description: Turn visual goals or selected scenario references into project-owned design rules; preserve existing conventions and scoped exceptions. Use for design adaptation or changed interaction rules, not routine restoration.
 ---
 
 # 设计规范技能 (design-brief-builder)
@@ -12,6 +12,7 @@ description: Turn visual goals, brand context and scenarios into a reasoned Desi
 ## Trigger
 
 - 0→1 产品需要建立视觉或交互规则。
+- 用户要求从场景参考建立、裁切或完善本项目设计准则，或网关转交这一已授权任务。
 - 产品变更需要新增或改变既有视觉、品牌或交互规则。
 - 现有 Product Spec 已足以说明产品目标、用户和核心场景。
 
@@ -22,11 +23,11 @@ description: Turn visual goals, brand context and scenarios into a reasoned Desi
 - 相关可验收需求，来自现有 Spec、等价文件或用户明确确认。
 - 用户、场景、平台和使用环境。
 - 用户给出的风格词、品牌线索、截图、参考产品或反例。
-- 已有 Design Brief 或设计系统（如果存在）。
+- 已采用的设计入口、任务相关条件引用及有效例外；按[项目设计读取流程](../../../.creator/references/project-design.md)读取并核对组件、tokens 与素材。单文档或设计索引均可。
 
 ## Workflow
 
-1. 先解释主观词在当前产品语境中的具体含义。
+1. 从已读项目规范和页面任务解释主观词。建立或完善项目准则时按[设计适配流程](../../../.creator/references/design-adaptation.md)选择参考并转成具体本地决定；未采纳资料不作隐式兜底，不复制整库。普通局部改动仅处理必要的设计空白。
 2. 优先遵循已有项目准则并自主选择有依据的细节；只有未决方向实质改变体验且不能由已有决定收敛时，给出含理由与代价的候选并询问必要选择。存在多种专业实现本身不要求追问。
 3. 将选定方向写成“设计意图 → 决策 → 参数 → 理由/代价 → 验证检查点”。
 4. 只更新本次受影响的视觉、交互与可访问性，不为局部改动重做完整设计。

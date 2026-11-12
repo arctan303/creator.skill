@@ -42,6 +42,12 @@ For an existing project, you can also request documentation alignment:
 
 > Align the existing project documents with this workflow. Reuse the current entry document, preserve history, and distinguish current requirements from retired work.
 
+## Design adaptation — unreleased source capability
+
+The current source adds a [scenario reference library](design-library/README.md) and gateway-assisted authoring: create project-specific design rules or fill gaps in existing ones while preserving local choices. Everyday UI work reads only the adopted project rules and their relevant local references. The library ships with the gateway, not the project workflow.
+
+See the [usage guide](docs/design-adaptation.md) for new and existing projects. This capability is **not included in the published 1.6.0 assets**; a local source build does not upgrade any installed copy automatically.
+
 ## What is included
 
 The release includes one `creator-workflow.zip` for project installation and one `creator-gateway.zip` containing the installer and optional personal skill. Both hosts share `AGENTS.md` and the canonical skills under `.agents/skills/`. Claude uses thin discovery adapters under `.claude/skills/`; there is no second translated policy tree or generated `CLAUDE.md`.

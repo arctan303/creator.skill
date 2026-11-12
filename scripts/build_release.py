@@ -13,6 +13,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DIST_DIR = REPO_ROOT / "dist"
 SKILLS_SRC = REPO_ROOT / ".agents/skills"
 GATEWAY_SRC = REPO_ROOT / "gateway"
+DESIGN_LIBRARY_SRC = REPO_ROOT / "design-library"
 RELEASE_MANIFEST = ".creator-manifest.json"
 CASES_PATH = ".creator/tests/prompt-cases/cases.json"
 SIGNALS_PATH = ".creator/evolution/signals.md"
@@ -139,14 +140,20 @@ def build_workflow(stage, skills, version):
 
 
 def build_gateway(stage):
+    if not (DESIGN_LIBRARY_SRC / "README.md").is_file():
+        raise ValueError("Design authoring library is missing its README.md entry")
     copy_tree(GATEWAY_SRC, stage)
     # Shared references link to one another; include their complete small closure.
     copy_tree(REPO_ROOT / ".creator/references", stage / "references")
+    # Authoring material belongs to the gateway, never the project workflow.
+    copy_tree(DESIGN_LIBRARY_SRC, stage / "design-library")
     script = stage / "scripts/install_workflow.py"
     script.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(REPO_ROOT / "scripts/install_workflow.py", script)
     skill = stage / "SKILL.md"
-    write_text(skill, skill.read_text(encoding="utf-8").replace("../.creator/references/", "references/"))
+    write_text(skill, skill.read_text(encoding="utf-8")
+               .replace("../.creator/references/", "references/")
+               .replace("../design-library/", "design-library/"))
 
 
 def main():
