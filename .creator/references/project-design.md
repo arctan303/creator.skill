@@ -18,8 +18,12 @@ An explicit request to establish, adapt or enrich design rules may use the gatew
 
 ## Verify the adopted design
 
-Use the task's effective behavior and local acceptance criteria. Inspect affected rendered composition and relevant interaction states; checks must match the change. A screenshot file alone, source assertion or lack of overflow does not establish visual quality. Runtime checks must distinguish simulated, local and deployed behavior.
+**When:** implementing or reviewing changed UI; select checks for the affected scope and adopted acceptance criteria, not every page or state.
 
-Preserve actual save/cancel, focus, compatibility, privacy and accessibility contracts. Missing evidence stays explicit; don't add mandatory full-site audits or independent reviews for every UI change. Reading new reference material or updating a workflow package does not make existing project UI noncompliant.
+**Rule:** reuse existing components, tokens, icons and assets first. After the final source edit, render and inspect affected states: default, empty, loading, error, success, failed save and narrow viewport as relevant. Check composition, alignment and consistency against adopted rules, and confirm content outside the change stayed intact. Exercise changed interactions; a screenshot cannot prove save/cancel, focus or keyboard behavior.
+
+**Wrong / right:** keeping an earlier screenshot after changing form spacing, or calling a save flow verified because a button renders → inspect the final form and actually try the affected save/failure path, checking preserved input and the project's feedback contract.
+
+**Evidence / exceptions:** identify each screenshot's source revision (including uncommitted changes), state and viewport; distinguish simulated, local and deployed environments. Read the rendered result: merely creating a screenshot, asserting source text or reporting “no overflow” does not establish visual quality. If the browser or runtime is unavailable, state the gap; do not claim visual verification. Preserve accessibility, compatibility and privacy contracts. Do not install new dependencies without user consent or expand into a full-site audit. Reference-library updates do not make existing project UI noncompliant.
 
 Capture explicit user corrections in the existing project design document with scope and replacement relationships. Candidate improvements remain candidates. Maintain the entry and related references without duplicating the reference library or resurrecting retired decisions.

@@ -38,3 +38,5 @@ R2 或用户明确要求；已授权发布/合并前的相关待复查批次。�
 ## References
 
 读 [stage-contract.md](references/stage-contract.md)；需要状态与进展细则时读[共同契约](../../../.creator/references/workflow-contract.md)。
+
+审查修复或检查的有效性时读[验证方法](../../../.creator/references/verification.md)；审查范围含 UI 变更时读[项目 UI 实现与验证](../../../.creator/references/project-design.md#verify-the-adopted-design)。

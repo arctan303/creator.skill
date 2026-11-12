@@ -52,3 +52,5 @@ description: Diagnose reproducible failures and restore established behavior. In
 ## References
 
 执行前读取 [stage-contract.md](references/stage-contract.md)。
+
+根因未知、复现不稳/偶现、首次修复无效或症状可能不是原因时读[诊断方法](references/diagnosis.md)；验证修复及回归检查的有效性时读[验证方法](../../../.creator/references/verification.md)。

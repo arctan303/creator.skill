@@ -40,3 +40,5 @@ description: Implement a defined product or maintenance change, integrate result
 ## References
 
 交付时读 [stage-contract.md](references/stage-contract.md)；文档、队列及审查细则读[共同契约](../../../.creator/references/workflow-contract.md)。
+
+验证修复或需要判断检查是否有效时读[验证方法](../../../.creator/references/verification.md)；实现或验证 UI 变更时读[项目 UI 实现与验证](../../../.creator/references/project-design.md#verify-the-adopted-design)。
