@@ -6,7 +6,7 @@
   "verified_at": "2026-11-12",
   "entrypoints": {
     "context": "docs/README.md",
-    "spec": "docs/workflow-1.7.md",
+    "spec": "docs/workflow-1.8.md",
     "plan": "docs/DEV-PLAN.md"
   },
   "mappings": [
@@ -24,7 +24,7 @@
     "docs/workflow-1.6.md records scoped reconciliation, tests, independent review and verified v1.6.0 publication.",
     "docs/README.md is the sole source-project current-state entry; 1.5 evidence is explicitly historical.",
     "The docs checker validates registration and links; semantic scope was reconciled separately. It does not certify release or live-host behavior.",
-    "docs/workflow-1.7.md retains stable field-feedback evidence; docs/validation/1.7-release.md owns the separately authorized publication and asset verification.",
-    "2026-11-12: 1.7.0 release in progress from the reviewed candidate. This one release and a subsequent documentation receipt push are authorized; no sibling installation, personal gateway update or About changes. Only basic script, structure, build/package/temporary-install and documentation checks apply; model/UI/live Claude Code/long-term behavior awaits real use and 1.8 feedback. Formal evaluation remains deferred. Complete here means documentation registration, not release or behavioral acceptance."
+    "docs/workflow-1.7.md is the closed 1.7 historical record; docs/workflow-1.8.md owns new real-use feedback and the eight 1.7.0 observation areas, with installed package_sha256 prefixes recorded by the assistant.",
+    "2026-11-12: 1.7.0 published at edb39b531264b116d02ac2be7e6edf987bfdbe10 by successful Release run 43172477410. docs/validation/1.7-release.md owns publication, asset and temporary-install evidence with explicit limits. Current stage: sustained use and 1.8 feedback. Formal evaluation remains deferred for possible 1.8 use. No sibling installation, personal gateway update or About changes; this authorization does not cover another release. Complete here means documentation registration, not model/UI/live Claude Code/long-term acceptance."
   ]
 }

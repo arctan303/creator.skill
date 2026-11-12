@@ -1,6 +1,12 @@
 # 1.7 field feedback and candidates
 
-Status: **1.7.0 local candidate, unpublished**, prepared under the user's 2026-11-12 execution instruction. It includes the earlier local design/adaptation work and the bounded S1–S5/M1–M5 update. Only basic script, structure, build/package/temporary-install and documentation checks ran this iteration; installed business workspaces retain their own baselines.
+Status: **1.7 development closed** on 2026-11-12. CI published 1.7.0 at tag commit `edb39b531264b116d02ac2be7e6edf987bfdbe10`. The [release evidence](validation/1.7-release.md) owns publication and downloaded-asset verification results; publication alone does not establish that verification passed. New observations belong in the [1.8 feedback record](workflow-1.8.md), using stable `FB18-xxx` IDs.
+
+## Historical record boundaries
+
+The original candidate context, reports and observation list below are retained as historical evidence. Their candidate/unpublished statuses, authorization limits, version statements and future-work wording describe the time of each entry; they are not the current release status or a renewed authorization. The old capture instructions and `FB17-xxx` observation section are historical snapshots, superseded for new feedback by the [1.8 entry](workflow-1.8.md). Historical checks and untested items are not rewritten as passed.
+
+Historical opening snapshot: **1.7.0 local candidate, unpublished**, prepared under the user's 2026-11-12 execution instruction. It includes the earlier local design/adaptation work and the bounded S1–S5/M1–M5 update. Only basic script, structure, build/package/temporary-install and documentation checks ran this iteration; installed business workspaces retain their own baselines.
 
 Source: the user's screenshot corrections, researched-design/adaptation requests and 2026-11-12 bounded implementation authorization. The [current task](tasks/1.7-local-candidate-20261112.md) records accepted scope and evidence; the [formal evaluation design](tasks/workflow-eval-loop-20261112.md) is deferred and retained. The user will install and trial the candidate; this record does not authorize publication or claim long-term testing passed. Earlier report/version statements below retain their historical baseline.
 
@@ -12,7 +18,7 @@ For each actual report, retain a stable ID, date, workflow/host/model baseline w
 
 Observe task flexibility and unnecessary questions, useful delegation, natural convention capture, current-state accuracy and retired-task handling, upgrade preservation, documentation upkeep and bilingual first use. These are observation areas, not presumed defects or mandatory testing steps for every task.
 
-## 1.7 试用重点
+## 1.7 试用重点（历史快照）
 
 以下关注点对应本地候选改动；本轮未运行模型或 UI 试验。用户按上面的自然反馈方式描述问题，新增报告沿用稳定 `FB17-xxx` 编号；同一问题合并证据，不重编号。记录反馈时，由助手读取该项目 `.creator/install-state.json` 的 `package_sha256` 前 12 位写入报告，以区分不同的本地 1.7.0 构建，不要求用户自行查找；记录不可用时如实注明未知。
 
