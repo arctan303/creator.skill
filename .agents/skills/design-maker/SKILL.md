@@ -13,7 +13,7 @@ description: Create prototypes, wireframes and interaction states when a visual 
 
 - UI、布局、交互或品牌表达会显著影响开发计划。
 - 用户需要在开发前检查关键页面或状态。
-- Product Spec 和 Design Brief 已稳定，但文字仍不足以指导实现。
+- 当前有效需求与设计规则已明确本次范围，但文字仍不足以指导实现。
 
 没有明显界面、常规 UI 可直接计划或设计只会增加装饰时跳过。
 
@@ -41,8 +41,7 @@ description: Create prototypes, wireframes and interaction states when a visual 
 
 ## Stop or escalate
 
-- 相关需求或设计选择缺失且影响产物：补齐必要输入，不因缺少同名文档返回。
-- 必要页面、流程或风格仍不稳定：返回前序阶段。
+- 必要需求、页面、流程或设计选择仍未决：在本次范围补齐必要项；仅暂停依赖部分，独立部分继续，不因缺少同名文档返回。
 - 设计要求新增产品范围：升级为产品变更。
 - 缺少品牌、内容或布局依据却要求高保真定稿：停止并说明缺口。
 

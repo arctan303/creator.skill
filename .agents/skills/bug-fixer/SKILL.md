@@ -15,7 +15,7 @@ description: Diagnose reproducible failures and restore established behavior. In
 - 正确行为能由 Product Spec、公开接口、历史行为、测试或用户确认确定。
 - 仅改变内部实现且不新增能力、不改变外部契约。
 
-正确行为不清、证据互相矛盾或需要改变公开行为时，不触发本技能，转交 `product-spec-builder`。
+证据矛盾时先按 `AGENTS.md` 核对有效性与替代关系，区分未完成工作、回归、已批准变更和过时测试/文档。仅正确行为仍未决，或修复必须改变公开契约时，转交 `product-spec-builder`。
 
 ## Required context
 

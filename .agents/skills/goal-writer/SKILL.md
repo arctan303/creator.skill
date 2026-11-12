@@ -11,8 +11,8 @@ description: Write a bounded, recoverable Goal with measurable acceptance only w
 
 ## Trigger
 
-- 任务需要跨较长时间、多个工具调用或宿主自动执行。
-- 用户明确要求持续执行、托管、直到交付或生成 Goal。
+- 仅当用户明确要求持久或长期 Goal（如持续执行、托管）时启用。
+- 任务耗时较长、需要多个工具调用或宿主可自动执行，本身不触发本技能。
 - 普通单轮任务不需要额外 Goal 文件。
 
 ## Required context

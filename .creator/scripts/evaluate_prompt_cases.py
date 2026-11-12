@@ -332,7 +332,7 @@ def main() -> int:
             print("- " + error)
         return 1
 
-    print("Prompt 契约验证通过: {} 个行为用例".format(len(cases)))
+    print("Prompt 契约结构检查通过: {} 个结构用例；本命令未运行模型。".format(len(cases)))
     if args.responses:
         print("Agent 响应字段评分通过: {} 个响应；实际文件行为须另行核验".format(evaluated))
     else:
