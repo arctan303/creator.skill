@@ -2,6 +2,7 @@
 import importlib.util
 import json
 import os
+import shutil
 import stat
 import subprocess
 import sys
@@ -118,6 +119,179 @@ class InstallTests(unittest.TestCase):
         with self.assertRaises(installer.InstallError):
             installer.apply_plan(self.root, plan)
         self.assertEqual(before, self.snapshot(timestamps=True))
+
+    def eol_fixture(self, original, current, source="receipt", obsolete=False):
+        """Exercise public package/plan/apply APIs with an isolated ownership source."""
+        self.root = Path(tempfile.mkdtemp(prefix="eol-case-", dir=self.base))
+        target = ".creator/references/retired.md" if obsolete else "AGENTS.md"
+        old_path = self.package(overrides={target: original})
+        old = installer.load_package(old_path, baseline=True)
+        if source == "receipt":
+            self.install(old_path)
+            baselines = []
+        else:
+            for name, data in old["files"].items():
+                self.write(name, data)
+            baselines = [old]
+        self.write(target, current)
+        new = installer.load_package(self.package("1.7.0", overrides={target: None} if obsolete else {target: b"# New policy\ncanonical content\n"}))
+        return target, new, baselines
+
+    def test_eol_only_owned_replacement_preserves_package_bytes_and_is_idempotent(self):
+        endings = (
+            (b"# Policy\nfirst\nsecond\n", b"# Policy\r\nfirst\r\nsecond\r\n"),
+            (b"# Policy\r\nfirst\r\nsecond\r\n", b"# Policy\nfirst\nsecond\n"),
+            (b"# Policy\nfirst\nsecond\n", b"# Policy\r\nfirst\nsecond\r\n"),
+            (b"# Policy\nfirst\rsecond\n", b"# Policy\r\nfirst\rsecond\r\n"),
+        )
+        for source in ("receipt", "package"):
+            for original, current in endings:
+                with self.subTest(source=source, original=original, current=current):
+                    target, package, baselines = self.eol_fixture(original, current, source)
+                    before = self.snapshot(timestamps=True)
+                    plan = installer.make_plan(self.root, package, baselines)
+                    self.assertEqual(plan["conflicts"], [])
+                    self.assertEqual(plan["line_ending_only"], [target])
+                    self.assertIn({"path": target, "action": "replace-owned"}, plan["actions"])
+                    self.assertEqual(before, self.snapshot(timestamps=True), "preview must not write")
+                    installer.apply_plan(self.root, plan)
+                    self.assertEqual((self.root / target).read_bytes(), package["files"][target])
+                    receipt = json.loads((self.root / installer.STATE).read_bytes())
+                    self.assertEqual(set(receipt), {"schema_version", "workflow", "version", "package_sha256", "files", "official_cases"})
+                    self.assertEqual(receipt["files"][target]["sha256"], installer.digest(package["files"][target]))
+                    installed = self.snapshot(timestamps=True)
+                    repeat = installer.make_plan(self.root, package, baselines)
+                    self.assertEqual(repeat["conflicts"], [])
+                    self.assertEqual(repeat["line_ending_only"], [])
+                    self.assertEqual(repeat["changes"], [])
+                    installer.apply_plan(self.root, repeat)
+                    self.assertEqual(installed, self.snapshot(timestamps=True))
+
+    def test_eol_only_obsolete_owned_file_is_removed(self):
+        for source in ("receipt", "package"):
+            for original, current in ((b"retired\npolicy\n", b"retired\r\npolicy\r\n"),
+                                      (b"retired\r\npolicy\r\n", b"retired\npolicy\n")):
+                with self.subTest(source=source, original=original):
+                    target, package, baselines = self.eol_fixture(original, current, source, obsolete=True)
+                    before = self.snapshot(timestamps=True)
+                    plan = installer.make_plan(self.root, package, baselines)
+                    self.assertEqual(plan["conflicts"], [])
+                    self.assertEqual(plan["line_ending_only"], [target])
+                    self.assertIn({"path": target, "action": "remove-obsolete-owned"}, plan["actions"])
+                    self.assertEqual(before, self.snapshot(timestamps=True))
+                    installer.apply_plan(self.root, plan)
+                    self.assertFalse((self.root / target).exists())
+                    self.assertEqual((self.root / "AGENTS.md").read_bytes(), package["files"]["AGENTS.md"])
+                    repeat = installer.make_plan(self.root, package, baselines)
+                    self.assertEqual(repeat["changes"], [])
+                    self.assertEqual(repeat["line_ending_only"], [])
+
+    def test_eol_fallback_rejects_content_edits_binary_and_invalid_utf8_without_any_write(self):
+        examples = (
+            ("content-and-mixed-eol", b"first\nsecond\n", b"first\r\ncustomized\n"),
+            ("bare-cr", b"first\nsecond\n", b"first\rsecond\r\n"),
+            ("added-cr-before-crlf", b"first\r\n", b"first\r\r\n"),
+            ("added-space", b"first\nsecond\n", b"first \r\nsecond\r\n"),
+            ("added-bom", b"first\nsecond\n", b"\xef\xbb\xbffirst\r\nsecond\r\n"),
+            ("nul", b"first\x00\nsecond\n", b"first\x00\r\nsecond\r\n"),
+            ("invalid-utf8", b"first\xff\nsecond\n", b"first\xff\r\nsecond\r\n"),
+        )
+        for obsolete in (False, True):
+            for label, original, current in examples:
+                with self.subTest(obsolete=obsolete, case=label):
+                    target, package, baselines = self.eol_fixture(original, current, obsolete=obsolete)
+                    before = self.snapshot(timestamps=True)
+                    plan = installer.make_plan(self.root, package, baselines)
+                    self.assertIn(target, plan["conflicts"])
+                    self.assertNotIn(target, plan.get("line_ending_only", []))
+                    action = "preserve-modified-obsolete" if obsolete else "conflict"
+                    self.assertIn({"path": target, "action": action}, plan["actions"])
+                    self.assertTrue(plan["changes"], "other legitimate upgrade changes must be pending")
+                    with self.assertRaises(installer.InstallError):
+                        installer.apply_plan(self.root, plan)
+                    self.assertEqual(before, self.snapshot(timestamps=True))
+                    self.assertEqual((self.root / target).read_bytes(), current)
+
+    def test_exact_binary_ownership_still_precedes_eol_fallback(self):
+        for obsolete in (False, True):
+            for original in (b"first\x00\nsecond\n", b"first\xff\nsecond\n"):
+                with self.subTest(obsolete=obsolete, original=original):
+                    target, package, baselines = self.eol_fixture(original, original, obsolete=obsolete)
+                    plan = installer.make_plan(self.root, package, baselines)
+                    self.assertEqual(plan["conflicts"], [])
+                    self.assertNotIn(target, plan.get("line_ending_only", []))
+                    installer.apply_plan(self.root, plan)
+                    if obsolete:
+                        self.assertFalse((self.root / target).exists())
+                    else:
+                        self.assertEqual((self.root / target).read_bytes(), package["files"][target])
+
+    def test_eol_fallback_does_not_borrow_another_paths_known_hash(self):
+        for obsolete in (False, True):
+            with self.subTest(obsolete=obsolete):
+                target, package, baselines = self.eol_fixture(b"original\n", b"# installer fixture\r\n", obsolete=obsolete)
+                # Only the installer script owns this LF hash; the selected path never did.
+                before = self.snapshot(timestamps=True)
+                plan = installer.make_plan(self.root, package, baselines)
+                self.assertIn(target, plan["conflicts"])
+                self.assertNotIn(target, plan.get("line_ending_only", []))
+                with self.assertRaises(installer.InstallError):
+                    installer.apply_plan(self.root, plan)
+                self.assertEqual(before, self.snapshot(timestamps=True))
+
+    def test_real_git_autocrlf_checkout_upgrade_has_no_conflicts(self):
+        git = shutil.which("git")
+        if git is None:
+            self.skipTest("Git executable unavailable")
+        for autocrlf in ("true", "false"):
+            with self.subTest(core_autocrlf=autocrlf):
+                self.root = Path(tempfile.mkdtemp(prefix="eol-git-", dir=self.base))
+                empty_attributes = self.base / "empty-git-attributes"
+                empty_attributes.write_bytes(b"")
+                env = dict(os.environ, GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull,
+                           GIT_CONFIG_SYSTEM=os.devnull)
+                def run_git(*args):
+                    result = subprocess.run([git, "-c", "core.autocrlf=" + autocrlf,
+                                             "-c", "core.safecrlf=false", "-c", "core.attributesFile=" + str(empty_attributes),
+                                             *args], cwd=self.root, env=env, capture_output=True)
+                    self.assertEqual(result.returncode, 0, result.stderr.decode("utf-8", errors="replace"))
+                    return result.stdout
+                run_git("init")
+                old = self.install(self.package(overrides={"AGENTS.md": b"# Policy\nfirst\nsecond\n"}))
+                run_git("add", "--all")
+                run_git("-c", "user.name=Creator EOL Fixture", "-c", "user.email=eol-fixture@example.invalid",
+                        "-c", "commit.gpgsign=false", "commit", "--no-verify", "-m", "fixture baseline")
+                tracked = [self.root / os.fsdecode(name) for name in run_git("ls-files", "-z").split(b"\x00") if name]
+                self.assertTrue(tracked)
+                # Validate every fixture deletion before removing any file.
+                for path in tracked:
+                    path.resolve().relative_to(self.base.resolve())
+                    path.resolve().relative_to(self.root.resolve())
+                    self.assertTrue(path.is_file())
+                    self.assertFalse(path.is_symlink())
+                for path in tracked:
+                    path.unlink()
+                run_git("checkout-index", "--all", "--force", "--index")
+                expected = old["files"]["AGENTS.md"]
+                if autocrlf == "true":
+                    expected = expected.replace(b"\n", b"\r\n")
+                self.assertEqual((self.root / "AGENTS.md").read_bytes(), expected)
+                self.assertEqual(run_git("status", "--porcelain"), b"", "checkout must be Git-clean")
+                before = self.snapshot(timestamps=True)
+                package = installer.load_package(self.package("1.7.0", overrides={"AGENTS.md": b"# Policy\nnew canonical policy\n"}))
+                plan = installer.make_plan(self.root, package)
+                self.assertEqual(plan["conflicts"], [])
+                if autocrlf == "true":
+                    self.assertIn("AGENTS.md", plan["line_ending_only"])
+                else:
+                    self.assertEqual(plan.get("line_ending_only", []), [])
+                self.assertEqual(before, self.snapshot(timestamps=True))
+                self.assertEqual(run_git("status", "--porcelain"), b"", "preview must remain Git-clean")
+                installer.apply_plan(self.root, plan)
+                self.assertEqual((self.root / "AGENTS.md").read_bytes(), package["files"]["AGENTS.md"])
+                repeat = installer.make_plan(self.root, package)
+                self.assertEqual(repeat["conflicts"], [])
+                self.assertEqual(repeat["changes"], [])
 
     def test_unknown_existing_file_is_not_adopted_by_filename(self):
         self.write("AGENTS.md", b"pre-existing project instructions")

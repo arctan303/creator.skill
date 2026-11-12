@@ -38,6 +38,28 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def baseline_match(data, hashes):
+    """Match raw bytes first; only UTF-8 text may use LF/CRLF alternatives."""
+    if not hashes:
+        return None
+    if digest(data) in hashes:
+        return "exact"
+    if b"\x00" in data:
+        return None
+    try:
+        data.decode("utf-8")
+    except UnicodeDecodeError:
+        return None
+    lf = data.replace(b"\r\n", b"\n")
+    # CR CRLF leaves a CRLF after one pass: matching that to an official CRLF
+    # would hide an extra standalone CR, not merely a checkout conversion.
+    if b"\r\n" in lf:
+        return None
+    if digest(lf) in hashes or digest(lf.replace(b"\n", b"\r\n")) in hashes:
+        return "line-ending-only"
+    return None
+
+
 def encode_json(value):
     return (json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
@@ -325,8 +347,14 @@ def make_plan(root, package, baseline_packages=(), claude_version=None):
     if read_current(root, JOURNAL, MAX_TOTAL * 3) is not None:
         raise InstallError("An unfinished installation journal exists; use --recover before installing")
     known, old_cases, receipt = baseline_state(root, baseline_packages)
-    actions, changes, conflicts = [], [], []
+    actions, changes, conflicts, line_ending_only = [], [], [], []
     new_files, entries = package["files"], package["entries"]
+
+    def is_owned(name, current):
+        match = baseline_match(current, known.get(name, set()))
+        if match == "line-ending-only":
+            line_ending_only.append(name)
+        return match is not None
 
     def record(name, before, after, action):
         actions.append({"path": name, "action": action})
@@ -350,7 +378,7 @@ def make_plan(root, package, baseline_packages=(), claude_version=None):
             record(name, current, current, "unchanged")
         elif current is None:
             record(name, None, incoming, "add")
-        elif digest(current) in known.get(name, set()):
+        elif is_owned(name, current):
             record(name, current, incoming, "replace-owned")
         else:
             conflicts.append(name)
@@ -361,7 +389,7 @@ def make_plan(root, package, baseline_packages=(), claude_version=None):
         current = read_current(root, name)
         if current is None:
             continue
-        if digest(current) in known[name]:
+        if is_owned(name, current):
             record(name, current, None, "remove-obsolete-owned")
         else:
             conflicts.append(name)
@@ -375,6 +403,7 @@ def make_plan(root, package, baseline_packages=(), claude_version=None):
     record(STATE, receipt, desired_receipt, "record-baseline" if receipt != desired_receipt else "unchanged")
     return {"root": str(root), "version": state["version"], "package_sha256": package["sha256"],
             "actions": actions, "conflicts": sorted(set(conflicts)), "changes": changes,
+            "line_ending_only": sorted(line_ending_only),
             "diagnostics": claude_diagnostics(root, claude_version)}
 
 

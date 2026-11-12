@@ -30,6 +30,8 @@ The old filename is arbitrary; contents, manifest and hashes establish the basel
 
 Defaults are read-only. `--apply` writes only a conflict-free plan. Exit codes: `0` successful plan/apply, `2` unresolved conflicts with no apply, `1` unsafe input or operation failure. All package paths are validated before mutation; archives are never extracted over the project. Installer state stores original official case definitions so later upgrades can preserve local cases.
 
+UTF-8 text without NUL that differs from a known official version only by LF/CRLF line endings is treated as unmodified; the preview lists these ownership matches in `line_ending_only`. / 与同一路径已知官方版本只差 LF/CRLF 换行符的无 NUL、有效 UTF-8 文本按未改动处理，预览通过 `line_ending_only` 列出这些归属匹配。
+
 An interrupted apply retains `.creator/install-transaction.json` with recovery snapshots. Keep it private: snapshots can contain local instruction content. Do not hand-edit or discard it to bypass recovery.
 
 ```powershell
