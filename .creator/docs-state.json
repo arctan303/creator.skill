@@ -10,8 +10,21 @@
     "plan": "docs/DEV-PLAN.md"
   },
   "mappings": [
-    {"source": "docs/workflow-optimization.md", "action": "keep", "targets": ["docs/workflow-optimization.md"], "reason": "Preserve 1.5 evidence as explicitly historical; current 1.6 work has its own entry."}
+    {
+      "source": "docs/workflow-optimization.md",
+      "action": "keep",
+      "targets": [
+        "docs/workflow-optimization.md"
+      ],
+      "reason": "Preserve 1.5 evidence as explicitly historical; current 1.6 work has its own entry."
+    }
   ],
   "pending": [],
-  "evidence": ["docs/workflow-1.6.md records scoped reconciliation, tests, independent review and verified v1.6.0 publication.", "docs/README.md is the sole source-project current-state entry; 1.5 evidence is explicitly historical.", "The docs checker validates registration and links; semantic scope was reconciled separately. It does not certify release or live-host behavior.", "docs/workflow-1.7.md owns subsequent user-feedback evidence and trial focus; it does not authorize a 1.7 release or cross-project rollout.", "2026-11-12: 1.7.0 is a local unpublished candidate under docs/tasks/1.7-local-candidate-20261112.md. Only basic script, structure, build/package/temporary-install and documentation checks ran this iteration; real project/model/UI/Claude Code/long-term behavior awaits user trial. Formal evaluation is deferred. Complete here means documentation registration, not release or behavioral acceptance."]
+  "evidence": [
+    "docs/workflow-1.6.md records scoped reconciliation, tests, independent review and verified v1.6.0 publication.",
+    "docs/README.md is the sole source-project current-state entry; 1.5 evidence is explicitly historical.",
+    "The docs checker validates registration and links; semantic scope was reconciled separately. It does not certify release or live-host behavior.",
+    "docs/workflow-1.7.md retains stable field-feedback evidence; docs/validation/1.7-release.md owns the separately authorized publication and asset verification.",
+    "2026-11-12: 1.7.0 release in progress from the reviewed candidate. This one release and a subsequent documentation receipt push are authorized; no sibling installation, personal gateway update or About changes. Only basic script, structure, build/package/temporary-install and documentation checks apply; model/UI/live Claude Code/long-term behavior awaits real use and 1.8 feedback. Formal evaluation remains deferred. Complete here means documentation registration, not release or behavioral acceptance."
+  ]
 }

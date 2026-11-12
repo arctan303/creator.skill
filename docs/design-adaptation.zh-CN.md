@@ -2,11 +2,11 @@
 
 [English](design-adaptation.md) · [首页](../README.zh-CN.md)
 
-本文介绍的是**尚未发布的源码变更**。已发布的 1.6.0 ZIP 不包含这项设计适配能力及场景参考库。构建当前源码不会自动升级个人网关，也不会自动升级任何项目。
+设计适配能力及场景参考库随 [1.7.0 网关](https://github.com/arctan303/creator.skill/releases/tag/v1.7.0)提供。下载网关不会自动安装工作流，也不会自动修改项目文档。
 
 ## 通过网关发起适配任务
 
-让代理读取当前的 [creator 网关](../gateway/SKILL.md)，说明目标项目、相关页面和允许修改的文档。设计适配是自然语言任务，不是安装器参数；即使目标项目尚未安装工作流，也可以独立进行已授权的文档适配。
+让代理读取解压后的 1.7.0 [creator 网关](../gateway/SKILL.md)，说明目标项目、相关页面和允许修改的文档。设计适配是自然语言任务，不是安装器参数；即使目标项目尚未安装工作流，也可以独立进行已授权的文档适配。
 
 新项目可以这样说：
 
@@ -48,15 +48,10 @@
 
 安装和适配是两项独立操作。归属感知安装器管理工作流文件并保留项目文档；确定性脚本不会进行设计语义合并。仅请求设计适配，不代表授权安装、发布或修改文档范围之外的内容。
 
-## 在本地试用当前源码
+## 使用发布版网关
 
-在本仓库中使用 Python 3.10+ 构建本地产物：
+从 [1.7.0 Release](https://github.com/arctan303/creator.skill/releases/tag/v1.7.0) 下载 `creator-gateway.zip`，解压到临时目录，让代理读取其中的 `SKILL.md`。网关包含作者参考库；用于项目安装的 `creator-workflow.zip` 包含简短日常流程。如需同时安装或升级工作流，见[快速开始](quickstart.zh-CN.md)。
 
-```powershell
-py -3 scripts/build_release.py
-py -3 scripts/verify_build.py
-```
-
-输出为 `dist/creator-gateway.zip` 和 `dist/creator-workflow.zip`。网关包含作者参考库，工作流包含简短的日常流程。明确使用选定的本地网关；若要主动更新个人技能，先阅读[网关加载说明](../gateway/references/cli-adapters.md)。本地构建不等于发布，也不等于安装回执。
+明确使用选定的已解压网关；若要主动更新可选个人技能，先阅读[网关加载说明](../gateway/references/cli-adapters.md)。
 
 交付应说明修改的文档、采用来源、保留决定、未解决冲突和实际检查。文档检查、应用实现、视觉验证与发布证据分别报告。

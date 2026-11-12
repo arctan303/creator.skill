@@ -2,7 +2,7 @@
 
 [English](quickstart.md) · [首页](../README.zh-CN.md)
 
-本页适用于 [1.6.0 Release](https://github.com/arctan303/creator.skill/releases/tag/v1.6.0)。旧版 [1.5](https://github.com/arctan303/creator.skill/releases/tag/v1.5.0) 使用不同包名与[安装说明](https://github.com/arctan303/creator.skill/blob/v1.5.0/README.md)。
+本页适用于 [1.7.0 Release](https://github.com/arctan303/creator.skill/releases/tag/v1.7.0)。旧版 [1.5](https://github.com/arctan303/creator.skill/releases/tag/v1.5.0) 使用不同包名与[安装说明](https://github.com/arctan303/creator.skill/blob/v1.5.0/README.md)。
 
 ## 安装发布版
 
@@ -13,11 +13,11 @@ python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-proje
 python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-project" --package "creator-workflow.zip" --apply
 ```
 
-第一条命令预览变更，核对后再运行第二条。这不会安装个人技能。升级时请加入下文的基线参数，并沿用此处 gateway 安装器与下载包路径。
+第一条命令预览变更，核对后再运行第二条。这不会安装个人技能。升级时请使用新 gateway 安装器，并核对下文的基线要求。
 
 ## 本地构建与安装
 
-也可以使用标签 `v1.6.0` 的源码检出、Python 3.10+ 和已存在的目标项目自行构建。以下命令在 creator.skill 源码目录执行。请替换示例项目路径；Linux 或 macOS 可使用 `/home/you/projects/example` 等绝对路径。
+也可以使用标签 `v1.7.0` 的源码检出、Python 3.10+ 和已存在的目标项目自行构建。以下命令在 creator.skill 源码目录执行。请替换示例项目路径；Linux 或 macOS 可使用 `/home/you/projects/example` 等绝对路径。
 
 ```powershell
 python scripts/build_release.py
@@ -37,10 +37,12 @@ python scripts/install_workflow.py --root "C:/path/to/your-project" --package "d
 
 ## 升级已有安装
 
-使用同一安装器和目标目录。升级 1.5 时，提供原宿主对应的官方 ZIP 作为基线：
+下载 **1.7.0 的两个 ZIP**，使用 **1.7.0 网关中解压出的安装器**和原目标目录。1.6.0 旧安装器可能在 Windows Git 转换换行符后误报本地定制冲突；只下载新工作流 ZIP 不会更新该安装器。
+
+从 1.6.0 升级时，有效的 `.creator/install-state.json` 安装回执已提供文件归属基线，无须旧基线 ZIP，直接使用上方发布版安装命令。从 1.5 升级时，仍需提供与原宿主匹配的旧官方 ZIP：
 
 ```powershell
-python scripts/install_workflow.py --root "C:/path/to/your-project" --package "dist/creator-workflow.zip" --baseline-package "C:/downloads/creator.codex-1.5.0.zip"
+python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-project" --package "creator-workflow.zip" --baseline-package "C:/downloads/creator.codex-1.5.0.zip"
 ```
 
 请填写实际本地文件名；1.5 Release 资产名为 `creator.codex.zip` 或 `creator.claude.zip`。项目同时存在两个旧布局时，可以重复 `--baseline-package` 提供对应官方包。查看预览后再加 `--apply`。
@@ -50,7 +52,7 @@ python scripts/install_workflow.py --root "C:/path/to/your-project" --package "d
 安装中断后，先查看恢复信息，再继续安装：
 
 ```powershell
-python scripts/install_workflow.py --root "C:/path/to/your-project" --recover
+python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-project" --recover
 ```
 
 加入 `--apply` 执行已报告的恢复。并行修改会保留并列为冲突，应按现有证据处理，不能直接丢弃。
@@ -69,14 +71,14 @@ python scripts/install_workflow.py --root "C:/path/to/your-project" --recover
 
 可选的 `creator` gateway 是个人技能，用于在你选定的项目中安装或升级工作流。个人入口与项目内工作流是两项独立安装。
 
-1. 下载 1.6.0 Release 的 `creator-gateway.zip`，或从同一标签源码构建；先解压到临时目录并核对内容。ZIP 根目录直接包含 `SKILL.md`、`agents/`、`references/` 和 `scripts/`。
+1. 下载 1.7.0 Release 的 `creator-gateway.zip`，或从同一标签源码构建；先解压到临时目录并核对内容。ZIP 根目录直接包含 `SKILL.md`、`agents/`、`references/`、`scripts/` 和 `design-library/`。
 2. 将这些内容放入 Codex 的 `~/.codex/skills/creator/` 或 Claude Code 的 `~/.claude/skills/creator/`。最终应存在 `creator/SKILL.md` 和 `creator/scripts/install_workflow.py`，不要再嵌套一层 `creator/`。
 3. 更新已有个人入口时，保留并核对本地定制。只替换 gateway 自身文件，不触碰相邻技能。项目安装器不会更新个人技能目录。
 4. 重启宿主会话，打开目标项目，然后提出：
 
 > 使用 creator gateway，从我提供的本地 `creator-workflow.zip` 安装当前项目的工作流。预览变更，执行没有歧义的安装，并分别报告工作流版本与文档状态。
 
-升级时同时提供旧官方基线包。也可以让 gateway 从 GitHub 获取 `v1.6.0`，明确版本可避免选错发布资产。
+从 1.5 升级时，同时提供匹配的旧官方基线包；有有效回执的 1.6.0 安装无须提供。也可以让 gateway 从 GitHub 获取 `v1.7.0`，明确版本可避免选错发布资产。
 
 也可直接执行 gateway 随包的安装器：`python <gateway目录>/scripts/install_workflow.py`，参数与前文相同。
 

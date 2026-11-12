@@ -1,8 +1,8 @@
 # creator.skill delivery plan
 
-Current outcome: **1.7.0 local candidate, unpublished**, with the [bounded implementation and basic-check record](tasks/1.7-local-candidate-20261112.md). S1–S5, M1–M5 and scoped consolidation are complete; next are review-side diff inspection and the user's real-project trial. No model A/B or UI rendering trial was run in this iteration; no publication, push, tag or installed-project upgrade is authorized.
+Current outcome: **1.7.0 release in progress**, following the reviewed [implementation and basic-check record](tasks/1.7-local-candidate-20261112.md). The user's 2026-11-12 authorization covers documentation preparation, a fast-forward of main and one release push, existing Release CI, downloaded-asset and temporary-install verification, then a separate documentation receipt push. No model A/B or UI rendering trial ran; installed projects, personal gateways and GitHub About settings remain outside scope. See [release evidence](validation/1.7-release.md).
 
-The [formal evaluation plan](tasks/workflow-eval-loop-20261112.md) is deferred and retained for future use, including its source appendix and baseline inventory. The [design adaptation/library task](tasks/design-library-20261111.md) remains the earlier completed local scope. Completed 1.6 evidence below is historical and unchanged; its local-version statement describes that delivery, not today's candidate. Public README/quickstarts remain on published 1.6.0 until release.
+The [formal evaluation plan](tasks/workflow-eval-loop-20261112.md) is deferred and retained for possible 1.8 use, including its source appendix and baseline inventory. The [design adaptation/library task](tasks/design-library-20261111.md) is complete and included in 1.7.0. Public README/quickstarts now target 1.7.0. Completed 1.6 evidence below is historical and unchanged; its current-stage statements describe that delivery.
 
 ## Completed 1.6.0 delivery
 

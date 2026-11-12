@@ -16,9 +16,9 @@ For example:
 
 The expected outcome is an updated current plan and design guidance. The removed feature's historical tests do not become today's work again. See the [illustrative walkthrough](docs/examples/project-continuity.md).
 
-## Install 1.6.0
+## Install 1.7.0
 
-Download `creator-workflow.zip` and `creator-gateway.zip` from [release 1.6.0](https://github.com/arctan303/creator.skill/releases/tag/v1.6.0). Extract the gateway ZIP into a `creator-gateway` directory next to the workflow ZIP. The gateway directory should directly contain `SKILL.md` and `scripts/`.
+Download `creator-workflow.zip` and `creator-gateway.zip` from [release 1.7.0](https://github.com/arctan303/creator.skill/releases/tag/v1.7.0). Extract the gateway ZIP into a `creator-gateway` directory next to the workflow ZIP. The gateway directory should directly contain `SKILL.md` and `scripts/`.
 
 From that download directory, with Python 3.10+ available:
 
@@ -32,7 +32,7 @@ Read the proposed changes, then apply the same operation:
 python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-project" --package "creator-workflow.zip" --apply
 ```
 
-The project directory must already exist. The installer previews by default and stops on unresolved customization conflicts. For a 1.5 upgrade, supply the old official package as a baseline so obsolete files can be identified safely. See the [quickstart](docs/quickstart.md) for upgrades, Claude compatibility, and the personal gateway skill.
+The project directory must already exist. The installer previews by default and stops on unresolved customization conflicts. To upgrade from 1.6.0, download both new ZIPs and use the **1.7.0 gateway installer**: the old installer can mistake Windows Git line-ending conversion for customization. A valid installation receipt supplies ownership without an old baseline ZIP; a 1.5 upgrade still needs its matching old official ZIP. See the [quickstart](docs/quickstart.md) for upgrades, Claude compatibility, and the optional personal gateway skill.
 
 Start a new agent session in the project and try:
 
@@ -42,11 +42,11 @@ For an existing project, you can also request documentation alignment:
 
 > Align the existing project documents with this workflow. Reuse the current entry document, preserve history, and distinguish current requirements from retired work.
 
-## Design adaptation — unreleased source capability
+## Design adaptation
 
-The current source adds a [scenario reference library](design-library/README.md) and gateway-assisted authoring: create project-specific design rules or fill gaps in existing ones while preserving local choices. Everyday UI work reads only the adopted project rules and their relevant local references. The library ships with the gateway, not the project workflow.
+The 1.7.0 gateway includes a [scenario reference library](design-library/README.md) and an adaptation task: create project-specific design rules or fill gaps in existing ones while preserving local choices. Everyday UI work reads only the adopted project rules and their relevant local references. The library ships with the gateway, not the project workflow.
 
-See the [usage guide](docs/design-adaptation.md) for new and existing projects. This capability is **not included in the published 1.6.0 assets**; a local source build does not upgrade any installed copy automatically.
+See the [usage guide](docs/design-adaptation.md) for new and existing projects. Installation and design adaptation are separate operations; upgrading the workflow does not rewrite project design documents.
 
 ## What is included
 

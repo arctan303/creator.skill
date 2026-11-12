@@ -2,7 +2,7 @@
 
 [简体中文](quickstart.zh-CN.md) · [Home](../README.md)
 
-This guide covers [release 1.6.0](https://github.com/arctan303/creator.skill/releases/tag/v1.6.0). The older [1.5 release](https://github.com/arctan303/creator.skill/releases/tag/v1.5.0) uses different package names and [installation instructions](https://github.com/arctan303/creator.skill/blob/v1.5.0/README.md).
+This guide covers [release 1.7.0](https://github.com/arctan303/creator.skill/releases/tag/v1.7.0). The older [1.5 release](https://github.com/arctan303/creator.skill/releases/tag/v1.5.0) uses different package names and [installation instructions](https://github.com/arctan303/creator.skill/blob/v1.5.0/README.md).
 
 ## Install the release
 
@@ -13,11 +13,11 @@ python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-proje
 python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-project" --package "creator-workflow.zip" --apply
 ```
 
-The first command previews changes; run the second after reviewing them. This does not install a personal skill. For upgrades, add the baseline arguments below using the same gateway installer and downloaded package paths.
+The first command previews changes; run the second after reviewing them. This does not install a personal skill. For upgrades, use the new gateway installer and check the baseline requirements below.
 
 ## Build and install locally
 
-Alternatively, use a source checkout at tag `v1.6.0`, Python 3.10+, and an existing target project. These commands run from the creator.skill source directory. Replace the example project path with your own; on Linux or macOS use an absolute path such as `/home/you/projects/example`.
+Alternatively, use a source checkout at tag `v1.7.0`, Python 3.10+, and an existing target project. These commands run from the creator.skill source directory. Replace the example project path with your own; on Linux or macOS use an absolute path such as `/home/you/projects/example`.
 
 ```powershell
 python scripts/build_release.py
@@ -37,10 +37,12 @@ Start a **new session in the target project** after installation. The workflow v
 
 ## Upgrade an existing installation
 
-Use the same installer and target root. For a 1.5 installation, supply the official ZIP used by that host as a baseline:
+Download **both 1.7.0 ZIPs** and use the installer extracted from the **1.7.0 gateway**, with the same target root. The 1.6.0 installer can report false customization conflicts after Windows Git converts line endings; downloading only the new workflow ZIP does not update that installer.
+
+From 1.6.0, a valid `.creator/install-state.json` receipt supplies the existing ownership baseline, so no old baseline ZIP is needed. Use the release installation commands above. From 1.5, supply the matching old official ZIP for that host:
 
 ```powershell
-python scripts/install_workflow.py --root "C:/path/to/your-project" --package "dist/creator-workflow.zip" --baseline-package "C:/downloads/creator.codex-1.5.0.zip"
+python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-project" --package "creator-workflow.zip" --baseline-package "C:/downloads/creator.codex-1.5.0.zip"
 ```
 
 Use the actual local filename; the 1.5 release asset is named `creator.codex.zip` or `creator.claude.zip`. If the project contains both old layouts, repeat `--baseline-package` for each relevant official package. Add `--apply` only after reviewing the preview.
@@ -50,7 +52,7 @@ Old workflow-owned `CLAUDE.md`, commands, and other obsolete files are removable
 If an installation was interrupted, inspect recovery before attempting another install:
 
 ```powershell
-python scripts/install_workflow.py --root "C:/path/to/your-project" --recover
+python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-project" --recover
 ```
 
 Add `--apply` to perform the reported recovery. Concurrent edits are preserved and reported as conflicts; resolve them from the available evidence rather than discarding them.
@@ -69,14 +71,14 @@ If you know the installed Claude version, include `--claude-version 2.1.281` (or
 
 The optional `creator` gateway is a personal skill that installs or upgrades the workflow in the project you select. It is separate from a project's installed workflow.
 
-1. Download `creator-gateway.zip` from release 1.6.0, or build it from the same tagged source. Extract it to a temporary directory and inspect the contents. The ZIP root contains `SKILL.md`, `agents/`, `references/`, and `scripts/`.
+1. Download `creator-gateway.zip` from release 1.7.0, or build it from the same tagged source. Extract it to a temporary directory and inspect the contents. The ZIP root contains `SKILL.md`, `agents/`, `references/`, `scripts/`, and `design-library/`.
 2. Copy those contents into `~/.codex/skills/creator/` for Codex or `~/.claude/skills/creator/` for Claude Code. The resulting directory must contain `creator/SKILL.md` and `creator/scripts/install_workflow.py`; do not add another nested `creator/` directory.
 3. If replacing a personal gateway, preserve and reconcile any local customization. Replace only the gateway's own files, not neighboring skills. The project installer does not update personal skill directories.
 4. Start a new host session, open the intended project, and ask:
 
 > Use the creator gateway to install the workflow from my local `creator-workflow.zip` in this project. Preview the changes, apply the unambiguous installation, and report the installed version and document status separately.
 
-For upgrades, provide the old official baseline ZIP as well. You can also ask the gateway to fetch release `v1.6.0` from GitHub; naming the version keeps the selected release explicit.
+For a 1.5 upgrade, also provide the matching old official baseline ZIP; 1.6.0 installations with a valid receipt do not need it. You can also ask the gateway to fetch release `v1.7.0` from GitHub; naming the version keeps the selected release explicit.
 
 The bundled installer can also be run directly as `python <gateway-directory>/scripts/install_workflow.py` with the same arguments shown above.
 

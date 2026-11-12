@@ -16,9 +16,9 @@ Creovator 是面向 Codex 与 Claude Code 的项目工作流。你描述想要�
 
 预期结果是更新当前计划和设计准则。旧功能的历史测试不会再次变成当前任务。查看[完整示例](docs/examples/project-continuity.zh-CN.md)。
 
-## 安装 1.6.0
+## 安装 1.7.0
 
-从 [1.6.0 Release](https://github.com/arctan303/creator.skill/releases/tag/v1.6.0) 下载 `creator-workflow.zip` 和 `creator-gateway.zip`。将 gateway ZIP 解压到工作流 ZIP 旁的 `creator-gateway` 目录，该目录应直接包含 `SKILL.md` 和 `scripts/`。
+从 [1.7.0 Release](https://github.com/arctan303/creator.skill/releases/tag/v1.7.0) 下载 `creator-workflow.zip` 和 `creator-gateway.zip`。将 gateway ZIP 解压到工作流 ZIP 旁的 `creator-gateway` 目录，该目录应直接包含 `SKILL.md` 和 `scripts/`。
 
 在该下载目录中，使用 Python 3.10+：
 
@@ -32,7 +32,7 @@ python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-proje
 python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-project" --package "creator-workflow.zip" --apply
 ```
 
-目标项目目录须已存在。安装器默认只预览，遇到未解决的本地定制冲突会停止。升级 1.5 时需要提供旧官方包作为基线，以便安全识别应清理的旧文件。升级、Claude 兼容条件及个人 gateway 入口更新见[快速开始](docs/quickstart.zh-CN.md)。
+目标项目目录须已存在。安装器默认只预览，遇到未解决的本地定制冲突会停止。从 1.6.0 升级时，请下载两个新 ZIP 并使用 **1.7.0 网关安装器**：旧安装器可能把 Windows Git 换行转换误报为本地定制。有效安装回执可提供文件归属，无须旧基线 ZIP；从 1.5 升级仍需匹配的旧官方 ZIP。升级、Claude 兼容条件及可选个人 gateway 入口见[快速开始](docs/quickstart.zh-CN.md)。
 
 在项目中新开 Agent 会话，然后试试：
 
@@ -42,11 +42,11 @@ python creator-gateway/scripts/install_workflow.py --root "C:/path/to/your-proje
 
 > 请按这套工作流适配现有项目文档。复用当前入口、保留历史，并区分有效需求与已退役任务。
 
-## 设计适配——尚未发布的源码能力
+## 设计适配
 
-当前源码新增[场景设计参考库](design-library/README.md)与网关适配入口：为新项目裁切生成准则，或补充既有准则的空白，保留项目自己的约定。日常 UI 工作只读取项目已采纳规则及适用的本地引用。资料库随网关分发，不装进项目工作流。
+1.7.0 网关提供[场景设计参考库](design-library/README.md)与设计适配入口：为新项目裁切生成准则，或补充既有准则的空白，保留项目自己的约定。日常 UI 工作只读取项目已采纳规则及适用的本地引用。资料库随网关分发，不装进项目工作流。
 
-新项目和已有项目的用法见[设计适配指南](docs/design-adaptation.zh-CN.md)。这项能力**不在已发布的 1.6.0 资产中**；本地构建不会自动升级任何已安装副本。
+新项目和已有项目的用法见[设计适配指南](docs/design-adaptation.zh-CN.md)。安装与设计适配是两项独立操作；升级工作流不会改写项目设计文档。
 
 ## 包含什么
 

@@ -2,11 +2,11 @@
 
 [简体中文](design-adaptation.zh-CN.md) · [Home](../README.md)
 
-This guide describes an **unreleased source change**. Published 1.6.0 ZIPs do not include this design-adaptation capability or its scenario library. Building the current source does not upgrade your personal gateway or any project automatically.
+Design adaptation and its scenario library are included in the [1.7.0 gateway](https://github.com/arctan303/creator.skill/releases/tag/v1.7.0). Downloading the gateway does not install the workflow or change any project documents automatically.
 
 ## Use the gateway for an adaptation task
 
-Point your agent to the current [creator gateway](../gateway/SKILL.md) and name the target project, requested surfaces and writable documents. Adaptation is a natural-language task, not an installer flag. It can run without installing the workflow into the target project.
+Point your agent to the extracted 1.7.0 [creator gateway](../gateway/SKILL.md) and name the target project, requested surfaces and writable documents. Adaptation is a natural-language task, not an installer flag. It can run without installing the workflow into the target project.
 
 For a new project:
 
@@ -48,15 +48,10 @@ Daily UI development, repair and review read the adopted project design entry an
 
 Installation and adaptation are separate operations. The ownership-aware installer manages workflow files and preserves project documents; its deterministic script does not perform a semantic design merge. An adaptation request alone does not authorize installation, publication or changes outside its document scope.
 
-## Try the current source locally
+## Use the release gateway
 
-With Python 3.10+ in this repository, build local artifacts:
+Download `creator-gateway.zip` from [release 1.7.0](https://github.com/arctan303/creator.skill/releases/tag/v1.7.0), extract it to a temporary directory, and point your agent to its `SKILL.md`. The gateway contains the authoring library; `creator-workflow.zip` contains the small daily procedures for project installation. See the [quickstart](quickstart.md) if you also want to install or upgrade the workflow.
 
-```powershell
-py -3 scripts/build_release.py
-py -3 scripts/verify_build.py
-```
-
-The outputs are `dist/creator-gateway.zip` and `dist/creator-workflow.zip`. The gateway contains the authoring library; the workflow contains the small daily procedures. Use the selected local gateway explicitly, or inspect [gateway loading guidance](../gateway/references/cli-adapters.md) before deliberately updating a personal skill. A local build is not publication or an installation receipt.
+Use the selected extracted gateway explicitly, or inspect [gateway loading guidance](../gateway/references/cli-adapters.md) before deliberately updating an optional personal skill.
 
 Ask for a handoff listing the documents changed, adopted sources, preserved choices, unresolved conflicts and actual checks. Document checks, application implementation, visual validation and release evidence remain separate.

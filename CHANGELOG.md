@@ -2,20 +2,18 @@
 
 记录每次发布的变更内容。
 
-## [1.7.0] - 2026-11-12 (local candidate / 本地候选，未发布)
+## [1.7.0] - 2026-11-12
 
-Status: local preparation only; no push, tag or publication. This iteration runs basic checks only; real-project trial belongs to the user. / 仅完成本地准备；本轮只做基本测试，真实项目由用户安装试用并反馈。
+- UI tasks read the project's adopted design rules and relevant nested references before design, implementation, repair or review. Existing decisions are reused without repeating a design interview. / UI 任务实际读取项目已采用的设计规范及适用的逐层引用，复用既定决定，不重复设计采访。
+- The gateway includes nine scenario references and project adaptation: create tailored rules or improve existing ones while preserving local conventions, exceptions and save/cancel behavior. Daily work reads adopted rules; installation alone does not rewrite project design. / 网关提供九类场景参考和项目适配，按需生成或完善准则，保留项目约定、例外与保存取消语义；日常只读已采纳规则，安装不顺带改写设计文档。
+- Classify conflicting evidence before treating it as a product change; require explicit user requests for persistent Goals; recognize explicitly authorized workflow improvements. / 冲突证据先区分过时记录、回归与已批准变更；持续 Goal 必须由用户明确要求；自进化接受用户明确授权的优化请求。
+- Add conditional methods for checking regressions with the fix removed in an isolated copy, diagnosing uncertain causes, and verifying rendered UI and interactions against the final source. / 按条件使用隔离副本撤回修复验证、根因诊断，以及对应最终源码的 UI 渲染和交互取证，不增加固定阶段或等待点。
+- Plan slices around independently verifiable user outcomes and reconcile recovery records with actual workspace and external state. / 按用户可完成的结果切片计划，恢复时核对实际工作区与外部状态，避免重复已完成动作。
+- Treat managed UTF-8 text that differs from its known official baseline only by LF/CRLF line endings as unchanged, including obsolete-file cleanup. Real content changes remain conflicts and prevent all writes. / 修复安装器对 LF/CRLF 换行差异的误判，覆盖受管文件替换与废弃清理；真实内容修改仍报冲突并阻止全部写入。
 
-- Require UI tasks to read existing project design documents and applicable nested references before designing, implementing, repairing or reviewing. / UI 任务实际读取既有项目设计入口及适用的逐层引用，跳过设计技能也不跳过规范。
-- Add nine scenario references for project-specific adaptation: foundations, forms/settings, admin/data, dashboards, reading, media, workspaces, onboarding and brand. The authoring library ships only with the gateway; daily work uses adopted project rules. / 增加九类场景参考，网关按需裁切，日常工作只读项目实际采纳准则。
-- Route new-project authoring and existing-rule reconciliation through the gateway and shared procedure, preserving local ownership, language, exceptions and save semantics. Ordinary installation does not rewrite project design. / 网关支持新建与补充既有规范，保留本地约定，安装升级不顺带改写设计文档。See [usage](docs/design-adaptation.md) / [中文说明](docs/design-adaptation.zh-CN.md).
-- Reconcile scoped design updates and consequential questions; add six structural cases and two synthetic document-decision fixtures. / 修正局部设计与采访契约冲突，增加六项结构用例及两个文档决策夹具。See [scope/evidence](docs/validation/1.7-ui-baseline.md); not a published version.
-- Add six further structural cases, separate package/transport regressions and three source-only adaptation trial scenarios. / 另增六项结构用例、分发与试验工具回归及三个源码适配场景。Actual execution evidence is tracked in the [bounded task](docs/tasks/design-library-20261111.md); fixtures alone are not model results.
-- Align effective design inputs, conflict classification, explicit Goal activation and authorized evolution requests; structural-check output now says no model ran. / 修正旧输入、冲突分流、Goal 触发和自进化授权条款，结构检查明确不代表模型执行。
-- Add conditional repair-verification, diagnosis and final-UI evidence methods; plan by user outcomes and reconcile recovery with actual state. Consolidate affected duplicated clauses. / 按条件补充撤回修复验证、根因诊断和最终 UI 取证，按用户结果切片、依据实际状态恢复，并合并相关重复条款。
-- Add five structural cases with paired boundaries. Runtime rules grow by 6,773 bytes from the pre-change workspace; AGENTS.md remains unchanged in this final iteration. / 新增五项结构用例及配对边界；本轮运行时规则净增 6,773 字节，AGENTS.md 保持本轮基线原样。
+Upgrade note: download both ZIPs and use the **1.7.0 gateway installer**. The 1.6.0 installer can report false conflicts under default Windows Git line-ending settings. A 1.6.0 installation with a valid receipt needs no old baseline ZIP; a 1.5 upgrade still needs the original official package. / 升级时下载两个 ZIP，使用 **1.7.0 网关中的新安装器**；旧安装器在 Windows 默认 Git 设置下可能把换行差异误报为冲突。有效安装记录下，从 1.6.0 升级不需要基线包，从 1.5 升级仍需要原官方包。See the [English quickstart](https://github.com/arctan303/creator.skill/blob/v1.7.0/docs/quickstart.md) / [中文快速开始](https://github.com/arctan303/creator.skill/blob/v1.7.0/docs/quickstart.zh-CN.md).
 
-Validation for this local candidate: 71 script regressions, 63 structural cases, build/package/temporary-install and documentation checks. Formal evaluation is deferred; model behavior, rendered UI, live Claude Code and long-term effects are unverified in this iteration. / 本轮验证仅涵盖脚本、结构、构建安装与文档；模型行为、实际 UI、Claude Code 与长期效果待试用。See [scope and results](docs/tasks/1.7-local-candidate-20261112.md).
+Validation: 77 script tests, 63 structural cases, build/package/installation checks. Structural cases do not execute a model. Model behavior, actual UI rendering, live Claude Code loading and long-term effects remain unverified for this release; real-use feedback will inform 1.8. / 验证涵盖 77 项脚本测试、63 个结构用例及构建、打包、安装检查；结构用例没有运行模型。本版模型行为、实际界面渲染、Claude Code 实时加载和长期效果未验证，真实使用反馈进入 1.8。
 
 ## [1.6.0] - 2026-10-14
 
