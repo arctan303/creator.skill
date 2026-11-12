@@ -49,6 +49,10 @@ python .creator/scripts/evaluate_prompt_cases.py --responses path/to/responses.j
 
 静态通过只证明结构、字段和本地引用有效。响应字段正确也不证明 Agent 实际修改了文档、保留了旧证据或遵守只读限制；实际任务需结合文件 diff、命令记录、范围边界和人工判断核验。不得复制 expected 生成响应充当模型测试。
 
+## 1.7 结构检查范围
+
+本轮新增五个结构用例，并复用三个已有边界例：S2 用 `bug-stale-test-approved-change` / `route-bug-disguises-product-choice`；S3 用 `goal-capacity-resume-boundary` / `goal-long-task-without-request`；S4 用 `evolution-explicit-first-optimization` / `evolution-first-ordinary-signal`；M1 用 `verification-retain-test-remove-repair` / `verification-mechanical-copy`。它们仅定义待验证的决策边界；结构检查不执行模型，也不证明读取、撤回修复、根因判断或视觉验收已经发生。正式模型评测暂缓，真实项目使用由用户反馈。
+
 1.5 历史版本只维护用例与脚本，未做跨模型试跑。1.6 在此基础上提供[隔离任务夹具](../behavior/README.md)，观察实际文件行为；本地抽样不代表真实业务迁移或所有宿主/模型兼容。
 
 批量复查收尾用例增加可选 `batch_action`：prune-closed（仅移出已关闭项）、reset-empty（全部关闭后重置）、retain-open（保留尚未被有效审查覆盖的项）。实际文件清理仍由后续任务验证，字段评分不代替 diff 核验。
