@@ -2,13 +2,20 @@
 
 记录每次发布的变更内容。
 
-## Unreleased
+## [1.7.0] - 2026-11-12 (local candidate / 本地候选，未发布)
+
+Status: local preparation only; no push, tag or publication. This iteration runs basic checks only; real-project trial belongs to the user. / 仅完成本地准备；本轮只做基本测试，真实项目由用户安装试用并反馈。
 
 - Require UI tasks to read existing project design documents and applicable nested references before designing, implementing, repairing or reviewing. / UI 任务实际读取既有项目设计入口及适用的逐层引用，跳过设计技能也不跳过规范。
 - Add nine scenario references for project-specific adaptation: foundations, forms/settings, admin/data, dashboards, reading, media, workspaces, onboarding and brand. The authoring library ships only with the gateway; daily work uses adopted project rules. / 增加九类场景参考，网关按需裁切，日常工作只读项目实际采纳准则。
 - Route new-project authoring and existing-rule reconciliation through the gateway and shared procedure, preserving local ownership, language, exceptions and save semantics. Ordinary installation does not rewrite project design. / 网关支持新建与补充既有规范，保留本地约定，安装升级不顺带改写设计文档。See [usage](docs/design-adaptation.md) / [中文说明](docs/design-adaptation.zh-CN.md).
 - Reconcile scoped design updates and consequential questions; add six structural cases and two synthetic document-decision fixtures. / 修正局部设计与采访契约冲突，增加六项结构用例及两个文档决策夹具。See [scope/evidence](docs/validation/1.7-ui-baseline.md); not a published version.
 - Add six further structural cases, separate package/transport regressions and three source-only adaptation trial scenarios. / 另增六项结构用例、分发与试验工具回归及三个源码适配场景。Actual execution evidence is tracked in the [bounded task](docs/tasks/design-library-20261111.md); fixtures alone are not model results.
+- Align effective design inputs, conflict classification, explicit Goal activation and authorized evolution requests; structural-check output now says no model ran. / 修正旧输入、冲突分流、Goal 触发和自进化授权条款，结构检查明确不代表模型执行。
+- Add conditional repair-verification, diagnosis and final-UI evidence methods; plan by user outcomes and reconcile recovery with actual state. Consolidate affected duplicated clauses. / 按条件补充撤回修复验证、根因诊断和最终 UI 取证，按用户结果切片、依据实际状态恢复，并合并相关重复条款。
+- Add five structural cases with paired boundaries. Runtime rules grow by 6,773 bytes from the pre-change workspace; AGENTS.md remains unchanged in this final iteration. / 新增五项结构用例及配对边界；本轮运行时规则净增 6,773 字节，AGENTS.md 保持本轮基线原样。
+
+Validation for this local candidate: 71 script regressions, 63 structural cases, build/package/temporary-install and documentation checks. Formal evaluation is deferred; model behavior, rendered UI, live Claude Code and long-term effects are unverified in this iteration. / 本轮验证仅涵盖脚本、结构、构建安装与文档；模型行为、实际 UI、Claude Code 与长期效果待试用。See [scope and results](docs/tasks/1.7-local-candidate-20261112.md).
 
 ## [1.6.0] - 2026-10-14
 

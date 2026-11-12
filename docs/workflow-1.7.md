@@ -1,8 +1,8 @@
 # 1.7 field feedback and candidates
 
-Status: sustained use of published 1.6.0, with an authorized local design-rule patch on 2026-11-11 following the 2026-11-06 field investigation. The patch is unreleased; installed business workspaces retain their own baselines.
+Status: **1.7.0 local candidate, unpublished**, prepared under the user's 2026-11-12 execution instruction. It includes the earlier local design/adaptation work and the bounded S1–S5/M1–M5 update. Only basic script, structure, build/package/temporary-install and documentation checks ran this iteration; installed business workspaces retain their own baselines.
 
-Source: the user's screenshot corrections, request for researched design foundations, explicit requirement to follow project design references, and recommendation of Impeccable. This is not an accepted complete 1.7 feature list or a claim that long-term testing has passed.
+Source: the user's screenshot corrections, researched-design/adaptation requests and 2026-11-12 bounded implementation authorization. The [current task](tasks/1.7-local-candidate-20261112.md) records accepted scope and evidence; the [formal evaluation design](tasks/workflow-eval-loop-20261112.md) is deferred and retained. The user will install and trial the candidate; this record does not authorize publication or claim long-term testing passed. Earlier report/version statements below retain their historical baseline.
 
 ## Capture during ordinary use
 
@@ -11,6 +11,19 @@ The user can describe a problem naturally. The assistant records the relevant fa
 For each actual report, retain a stable ID, date, workflow/host/model baseline when known, expected versus observed behavior, minimal reproduction or evidence, concrete impact and current status. Distinguish a user report, an independently reproduced defect and an inferred cause. Merge repeated evidence into the same issue rather than creating duplicate tasks. Keep private logs/conversations and credentials out of this public record; use a redacted summary or synthetic case.
 
 Observe task flexibility and unnecessary questions, useful delegation, natural convention capture, current-state accuracy and retired-task handling, upgrade preservation, documentation upkeep and bilingual first use. These are observation areas, not presumed defects or mandatory testing steps for every task.
+
+## 1.7 试用重点
+
+以下关注点对应本地候选改动；本轮未运行模型或 UI 试验。用户按上面的自然反馈方式描述问题，新增报告沿用稳定 `FB17-xxx` 编号；同一问题合并证据，不重编号。
+
+- 设计读取：UI 任务是否实际读取项目设计入口及适用的逐层引用，日常开发是否只使用本地已采纳规则。
+- 设计适配：网关是否能为新项目裁切、为已有规范补缺，并保留项目约定、路径和例外。
+- 自主推进：已有既定规则时是否仍做设计采访或要求返回前序阶段；独立部分能否继续。
+- 冲突分流：过时测试/文档、回归和已批准变更是否先分类，避免过早转成产品变更。
+- 修复证据：是否报告隔离副本中撤回修复后的失败、恢复后的通过，或如实说明不能执行与证据较弱；是否排除只修症状的结果。
+- UI 验证：是否复用现有组件/素材，并实际查看对应最终源码、状态和视口的截图；改交互后是否操作验证，且区分模拟、本地、部署环境。
+- 计划与恢复：切片是否对应可验收的用户结果；恢复是否核对实际状态，避免重复外部动作、覆盖他人改动或相信旧的“全部通过”。
+- 触发与边界：未明确要求时是否擅自建立 Goal；明确授权的优化是否仍等待次数；轻量改动是否被过度验证，结构检查是否冒称行为通过。
 
 ## Reports
 
@@ -80,4 +93,4 @@ Resolved 1.6 development issues remain in the [1.6 evidence](workflow-1.6.md); t
 
 Use [EVOLUTION.md](../EVOLUTION.md) to distinguish demonstrated workflow failures from project preferences and transient host/tool failures. Prioritize by concrete impact and recurrence; do not manufacture an occurrence threshold for an explicit optimization request. Candidate fixes need a relevant failure scenario, a counterexample and evidence appropriate to the change.
 
-When the user requests 1.7 planning, summarize the collected evidence and propose a bounded scope. Reports do not themselves authorize publication, automatic global rule propagation, background telemetry or upgrades to other repositories. Urgent fixes can be handled in their specifically authorized scope without pretending the whole 1.7 plan is already approved.
+The 2026-11-12 instruction approves the bounded local candidate scope recorded above; further improvements depend on new feedback and authorization. Reports do not themselves authorize publication, automatic global rule propagation, background telemetry or upgrades to other repositories. Preserve each report's actual source baseline rather than rewriting historical evidence to match the candidate.
